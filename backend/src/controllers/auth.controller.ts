@@ -36,6 +36,15 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
       departmentId: user.departmentId,
     });
 
+    // Configurar cookie httponly
+    res.cookie('helpify-token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      path: '/',
+    });
+
     // Retornar información del usuario (sin el hash)
     return res.status(200).json({
       status: 'success',
@@ -50,9 +59,23 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
         },
       },
     });
-  } catch (error) {
+    } catch (error) {
     next(error);
   }
+};
+
+export const logout = (_req: Request, res: Response) => {
+  res.clearCookie('helpify-token', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    path: '/',
+  });
+
+  return res.status(200).json({
+    status: 'success',
+    message: 'Sesión cerrada correctamente',
+  });
 };
 
 export const register = async (req: Request, res: Response, next: NextFunction) => {
