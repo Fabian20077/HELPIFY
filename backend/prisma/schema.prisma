@@ -1,0 +1,239 @@
+// ============================================================================
+// Helpify — Prisma Schema
+// Sistema Inteligente de Soporte — Modelo Entidad-Relación completo
+// Basado en: Helpify_Documento_Tecnico_v2.docx — Sección 5
+// ============================================================================
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+// ============================================================================
+// DEPARTMENTS — Departamentos de la organización
+// Un departamento agrupa agentes, tickets y categorías.
+// ============================================================================
+model Department {
+  id          String   @id @default(uuid())
+  name        String   @unique @db.VarChar(100)
+  description String?  @db.Text
+  managerId   String?  @map("manager_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // Relaciones
+  manager    User?       @relation("DepartmentManager", fields: [managerId], references: [id], onDelete: SetNull)
+  users      User[]      @relation("UserDepartment")
+  tickets    Ticket[]
+  categories Category[]
+
+  @@map("departments")
+}
+
+// ============================================================================
+// USERS — Usuarios del sistema
+// Roles: customer | agent | admin
+// Un usuario desactivado (is_active = false) no puede autenticarse.
+// ============================================================================
+model User {
+  id           String   @id @default(uuid())
+  name         String   @db.VarChar(150)
+  email        String   @unique @db.VarChar(255)
+  passwordHash String   @map("password_hash") @db.VarChar(255)
+  role         UserRole @default(customer)
+  isActive     Boolean  @default(true) @map("is_active")
+  departmentId String?  @map("department_id")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  // Relaciones
+  department          Department?     @relation("UserDepartment", fields: [departmentId], references: [id], onDelete: SetNull)
+  managedDepartments  Department[]    @relation("DepartmentManager")
+  createdTickets      Ticket[]        @relation("TicketCreator")
+  assignedTickets     Ticket[]        @relation("TicketAssignee")
+  comments            Comment[]
+  attachments         Attachment[]
+  ticketHistoryChanges TicketHistory[] @relation("HistoryChangedBy")
+  notifications       Notification[]
+
+  @@index([role])
+  @@map("users")
+}
+
+enum UserRole {
+  customer
+  agent
+  admin
+}
+
+// ============================================================================
+// CATEGORIES — Categorías de tickets
+// Cada categoría pertenece a un departamento.
+// RN-13: Solo se puede asignar a un ticket si pertenece al mismo departamento.
+// ============================================================================
+model Category {
+  id           String   @id @default(uuid())
+  name         String   @db.VarChar(100)
+  color        String   @default("#6366f1") @db.VarChar(7)
+  departmentId String   @map("department_id")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  // Relaciones
+  department Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  tickets    Ticket[]
+
+  @@map("categories")
+}
+
+// ============================================================================
+// TICKETS — Unidad básica del sistema
+// Máquina de estados: open → in_progress → waiting → resolved → closed
+// El score de urgencia (0-100) se calcula en runtime, NO se persiste (RN-12).
+// ============================================================================
+model Ticket {
+  id           String       @id @default(uuid())
+  title        String       @db.VarChar(255)
+  description  String       @db.Text
+  status       TicketStatus @default(open)
+  priority     TicketPriority @default(medium)
+  createdById  String       @map("created_by")
+  assignedToId String?      @map("assigned_to")
+  departmentId String?      @map("department_id")
+  categoryId   String?      @map("category_id")
+  dueDate      DateTime?    @map("due_date")
+  resolvedAt   DateTime?    @map("resolved_at")
+  createdAt    DateTime     @default(now()) @map("created_at")
+  updatedAt    DateTime     @updatedAt @map("updated_at")
+
+  // Relaciones
+  createdBy  User          @relation("TicketCreator", fields: [createdById], references: [id])
+  assignedTo User?         @relation("TicketAssignee", fields: [assignedToId], references: [id], onDelete: SetNull)
+  department Department?   @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  category   Category?     @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  comments   Comment[]
+  attachments Attachment[]
+  history    TicketHistory[]
+  notifications Notification[]
+
+  @@index([status])
+  @@index([priority])
+  @@index([createdById])
+  @@index([assignedToId])
+  @@index([createdAt])
+  @@map("tickets")
+}
+
+enum TicketStatus {
+  open
+  in_progress
+  waiting
+  resolved
+  closed
+}
+
+enum TicketPriority {
+  low
+  medium
+  high
+  critical
+}
+
+// ============================================================================
+// COMMENTS — Comentarios en tickets
+// is_internal = true → nota interna, invisible para customers (RN-05)
+// Editable en los primeros 5 minutos por el autor (RN-06). Admins sin límite.
+// ============================================================================
+model Comment {
+  id         String   @id @default(uuid())
+  ticketId   String   @map("ticket_id")
+  authorId   String   @map("author_id")
+  body       String   @db.Text
+  isInternal Boolean  @default(false) @map("is_internal")
+  editedAt   DateTime? @map("edited_at")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  // Relaciones
+  ticket Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  author User   @relation(fields: [authorId], references: [id])
+
+  @@index([ticketId])
+  @@map("comments")
+}
+
+// ============================================================================
+// ATTACHMENTS — Archivos adjuntos
+// Validación MIME por magic bytes en el backend (RN-07).
+// Máximo 10 MB por archivo. Tipos: JPEG, PNG, GIF, WEBP, PDF, DOC, DOCX, TXT, CSV.
+// ============================================================================
+model Attachment {
+  id         String   @id @default(uuid())
+  ticketId   String   @map("ticket_id")
+  uploadedBy String   @map("uploaded_by")
+  filename   String   @db.VarChar(255)
+  mimeType   String   @map("mime_type") @db.VarChar(100)
+  sizeBytes  Int      @map("size_bytes")
+  storageKey String   @map("storage_key") @db.VarChar(500)
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  // Relaciones
+  ticket   Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  uploader User   @relation(fields: [uploadedBy], references: [id])
+
+  @@index([ticketId])
+  @@map("attachments")
+}
+
+// ============================================================================
+// TICKET_HISTORY — Auditoría de cambios
+// Registra cada cambio de estado, asignación o campo relevante (RN-09).
+// Similar a los commits de Git: campo, valor anterior, valor nuevo, actor, timestamp.
+// ============================================================================
+model TicketHistory {
+  id        String   @id @default(uuid())
+  ticketId  String   @map("ticket_id")
+  changedBy String   @map("changed_by")
+  fieldName String   @map("field_name") @db.VarChar(50)
+  oldValue  String?  @map("old_value") @db.VarChar(255)
+  newValue  String?  @map("new_value") @db.VarChar(255)
+  changedAt DateTime @default(now()) @map("changed_at")
+
+  // Relaciones
+  ticket  Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  changer User   @relation("HistoryChangedBy", fields: [changedBy], references: [id])
+
+  @@index([ticketId])
+  @@map("ticket_history")
+}
+
+// ============================================================================
+// NOTIFICATIONS — Notificaciones internas
+// Eventos: ticket_assigned | status_changed | commented | resolved
+// ============================================================================
+model Notification {
+  id        String           @id @default(uuid())
+  userId    String           @map("user_id")
+  ticketId  String           @map("ticket_id")
+  type      NotificationType
+  message   String           @db.VarChar(500)
+  isRead    Boolean          @default(false) @map("is_read")
+  createdAt DateTime         @default(now()) @map("created_at")
+
+  // Relaciones
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ticket Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isRead])
+  @@map("notifications")
+}
+
+enum NotificationType {
+  ticket_assigned
+  status_changed
+  commented
+  resolved
+}
