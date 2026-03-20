@@ -6,6 +6,7 @@ import userRoutes from './user.routes';
 import categoryRoutes from './category.routes';
 import notificationRoutes from './notification.routes';
 import attachmentRoutes from './attachment.routes';
+import metricsRoutes from './metrics.routes';
 
 const apiRouter = Router();
 
@@ -20,6 +21,7 @@ apiRouter.use('/users', userRoutes);
 apiRouter.use('/categories', categoryRoutes);
 apiRouter.use('/notifications', notificationRoutes);
 apiRouter.use('/attachments', attachmentRoutes);
+apiRouter.use('/metrics', metricsRoutes);
 
 
 

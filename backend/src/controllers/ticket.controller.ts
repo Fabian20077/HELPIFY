@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { prisma } from '../lib/prisma';
 import { calculateUrgencyScore } from '../services/urgency-score';
 import { validateTransition, isTerminalState, isResolving } from '../services/ticket-state-machine';
-import { createStatusChangeNotification, createCommentNotification, createResolvedNotification, createTicketCreatedNotification } from '../services/notification.service';
+import { createStatusChangeNotification, createCommentNotification, createResolvedNotification, createTicketCreatedNotification, createAssignmentNotification } from '../services/notification.service';
 import { TicketStatus } from '../generated/prisma/client';
 
 export const createTicket = async (req: Request, res: Response, next: NextFunction) => {
@@ -39,7 +39,7 @@ export const createTicket = async (req: Request, res: Response, next: NextFuncti
 
 export const getTickets = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { status, priority, departmentId } = req.query;
+    const { status, priority, departmentId, assignedToId } = req.query;
     const userRole = (req as any).user.role;
     const userId = (req as any).user.id;
 
@@ -48,6 +48,8 @@ export const getTickets = async (req: Request, res: Response, next: NextFunction
     if (status) where.status = status;
     if (priority) where.priority = priority;
     if (departmentId) where.departmentId = departmentId;
+    if (assignedToId === 'null' || assignedToId === 'unassigned') where.assignedToId = null;
+    else if (assignedToId) where.assignedToId = assignedToId;
 
     // RNF: Seguridad de acceso basado en rol
     if (userRole === 'customer') {
@@ -242,6 +244,89 @@ export const addComment = async (req: Request, res: Response, next: NextFunction
     await createCommentNotification(id, userId, ticket.title, isInternal || false);
 
     return res.status(201).json({ status: 'success', data: comment });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const assignTicket = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const id = req.params.id as string;
+    const { assignedToId } = req.body;
+    const userId = (req as any).user.id;
+
+    const ticket = await prisma.ticket.findUnique({ where: { id } });
+    if (!ticket) {
+      return res.status(404).json({ status: 'error', message: 'Ticket no encontrado' });
+    }
+
+    // Si se está asignando a alguien, validar que sea agent o admin y esté activo
+    if (assignedToId) {
+      const assignee = await prisma.user.findUnique({
+        where: { id: assignedToId }
+      });
+
+      if (!assignee) {
+        return res.status(400).json({ 
+          status: 'error', 
+          message: 'El usuario especificado no existe' 
+        });
+      }
+
+      if (!assignee.isActive) {
+        return res.status(400).json({ 
+          status: 'error', 
+          message: 'No se puede asignar a un usuario desactivado' 
+        });
+      }
+
+      if (assignee.role !== 'agent' && assignee.role !== 'admin') {
+        return res.status(400).json({ 
+          status: 'error', 
+          message: 'Solo se puede asignar a usuarios con rol agente o administrador' 
+        });
+      }
+    }
+
+    // Solo crear historial si el valor realmente cambia
+    const oldAssignedToId = ticket.assignedToId;
+    
+    if (oldAssignedToId === assignedToId) {
+      // No hay cambio, retornar el ticket sin modificar
+      return res.status(200).json({ 
+        status: 'success', 
+        data: ticket,
+        message: 'El ticket ya está asignado a este usuario'
+      });
+    }
+
+    // Actualizar asignación
+    const updatedTicket = await prisma.$transaction(async (tx) => {
+      const updated = await tx.ticket.update({
+        where: { id },
+        data: { assignedToId: assignedToId || null }
+      });
+
+      // Registrar en historial solo si hay cambio real
+      await tx.ticketHistory.create({
+        data: {
+          ticketId: id,
+          changedBy: userId,
+          fieldName: 'assignedToId',
+          oldValue: oldAssignedToId,
+          newValue: assignedToId || null
+        }
+      });
+
+      return updated;
+    });
+
+    // Notificar al agente recién asignado (si se está asignando a alguien)
+    if (assignedToId) {
+      await createAssignmentNotification(id, assignedToId, ticket.title);
+    }
+
+    return res.status(200).json({ status: 'success', data: updatedTicket });
   } catch (error) {
     next(error);
   }
