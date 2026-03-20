@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { prisma } from '../lib/prisma';
 import { calculateUrgencyScore } from '../services/urgency-score';
 import { validateTransition, isTerminalState, isResolving } from '../services/ticket-state-machine';
-import { createStatusChangeNotification, createCommentNotification, createResolvedNotification } from '../services/notification.service';
+import { createStatusChangeNotification, createCommentNotification, createResolvedNotification, createTicketCreatedNotification } from '../services/notification.service';
 import { TicketStatus } from '../generated/prisma/client';
 
 export const createTicket = async (req: Request, res: Response, next: NextFunction) => {
@@ -28,6 +28,8 @@ export const createTicket = async (req: Request, res: Response, next: NextFuncti
         priority: priority || 'medium',
       },
     });
+
+    await createTicketCreatedNotification(ticket.id, title, userId);
 
     return res.status(201).json({ status: 'success', data: ticket });
   } catch (error) {

@@ -14,6 +14,46 @@ export async function createNotification(params: CreateNotificationParams) {
   });
 }
 
+async function getAdminIds(): Promise<string[]> {
+  const admins = await prisma.user.findMany({
+    where: { role: 'admin', isActive: true },
+    select: { id: true }
+  });
+  return admins.map(a => a.id);
+}
+
+async function getRecipients(ticket: { createdById: string; assignedToId: string | null }, excludeId: string): Promise<string[]> {
+  const adminIds = await getAdminIds();
+  const recipients = new Set<string>();
+
+  recipients.add(ticket.createdById);
+  if (ticket.assignedToId) recipients.add(ticket.assignedToId);
+  adminIds.forEach(id => recipients.add(id));
+
+  recipients.delete(excludeId);
+
+  return Array.from(recipients);
+}
+
+export async function createTicketCreatedNotification(
+  ticketId: string,
+  ticketTitle: string,
+  createdById: string
+) {
+  const admins = await getAdminIds();
+  
+  const notifications = admins
+    .filter(id => id !== createdById)
+    .map(adminId => createNotification({
+      userId: adminId,
+      ticketId,
+      type: NotificationType.status_changed,
+      message: `Nuevo ticket creado: "${ticketTitle}"`
+    }));
+
+  await Promise.all(notifications);
+}
+
 export async function createStatusChangeNotification(
   ticketId: string,
   oldStatus: string,
@@ -38,19 +78,14 @@ export async function createStatusChangeNotification(
 
   const message = `Ticket "${ticketTitle}" cambió de ${statusLabels[oldStatus] || oldStatus} a ${statusLabels[newStatus] || newStatus}`;
 
-  const recipients = [ticket.createdById];
-  if (ticket.assignedToId && ticket.assignedToId !== changedBy) {
-    recipients.push(ticket.assignedToId);
-  }
+  const recipients = await getRecipients(ticket, changedBy);
 
-  const notifications = recipients
-    .filter(id => id !== changedBy)
-    .map(userId => createNotification({
-      userId,
-      ticketId,
-      type: NotificationType.status_changed,
-      message
-    }));
+  const notifications = recipients.map(userId => createNotification({
+    userId,
+    ticketId,
+    type: NotificationType.status_changed,
+    message
+  }));
 
   await Promise.all(notifications);
 }
@@ -72,19 +107,14 @@ export async function createCommentNotification(
 
   const message = `Nuevo comentario en "${ticketTitle}"`;
 
-  const recipients = [ticket.createdById];
-  if (ticket.assignedToId && ticket.assignedToId !== commentAuthorId) {
-    recipients.push(ticket.assignedToId);
-  }
+  const recipients = await getRecipients(ticket, commentAuthorId);
 
-  const notifications = recipients
-    .filter(id => id !== commentAuthorId)
-    .map(userId => createNotification({
-      userId,
-      ticketId,
-      type: NotificationType.commented,
-      message
-    }));
+  const notifications = recipients.map(userId => createNotification({
+    userId,
+    ticketId,
+    type: NotificationType.commented,
+    message
+  }));
 
   await Promise.all(notifications);
 }
