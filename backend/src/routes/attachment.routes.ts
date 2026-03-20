@@ -7,10 +7,8 @@ const router = Router();
 
 router.use(requireAuth);
 
-// Subida vinculada a un ticket
 router.post('/ticket/:id', upload.single('file'), attachmentController.uploadAttachment);
 
-// Gestión individual
 router.get('/:id', attachmentController.getAttachment);
 router.delete('/:id', attachmentController.deleteAttachment);
 

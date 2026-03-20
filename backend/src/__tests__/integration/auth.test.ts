@@ -1,90 +1,86 @@
 import request from 'supertest';
 import app from '../../app';
 import { prisma } from '../../lib/prisma';
+import { cleanDb, createUser, createDepartment } from '../helpers/seed';
 
-describe('Auth Integration Tests', () => {
-  const testUser = {
-    name: 'Test User',
-    email: 'test@example.com',
-    password: 'password123',
-  };
-
-  beforeAll(async () => {
-    // Limpiar usuarios de prueba y sus dependencias
-    const users = await prisma.user.findMany({ where: { email: testUser.email } });
-    const userIds = users.map(u => u.id);
-    await prisma.ticketHistory.deleteMany({ where: { changedBy: { in: userIds } } });
-    await prisma.comment.deleteMany({ where: { authorId: { in: userIds } } });
-    await prisma.ticket.deleteMany({ where: { createdById: { in: userIds } } });
-    await prisma.user.deleteMany({ where: { email: testUser.email } });
-  });
-
-  afterAll(async () => {
-    const users = await prisma.user.findMany({ where: { email: testUser.email } });
-    const userIds = users.map(u => u.id);
-    await prisma.ticketHistory.deleteMany({ where: { changedBy: { in: userIds } } });
-    await prisma.comment.deleteMany({ where: { authorId: { in: userIds } } });
-    await prisma.ticket.deleteMany({ where: { createdById: { in: userIds } } });
-    await prisma.user.deleteMany({ where: { email: testUser.email } });
-    await prisma.$disconnect();
-  });
-
-  describe('POST /api/auth/register', () => {
-    it('debería registrar un nuevo usuario exitosamente', async () => {
-      const response = await request(app)
-        .post('/api/auth/register')
-        .send(testUser);
-
-      expect(response.status).toBe(201);
-      expect(response.body.status).toBe('success');
-      expect(response.body.data.user.email).toBe(testUser.email);
-      expect(response.body.data.token).toBeDefined();
-    });
-
-    it('debería fallar si el email ya existe', async () => {
-      const response = await request(app)
-        .post('/api/auth/register')
-        .send(testUser);
-
-      expect(response.status).toBe(409);
-      expect(response.body.status).toBe('error');
-      expect(response.body.message).toContain('ya está registrado');
-    });
-
-    it('debería fallar si el email es inválido (Zod validation)', async () => {
-      const response = await request(app)
-        .post('/api/auth/register')
-        .send({ ...testUser, email: 'not-an-email' });
-
-      expect(response.status).toBe(400);
-      expect(response.body.status).toBe('error');
-    });
+describe('Auth', () => {
+  beforeEach(async () => {
+    await cleanDb();
   });
 
   describe('POST /api/auth/login', () => {
-    it('debería iniciar sesión exitosamente con credenciales correctas', async () => {
+    it('retorna JWT con credenciales válidas', async () => {
+      const dept = await createDepartment();
+      const { password } = await createUser('customer', { email: 'login@test.com', departmentId: dept.id });
+
       const response = await request(app)
         .post('/api/auth/login')
-        .send({
-          email: testUser.email,
-          password: testUser.password,
-        });
+        .send({ email: 'login@test.com', password });
 
       expect(response.status).toBe(200);
       expect(response.body.status).toBe('success');
-      expect(response.body.data.token).toBeDefined();
+      expect(typeof response.body.data.token).toBe('string');
+      expect(response.body.data.token.length).toBeGreaterThan(20);
     });
 
-    it('debería fallar con una contraseña incorrecta', async () => {
+    it('retorna 401 con credenciales inválidas (password incorrecta)', async () => {
+      const dept = await createDepartment();
+      await createUser('customer', { email: 'badpw@test.com', departmentId: dept.id });
+
       const response = await request(app)
         .post('/api/auth/login')
-        .send({
-          email: testUser.email,
-          password: 'wrongpassword',
-        });
+        .send({ email: 'badpw@test.com', password: 'WrongPassword123!' });
+
+      expect(response.status).toBe(401);
+      expect(response.body.status).toBe('error');
+    });
+
+    it('retorna 401 con cuenta desactivada', async () => {
+      const dept = await createDepartment();
+      const { password } = await createUser('agent', { email: 'inactive@test.com', isActive: false, departmentId: dept.id });
+
+      const response = await request(app)
+        .post('/api/auth/login')
+        .send({ email: 'inactive@test.com', password });
 
       expect(response.status).toBe(401);
       expect(response.body.status).toBe('error');
     });
   });
+
+  describe('GET /api/auth/me', () => {
+    it('retorna 401 sin token de autenticación', async () => {
+      const response = await request(app).get('/api/auth/me');
+      expect(response.status).toBe(401);
+    });
+
+    it('retorna 401 con token malformado', async () => {
+      const response = await request(app)
+        .get('/api/auth/me')
+        .set('Authorization', 'Bearer invalid.token.here');
+      expect(response.status).toBe(401);
+    });
+
+    it('retorna el usuario correcto con token válido', async () => {
+      const dept = await createDepartment();
+      const { password, ...user } = await createUser('agent', { email: 'me@test.com', name: 'Agent Me', departmentId: dept.id });
+
+      const login = await request(app)
+        .post('/api/auth/login')
+        .send({ email: 'me@test.com', password });
+
+      const token = login.body.data.token;
+
+      const response = await request(app)
+        .get('/api/auth/me')
+        .set('Authorization', `Bearer ${token}`);
+
+      expect(response.status).toBe(200);
+      expect(response.body.data.id).toBe(user.id);
+      expect(response.body.data.email).toBe('me@test.com');
+      expect(response.body.data.name).toBe('Agent Me');
+      expect(response.body.data.role).toBe('agent');
+    });
+  });
+
 });

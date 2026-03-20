@@ -20,4 +20,6 @@ module.exports = {
   ],
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'clover'],
+  forceExit: true,
+  maxWorkers: 1,
 };

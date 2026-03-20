@@ -47,16 +47,27 @@ app.use('/api', apiRouter);
 
 // ── Manejo de errores global ─────────────────────────────────────────────────
 app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
-  const statusCode = err.statusCode || 500;
-  const status = err.status || 'error';
-  const message = process.env.NODE_ENV === 'production' && !err.isOperational 
-    ? 'Ocurrió un error inesperado' 
-    : err.message;
+  let statusCode = err.statusCode || 500;
+  let status = err.status || 'error';
+  let message = err.message;
+
+  if (err.code === 'LIMIT_FILE_SIZE') {
+    statusCode = 413;
+    message = 'El archivo excede el tamaño máximo permitido de 10MB';
+  }
+
+  if (statusCode === 401 || statusCode === 403) {
+    status = 'fail';
+  }
+
+  if (process.env.NODE_ENV === 'production' && !err.isOperational && statusCode === 500) {
+    message = 'Ocurrió un error inesperado';
+  }
 
   res.status(statusCode).json({
     status,
     message,
-    ...(process.env.NODE_ENV !== 'production' && { stack: err.stack }),
+    ...(process.env.NODE_ENV !== 'production' && statusCode !== 413 && { stack: err.stack }),
   });
 });
 

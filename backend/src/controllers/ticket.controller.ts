@@ -1,9 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 import { prisma } from '../lib/prisma';
 import { calculateUrgencyScore } from '../services/urgency-score';
-import { validateTransition, isTerminalState, isResolving } from '../services/ticket-state-machine';
+import { validateTransition, isTerminalState, isResolving, isReopening } from '../services/ticket-state-machine';
 import { createStatusChangeNotification, createCommentNotification, createResolvedNotification, createTicketCreatedNotification, createAssignmentNotification } from '../services/notification.service';
 import { TicketStatus } from '../generated/prisma/client';
+import logger from '../lib/logger';
 
 export const createTicket = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -55,7 +56,6 @@ export const getTickets = async (req: Request, res: Response, next: NextFunction
     if (userRole === 'customer') {
       where.createdById = userId; // Cliente solo ve sus tickets
     } else if (userRole === 'agent') {
-      // Agente ve tickets de su departamento o asignados a él (ejemplo simplificado)
       const agent = await prisma.user.findUnique({ where: { id: userId } });
       if (agent?.departmentId) {
         where.departmentId = agent.departmentId;
@@ -72,27 +72,25 @@ export const getTickets = async (req: Request, res: Response, next: NextFunction
       orderBy: { createdAt: 'desc' },
     });
 
-    // Calcular Urgency Score dinámico (RN-12)
     const ticketsWithScore = tickets.map(t => {
-      // Calcular horas sin respuesta
       const lastAgentActivity = t.history
-        .filter(h => h.changedBy !== t.createdById) // simplificación usando creador vs agente
+        .filter(h => h.changedBy !== t.createdById)
         .pop();
-      
-      const lastActivityTime = new Date(lastAgentActivity ? lastAgentActivity.changedAt : t.createdAt);
+
+      const lastActivityTime = lastAgentActivity
+        ? new Date(lastAgentActivity.changedAt)
+        : new Date(t.createdAt);
       const hoursSinceResponse = (Date.now() - lastActivityTime.getTime()) / (1000 * 60 * 60);
 
-      const previousReopenings = t.history.filter(h => 
+      const previousReopenings = t.history.filter(h =>
         h.fieldName === 'status' && h.oldValue === 'resolved' && h.newValue === 'in_progress'
       ).length;
 
-      // Simplificamos historial de usuario por rendimiento en listar todos
-      const recentUserTicketsCount = 0; 
-      
-      // Tiempo en waiting
       let hoursInWaiting = 0;
       if (t.status === 'waiting') {
-        const lastTransition = t.history.filter(h => h.fieldName === 'status' && h.newValue === 'waiting').pop();
+        const lastTransition = t.history
+          .filter(h => h.fieldName === 'status' && h.newValue === 'waiting')
+          .pop();
         if (lastTransition) {
           hoursInWaiting = (Date.now() - new Date(lastTransition.changedAt).getTime()) / (1000 * 60 * 60);
         }
@@ -101,17 +99,13 @@ export const getTickets = async (req: Request, res: Response, next: NextFunction
       const urgencyScoreResult = calculateUrgencyScore({
         hoursSinceLastActivity: hoursSinceResponse,
         reopenCount: previousReopenings,
-        userRecentTicketCount: recentUserTicketsCount,
-        hoursInWaiting: hoursInWaiting
+        userRecentTicketCount: 0,
+        hoursInWaiting,
       });
 
-      return {
-        ...t,
-        urgencyScore: urgencyScoreResult.total
-      };
+      return { ...t, urgencyScore: urgencyScoreResult.total };
     });
 
-    // Ordenar por score de urgencia de mayor a menor
     ticketsWithScore.sort((a, b) => b.urgencyScore - a.urgencyScore);
 
     return res.status(200).json({ status: 'success', data: ticketsWithScore });
@@ -141,8 +135,11 @@ export const getTicketById = async (req: Request, res: Response, next: NextFunct
 
     if (!ticket) return res.status(404).json({ status: 'error', message: 'Ticket no encontrado' });
 
-    // Filtrar notas internas si el usuario es customer
     const userRole = (req as any).user.role;
+    const userId = (req as any).user.id;
+    if (userRole === 'customer' && ticket.createdById !== userId) {
+      return res.status(403).json({ status: 'error', message: 'No tienes permisos para ver este ticket' });
+    }
     if (userRole === 'customer') {
       ticket.comments = ticket.comments.filter(c => !c.isInternal);
     }
@@ -164,15 +161,17 @@ export const updateTicketStatus = async (req: Request, res: Response, next: Next
 
     const oldStatus = ticket.status;
 
-    // Validar máquina de estados usando el servicio core
     validateTransition(ticket.status as TicketStatus, status as TicketStatus);
 
-    // Actualizar estado y registrar en historial
     const updatedTicket = await prisma.$transaction(async (tx) => {
       const data: any = { status };
-      
+
       if (isResolving(status as TicketStatus)) {
         data.resolvedAt = new Date();
+      }
+
+      if (isReopening(ticket.status as TicketStatus, status as TicketStatus)) {
+        data.resolvedAt = null;
       }
 
       const updated = await tx.ticket.update({
@@ -193,10 +192,8 @@ export const updateTicketStatus = async (req: Request, res: Response, next: Next
       return updated;
     });
 
-    // Crear notificaciones
     await createStatusChangeNotification(id, oldStatus, status, userId, ticket.title);
-    
-    // Si se resolvió, notificar al creador
+
     if (status === 'resolved') {
       await createResolvedNotification(id, ticket.title);
     }
@@ -231,7 +228,6 @@ export const addComment = async (req: Request, res: Response, next: NextFunction
       isInternal: isInternal || false
     };
 
-    // Un customer no puede hacer notas internas
     if (userRole === 'customer') {
       commentData.isInternal = false;
     }
@@ -240,7 +236,6 @@ export const addComment = async (req: Request, res: Response, next: NextFunction
       data: commentData
     });
 
-    // Crear notificación (solo para comentarios públicos)
     await createCommentNotification(id, userId, ticket.title, isInternal || false);
 
     return res.status(201).json({ status: 'success', data: comment });
@@ -260,54 +255,49 @@ export const assignTicket = async (req: Request, res: Response, next: NextFuncti
       return res.status(404).json({ status: 'error', message: 'Ticket no encontrado' });
     }
 
-    // Si se está asignando a alguien, validar que sea agent o admin y esté activo
     if (assignedToId) {
       const assignee = await prisma.user.findUnique({
         where: { id: assignedToId }
       });
 
       if (!assignee) {
-        return res.status(400).json({ 
-          status: 'error', 
-          message: 'El usuario especificado no existe' 
+        return res.status(400).json({
+          status: 'error',
+          message: 'El usuario especificado no existe'
         });
       }
 
       if (!assignee.isActive) {
-        return res.status(400).json({ 
-          status: 'error', 
-          message: 'No se puede asignar a un usuario desactivado' 
+        return res.status(400).json({
+          status: 'error',
+          message: 'No se puede asignar a un usuario desactivado'
         });
       }
 
       if (assignee.role !== 'agent' && assignee.role !== 'admin') {
-        return res.status(400).json({ 
-          status: 'error', 
-          message: 'Solo se puede asignar a usuarios con rol agente o administrador' 
+        return res.status(400).json({
+          status: 'error',
+          message: 'Solo se puede asignar a usuarios con rol agente o administrador'
         });
       }
     }
 
-    // Solo crear historial si el valor realmente cambia
     const oldAssignedToId = ticket.assignedToId;
-    
+
     if (oldAssignedToId === assignedToId) {
-      // No hay cambio, retornar el ticket sin modificar
-      return res.status(200).json({ 
-        status: 'success', 
+      return res.status(200).json({
+        status: 'success',
         data: ticket,
         message: 'El ticket ya está asignado a este usuario'
       });
     }
 
-    // Actualizar asignación
     const updatedTicket = await prisma.$transaction(async (tx) => {
       const updated = await tx.ticket.update({
         where: { id },
         data: { assignedToId: assignedToId || null }
       });
 
-      // Registrar en historial solo si hay cambio real
       await tx.ticketHistory.create({
         data: {
           ticketId: id,
@@ -321,12 +311,42 @@ export const assignTicket = async (req: Request, res: Response, next: NextFuncti
       return updated;
     });
 
-    // Notificar al agente recién asignado (si se está asignando a alguien)
     if (assignedToId) {
       await createAssignmentNotification(id, assignedToId, ticket.title);
     }
 
     return res.status(200).json({ status: 'success', data: updatedTicket });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteTicket = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const id = req.params.id as string;
+    const userId = (req as any).user.id;
+
+    const ticket = await prisma.ticket.findUnique({ where: { id } });
+    if (!ticket) {
+      return res.status(404).json({ status: 'error', message: 'Ticket no encontrado' });
+    }
+
+    await prisma.$transaction(async (tx) => {
+      await tx.comment.deleteMany({ where: { ticketId: id } });
+      await tx.attachment.deleteMany({ where: { ticketId: id } });
+      await tx.ticketHistory.deleteMany({ where: { ticketId: id } });
+      await tx.notification.deleteMany({ where: { ticketId: id } });
+      await tx.ticket.delete({ where: { id } });
+    });
+
+    logger.info(`Ticket eliminado`, {
+      ticketId: id,
+      ticketTitle: ticket.title,
+      deletedBy: userId,
+      deletedAt: new Date().toISOString(),
+    });
+
+    return res.status(204).send();
   } catch (error) {
     next(error);
   }

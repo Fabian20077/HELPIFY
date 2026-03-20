@@ -48,6 +48,13 @@ export const uploadAttachment = async (req: Request, res: Response, next: NextFu
       return next(new AppError('Ticket no encontrado', 404));
     }
 
+    const userRole = (req as any).user.role;
+    const userId = (req as any).user.id;
+    if (userRole === 'customer' && ticket.createdById !== userId) {
+      fs.unlinkSync(file.path);
+      return next(new AppError('No tienes permisos para subir archivos a este ticket', 403));
+    }
+
     // Registrar en BD
     const attachment = await prisma.attachment.create({
       data: {
