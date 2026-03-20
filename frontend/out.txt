@@ -1,0 +1,65 @@
+FAIL __tests__/unit/auth.test.ts
+  ● Auth Utilities › getCurrentUser › fetches current user using token from cookies
+
+    TypeError: Cannot read properties of undefined (reading 'get')
+
+    [0m [90m 15 |[39m [36mexport[39m [36masync[39m [36mfunction[39m getToken()[33m:[39m [33mPromise[39m[33m<[39m[33mstring[39m [33m|[39m undefined[33m>[39m {
+     [90m 16 |[39m   [36mconst[39m cookieStore [33m=[39m [36mawait[39m cookies()[33m;[39m
+    [31m[1m>[22m[39m[90m 17 |[39m   [36mreturn[39m cookieStore[33m.[39m[36mget[39m([33mAUTH_COOKIE_NAME[39m)[33m?[39m[33m.[39mvalue[33m;[39m
+     [90m    |[39m                      [31m[1m^[22m[39m
+     [90m 18 |[39m }
+     [90m 19 |[39m
+     [90m 20 |[39m [90m/**[39m[0m
+
+      at get (src/lib/auth.ts:17:22)
+      at getCurrentUser (src/lib/auth.ts:44:17)
+      at Object.<anonymous> (__tests__/unit/auth.test.ts:41:20)
+
+  ● Auth Utilities › getCurrentUser › returns null if api fails
+
+    TypeError: Cannot read properties of undefined (reading 'get')
+
+    [0m [90m 15 |[39m [36mexport[39m [36masync[39m [36mfunction[39m getToken()[33m:[39m [33mPromise[39m[33m<[39m[33mstring[39m [33m|[39m undefined[33m>[39m {
+     [90m 16 |[39m   [36mconst[39m cookieStore [33m=[39m [36mawait[39m cookies()[33m;[39m
+    [31m[1m>[22m[39m[90m 17 |[39m   [36mreturn[39m cookieStore[33m.[39m[36mget[39m([33mAUTH_COOKIE_NAME[39m)[33m?[39m[33m.[39mvalue[33m;[39m
+     [90m    |[39m                      [31m[1m^[22m[39m
+     [90m 18 |[39m }
+     [90m 19 |[39m
+     [90m 20 |[39m [90m/**[39m[0m
+
+      at get (src/lib/auth.ts:17:22)
+      at getCurrentUser (src/lib/auth.ts:44:17)
+      at Object.<anonymous> (__tests__/unit/auth.test.ts:48:20)
+
+FAIL __tests__/unit/api.test.ts
+  ● API Client (apiFetch) › parses error response and throws ApiError
+
+    expect(received).rejects.toMatchObject(expected)
+
+    - Expected  - 4
+    + Received  + 1
+
+    - Object {
+    -   "message": "Bad request",
+    -   "statusCode": 400,
+    - }
+    + [TypeError: Cannot read properties of undefined (reading 'status')]
+
+    [0m [90m 34 |[39m
+     [90m 35 |[39m     [36mawait[39m expect(api[33m.[39m[36mget[39m([32m'/test'[39m))[33m.[39mrejects[33m.[39mtoThrow([33mApiError[39m)[33m;[39m
+    [31m[1m>[22m[39m[90m 36 |[39m     [36mawait[39m expect(api[33m.[39m[36mget[39m([32m'/test'[39m))[33m.[39mrejects[33m.[39mtoMatchObject({
+     [90m    |[39m                                            [31m[1m^[22m[39m
+     [90m 37 |[39m       statusCode[33m:[39m [35m400[39m[33m,[39m
+     [90m 38 |[39m       message[33m:[39m [32m'Bad request'[39m[33m,[39m
+     [90m 39 |[39m     })[33m;[39m[0m
+
+      at Object.toMatchObject (node_modules/expect/build/index.js:2155:20)
+      at Object.toMatchObject (__tests__/unit/api.test.ts:36:44)
+
+PASS __tests__/components/sidebar.test.tsx
+
+Test Suites: 2 failed, 1 passed, 3 total
+Tests:       3 failed, 7 passed, 10 total
+Snapshots:   0 total
+Time:        2.761 s
+Ran all test suites.

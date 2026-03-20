@@ -29,3 +29,7 @@ prisma/migrations/**/migration_lock.toml
 # Logs
 *.log
 npm-debug.log*
+
+# Cookie/test files
+cookies_*.txt
+tmp_*.txt
