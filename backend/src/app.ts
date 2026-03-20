@@ -20,7 +20,14 @@ app.use(helmet());
 // Solo el origen del frontend está permitido
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origin: (origin: string | undefined, cb: (err: Error | null, allow?: boolean) => void) => {
+      if (!origin || origin === 'http://localhost:3000' || 
+          origin.endsWith('.vercel.app') || origin.endsWith('.railway.app')) {
+        cb(null, true);
+      } else {
+        cb(new Error('Not allowed by CORS'), false);
+      }
+    },
     credentials: true,
   })
 );
