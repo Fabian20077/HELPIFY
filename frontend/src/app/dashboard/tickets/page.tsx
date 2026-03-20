@@ -1,62 +1,61 @@
-import { Suspense } from 'react';
+'use client';
+
+import { Suspense, useState, useEffect } from 'react';
 import Link from 'next/link';
-import { api } from '@/lib/api';
-import { Ticket, TicketListSearchParams } from '@/lib/types';
-import { getCurrentUser, getToken } from '@/lib/auth';
+import { useSearchParams } from 'next/navigation';
+import { useAuth, useApi } from '@/components/auth-provider';
+import type { Ticket, TicketListSearchParams } from '@/lib/types';
 import { TicketFilters } from '@/components/tickets/ticket-filters';
 import { TicketCard } from '@/components/tickets/ticket-card';
 import { Button } from '@/components/ui/button';
 import { PlusIcon, FileTextIcon, InboxIcon } from 'lucide-react';
-import { redirect } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
 
-async function getTickets(searchParams: TicketListSearchParams) {
-  const token = await getToken();
-  if (!token) return null;
+function TicketsContent() {
+  const { user } = useAuth();
+  const api = useApi();
+  const searchParams = useSearchParams();
+  const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [pagination, setPagination] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
-  // Build query string
-  const query = new URLSearchParams();
-  Object.entries(searchParams).forEach(([key, value]) => {
-    if (value) query.set(key, value as string);
-  });
-
-  try {
-    const res = await api.getPaginated<{ tickets: Ticket[] }>(`/tickets?${query.toString()}`, token);
-    return res;
-  } catch (error) {
-    console.error('Error fetching tickets:', error);
-    return null;
-  }
-}
-
-export default async function TicketsPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-}) {
-  const user = await getCurrentUser();
-  if (!user) {
-    redirect('/login');
-  }
-
-  const rawParams = await searchParams;
   const safeParams: TicketListSearchParams = {
-    page: typeof rawParams.page === 'string' ? rawParams.page : '1',
-    limit: typeof rawParams.limit === 'string' ? rawParams.limit : '10',
-    status: typeof rawParams.status === 'string' ? rawParams.status as any : undefined,
-    priority: typeof rawParams.priority === 'string' ? rawParams.priority as any : undefined,
-    search: typeof rawParams.search === 'string' ? rawParams.search : undefined,
-    departmentId: typeof rawParams.departmentId === 'string' ? rawParams.departmentId : undefined,
+    page: typeof searchParams.get('page') === 'string' ? searchParams.get('page') as string : '1',
+    limit: typeof searchParams.get('limit') === 'string' ? searchParams.get('limit') as string : '10',
+    status: typeof searchParams.get('status') === 'string' ? searchParams.get('status') as any : undefined,
+    priority: typeof searchParams.get('priority') === 'string' ? searchParams.get('priority') as any : undefined,
+    search: typeof searchParams.get('search') === 'string' ? searchParams.get('search') as string : undefined,
+    departmentId: typeof searchParams.get('departmentId') === 'string' ? searchParams.get('departmentId') as string : undefined,
   };
 
-  const response = await getTickets(safeParams);
-  const tickets = Array.isArray(response?.data) ? response.data : [];
-  const pagination = response?.pagination;
+  useEffect(() => {
+    const query = new URLSearchParams();
+    Object.entries(safeParams).forEach(([key, value]) => {
+      if (value) query.set(key, value as string);
+    });
+
+    setLoading(true);
+    api.getPaginated<{ tickets: Ticket[] }>(`/tickets?${query.toString()}`)
+      .then((res) => {
+        setTickets(res.data?.tickets ?? []);
+        setPagination(res.pagination);
+      })
+      .catch(() => setTickets([]))
+      .finally(() => setLoading(false));
+  }, [searchParams.toString()]);
+
+  if (loading) {
+    return (
+      <div className="space-y-4">
+        <div className="h-10 w-full animate-pulse bg-muted rounded-md" />
+        <div className="h-64 animate-pulse bg-muted rounded-xl" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex-1 space-y-6 pt-4">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Tickets de Soporte</h1>
@@ -70,14 +69,10 @@ export default async function TicketsPage({
         </Button>
       </div>
 
-      {/* Filters */}
       <div className="bg-card w-full border border-border/50 rounded-lg shadow-sm p-4">
-        <Suspense fallback={<div className="h-10 animate-pulse bg-muted rounded-md" />}>
-          <TicketFilters />
-        </Suspense>
+        <TicketFilters />
       </div>
 
-      {/* Tickets Grid/List */}
       {tickets.length === 0 ? (
         <div className="flex flex-col items-center justify-center p-12 text-center border rounded-lg border-dashed bg-card/50">
           <div className="bg-muted p-4 rounded-full mb-4">
@@ -99,42 +94,45 @@ export default async function TicketsPage({
         </div>
       )}
 
-      {/* Pagination Controls */}
       {pagination && pagination.pages > 1 && (
         <div className="flex items-center justify-center gap-2 mt-8">
           {pagination.prev ? (
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               nativeButton={false}
-              render={<Link href={`?${new URLSearchParams({ ...safeParams, page: String(pagination.prev) }).toString()}`} />}
+              render={<Link href={`?${new URLSearchParams({ ...safeParams as any, page: String(pagination.prev) }).toString()}`} />}
             >
               Anterior
             </Button>
           ) : (
-            <Button variant="outline" disabled>
-              Anterior
-            </Button>
+            <Button variant="outline" disabled>Anterior</Button>
           )}
 
           <span className="text-sm font-medium text-muted-foreground px-4">
             Página {pagination.page} de {pagination.pages}
           </span>
-          
+
           {pagination.next ? (
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               nativeButton={false}
-              render={<Link href={`?${new URLSearchParams({ ...safeParams, page: String(pagination.next) }).toString()}`} />}
+              render={<Link href={`?${new URLSearchParams({ ...safeParams as any, page: String(pagination.next) }).toString()}`} />}
             >
               Siguiente
             </Button>
           ) : (
-            <Button variant="outline" disabled>
-              Siguiente
-            </Button>
+            <Button variant="outline" disabled>Siguiente</Button>
           )}
         </div>
       )}
     </div>
+  );
+}
+
+export default function TicketsPage() {
+  return (
+    <Suspense fallback={<div className="h-64 animate-pulse bg-muted rounded-xl" />}>
+      <TicketsContent />
+    </Suspense>
   );
 }

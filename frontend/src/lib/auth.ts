@@ -1,25 +1,40 @@
 // ============================================================================
-// Helpify — Auth Utilities (Server-Side)
-// Cookie-based JWT session management for Next.js
+// Helpify — Auth Utilities (localStorage-based)
+// Since frontend and backend are on different domains,
+// we store the JWT token in localStorage (accessible to both).
 // ============================================================================
 
-import { cookies } from 'next/headers';
 import type { SessionPayload, User } from './types';
-import { api } from './api';
 
-export const AUTH_COOKIE_NAME = 'helpify-token';
+export const AUTH_TOKEN_KEY = 'helpify-auth-token';
 
 /**
- * Read the JWT token from the httpOnly cookie (server-side only).
+ * Read the JWT token from localStorage (client-side).
+ * For server-side, returns undefined — components should use client-side rendering.
  */
-export async function getToken(): Promise<string | undefined> {
-  const cookieStore = await cookies();
-  return cookieStore.get(AUTH_COOKIE_NAME)?.value;
+export function getToken(): string | undefined {
+  if (typeof window === 'undefined') return undefined;
+  return localStorage.getItem(AUTH_TOKEN_KEY) ?? undefined;
 }
 
 /**
- * Decode JWT payload without verification (for middleware route checks).
- * Full verification happens on the backend when the token is used.
+ * Store the JWT token in localStorage.
+ */
+export function setToken(token: string): void {
+  if (typeof window === 'undefined') return;
+  localStorage.setItem(AUTH_TOKEN_KEY, token);
+}
+
+/**
+ * Remove the JWT token from localStorage.
+ */
+export function removeToken(): void {
+  if (typeof window === 'undefined') return;
+  localStorage.removeItem(AUTH_TOKEN_KEY);
+}
+
+/**
+ * Decode JWT payload without verification (for role checks in client components).
  */
 export function decodeTokenPayload(token: string): SessionPayload | null {
   try {
@@ -31,21 +46,6 @@ export function decodeTokenPayload(token: string): SessionPayload | null {
       role: payload.role,
       departmentId: payload.departmentId ?? null,
     };
-  } catch {
-    return null;
-  }
-}
-
-/**
- * Get current authenticated user from the backend (server-side).
- * Uses the token from cookie to call GET /users/me.
- */
-export async function getCurrentUser(): Promise<User | null> {
-  const token = await getToken();
-  if (!token) return null;
-
-  try {
-    return await api.get<User>('/users/me', token);
   } catch {
     return null;
   }

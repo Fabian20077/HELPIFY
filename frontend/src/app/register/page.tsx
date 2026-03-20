@@ -21,6 +21,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { TicketIcon, Loader2 } from 'lucide-react';
+import { setToken } from '@/lib/auth';
 
 const registerSchema = z.object({
   name: z.string().min(3, 'El nombre debe tener al menos 3 caracteres'),
@@ -49,11 +50,13 @@ export default function RegisterPage() {
     setError(null);
 
     try {
-      const response = await fetch('/api/auth/register', {
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      const response = await fetch(`${baseUrl}/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify(data),
       });
 
@@ -61,6 +64,11 @@ export default function RegisterPage() {
 
       if (!response.ok) {
         throw new Error(result.message || 'Error al registrar la cuenta');
+      }
+
+      // Store token in localStorage for cross-domain auth
+      if (result.data?.token) {
+        setToken(result.data.token);
       }
 
       router.push('/dashboard');

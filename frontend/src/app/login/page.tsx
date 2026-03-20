@@ -21,6 +21,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { TicketIcon, Loader2 } from 'lucide-react';
+import { setToken } from '@/lib/auth';
 
 const loginSchema = z.object({
   email: z.string().email('Por favor ingrese un correo válido'),
@@ -48,11 +49,13 @@ function LoginForm() {
     setError(null);
 
     try {
-      const response = await fetch('/api/auth/login', {
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      const response = await fetch(`${baseUrl}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify(data),
       });
 
@@ -60,6 +63,11 @@ function LoginForm() {
 
       if (!response.ok) {
         throw new Error(result.message || 'Credenciales inválidas');
+      }
+
+      // Store token in localStorage for cross-domain auth
+      if (result.data?.token) {
+        setToken(result.data.token);
       }
 
       // Extract redirect from URL or default to dashboard

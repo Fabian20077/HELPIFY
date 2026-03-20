@@ -1,43 +1,23 @@
-import { Suspense } from 'react';
+'use client';
 
-export const dynamic = 'force-dynamic';
-import { getCurrentUser, getToken } from '@/lib/auth';
+import { Suspense, useState, useEffect } from 'react';
+import { useAuth } from '@/components/auth-provider';
 import { api } from '@/lib/api';
-import { TicketStatus, UserRole, TicketPriority } from '@/lib/types';
+import { TicketStatus, UserRole } from '@/lib/types';
 import { MetricsStatusCard, MetricsHighlightCard, RecentTicketRow } from '@/components/dashboard/metrics-cards';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import {
-  TicketIcon,
-  AlertCircleIcon,
-  ClockIcon,
-  UserXIcon,
   CheckCircleIcon,
   InboxIcon,
 } from 'lucide-react';
-import type { MetricsData, AdminMetrics } from '@/lib/types';
-import { redirect } from 'next/navigation';
+
+export const dynamic = 'force-dynamic';
 
 function getUrgencyColor(score: number): string {
   if (score <= 25) return 'bg-green-500';
   if (score <= 50) return 'bg-yellow-500';
   if (score <= 75) return 'bg-orange-500';
   return 'bg-red-500';
-}
-
-function getUrgencyLabel(score: number): string {
-  if (score <= 25) return 'Baja';
-  if (score <= 50) return 'Media';
-  if (score <= 75) return 'Alta';
-  return 'Crítica';
-}
-
-async function getUnassignedTickets(token: string) {
-  try {
-    const tickets = await api.get<any[]>(`/tickets?assignedToId=unassigned`, token);
-    return tickets ?? [];
-  } catch {
-    return [];
-  }
 }
 
 function computeUrgencyScore(ticket: any): number {
@@ -78,38 +58,43 @@ function computeUrgencyScore(ticket: any): number {
   return Math.round(Math.min(timeFactor + reopenFactor + waitingFactor, 100));
 }
 
-async function CustomerDashboard({ token }: { token: string }) {
-  const metrics = await api.get<MetricsData>(`/metrics`, token);
-  if (!metrics) return null;
+function CustomerDashboard({ token }: { token: string }) {
+  const [metrics, setMetrics] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
-  const m = metrics as any;
+  useEffect(() => {
+    api.get<any>(`/metrics`, token)
+      .then(setMetrics)
+      .finally(() => setLoading(false));
+  }, [token]);
+
+  if (loading) return <div className="h-64 animate-pulse bg-muted rounded-xl" />;
+  if (!metrics) return null;
 
   return (
     <div className="space-y-8">
       <div>
         <h2 className="text-lg font-semibold mb-4">Estado de mis tickets</h2>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <MetricsStatusCard label="Abiertos" count={m.byStatus.open} status={TicketStatus.OPEN} />
-          <MetricsStatusCard label="En Progreso" count={m.byStatus.in_progress} status={TicketStatus.IN_PROGRESS} />
-          <MetricsStatusCard label="En Espera" count={m.byStatus.waiting} status={TicketStatus.WAITING} />
-          <MetricsStatusCard label="Resueltos" count={m.byStatus.resolved} status={TicketStatus.RESOLVED} />
+          <MetricsStatusCard label="Abiertos" count={metrics.byStatus?.open ?? 0} status={TicketStatus.OPEN} />
+          <MetricsStatusCard label="En Progreso" count={metrics.byStatus?.in_progress ?? 0} status={TicketStatus.IN_PROGRESS} />
+          <MetricsStatusCard label="En Espera" count={metrics.byStatus?.waiting ?? 0} status={TicketStatus.WAITING} />
+          <MetricsStatusCard label="Resueltos" count={metrics.byStatus?.resolved ?? 0} status={TicketStatus.RESOLVED} />
         </div>
       </div>
 
-      {m.recentTickets && m.recentTickets.length > 0 && (
+      {metrics.recentTickets && metrics.recentTickets.length > 0 ? (
         <div>
           <h2 className="text-lg font-semibold mb-3">Mis tickets recientes</h2>
           <Card>
             <CardContent className="p-0 divide-y divide-border/50">
-              {m.recentTickets.map((ticket: any) => (
+              {metrics.recentTickets.map((ticket: any) => (
                 <RecentTicketRow key={ticket.id} ticket={ticket} />
               ))}
             </CardContent>
           </Card>
         </div>
-      )}
-
-      {(!m.recentTickets || m.recentTickets.length === 0) && (
+      ) : (
         <div className="flex flex-col items-center justify-center p-12 text-center border rounded-lg border-dashed bg-card/50">
           <div className="bg-muted p-4 rounded-full mb-4">
             <InboxIcon className="h-8 w-8 text-muted-foreground" />
@@ -124,36 +109,43 @@ async function CustomerDashboard({ token }: { token: string }) {
   );
 }
 
-async function AgentDashboard({ token }: { token: string }) {
-  const metrics = await api.get<MetricsData>(`/metrics`, token);
-  if (!metrics) return null;
+function AgentDashboard({ token }: { token: string }) {
+  const [metrics, setMetrics] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
-  const m = metrics as any;
+  useEffect(() => {
+    api.get<any>(`/metrics`, token)
+      .then(setMetrics)
+      .finally(() => setLoading(false));
+  }, [token]);
+
+  if (loading) return <div className="h-64 animate-pulse bg-muted rounded-xl" />;
+  if (!metrics) return null;
 
   return (
     <div className="space-y-8">
       <div>
         <h2 className="text-lg font-semibold mb-4">Tickets en el sistema</h2>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4">
-          <MetricsStatusCard label="Abiertos" count={m.byStatus.open} status={TicketStatus.OPEN} />
-          <MetricsStatusCard label="En Progreso" count={m.byStatus.in_progress} status={TicketStatus.IN_PROGRESS} />
-          <MetricsStatusCard label="En Espera" count={m.byStatus.waiting} status={TicketStatus.WAITING} />
-          <MetricsStatusCard label="Resueltos" count={m.byStatus.resolved} status={TicketStatus.RESOLVED} />
+          <MetricsStatusCard label="Abiertos" count={metrics.byStatus?.open ?? 0} status={TicketStatus.OPEN} />
+          <MetricsStatusCard label="En Progreso" count={metrics.byStatus?.in_progress ?? 0} status={TicketStatus.IN_PROGRESS} />
+          <MetricsStatusCard label="En Espera" count={metrics.byStatus?.waiting ?? 0} status={TicketStatus.WAITING} />
+          <MetricsStatusCard label="Resueltos" count={metrics.byStatus?.resolved ?? 0} status={TicketStatus.RESOLVED} />
         </div>
-        <MetricsHighlightCard
-          label="Tickets asignados a mí"
-          value={m.totalAssigned}
-          variant="highlight"
-        />
+        <MetricsHighlightCard label="Tickets asignados a mí" value={metrics.totalAssigned ?? 0} variant="highlight" />
       </div>
 
-      {m.recentAssigned && m.recentAssigned.length > 0 && (
+      {metrics.recentAssigned && metrics.recentAssigned.length > 0 && (
         <div>
           <h2 className="text-lg font-semibold mb-3">Mis tickets asignados</h2>
           <Card>
             <CardContent className="p-0 divide-y divide-border/50">
-              {m.recentAssigned
-                .sort((a: any, b: any) => b.urgencyScore - a.urgencyScore)
+              {metrics.recentAssigned
+                .sort((a: any, b: any) => {
+                  const scoreA = computeUrgencyScore(a);
+                  const scoreB = computeUrgencyScore(b);
+                  return scoreB - scoreA;
+                })
                 .map((ticket: any) => (
                   <RecentTicketRow key={ticket.id} ticket={ticket} />
                 ))}
@@ -165,22 +157,26 @@ async function AgentDashboard({ token }: { token: string }) {
   );
 }
 
-async function AdminDashboard({ token }: { token: string }) {
-  const [metrics, unassignedTickets] = await Promise.all([
-    api.get<MetricsData>(`/metrics`, token),
-    getUnassignedTickets(token),
-  ]);
+function AdminDashboard({ token }: { token: string }) {
+  const [metrics, setMetrics] = useState<any>(null);
+  const [unassigned, setUnassigned] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    Promise.all([
+      api.get<any>(`/metrics`, token),
+      api.get<any[]>(`/tickets?assignedToId=unassigned`, token).catch(() => []),
+    ]).then(([m, unassignedData]) => {
+      setMetrics(m);
+      setUnassigned(unassignedData ?? []);
+    }).finally(() => setLoading(false));
+  }, [token]);
+
+  if (loading) return <div className="h-64 animate-pulse bg-muted rounded-xl" />;
   if (!metrics) return null;
 
-  const m = metrics as AdminMetrics;
-
-  const unassignedWithScore = unassignedTickets.map((t: any) => ({
-    ...t,
-    urgencyScore: computeUrgencyScore(t),
-  }));
-
-  const topUnassigned = unassignedWithScore
+  const topUnassigned = unassigned
+    .map((t: any) => ({ ...t, urgencyScore: computeUrgencyScore(t) }))
     .sort((a, b) => b.urgencyScore - a.urgencyScore)
     .slice(0, 5)
     .map((t: any) => ({
@@ -198,36 +194,21 @@ async function AdminDashboard({ token }: { token: string }) {
       <div>
         <h2 className="text-lg font-semibold mb-4">Tickets en el sistema</h2>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4">
-          <MetricsStatusCard label="Abiertos" count={m.byStatus.open} status={TicketStatus.OPEN} />
-          <MetricsStatusCard label="En Progreso" count={m.byStatus.in_progress} status={TicketStatus.IN_PROGRESS} />
-          <MetricsStatusCard label="En Espera" count={m.byStatus.waiting} status={TicketStatus.WAITING} />
-          <MetricsStatusCard label="Resueltos" count={m.byStatus.resolved} status={TicketStatus.RESOLVED} />
+          <MetricsStatusCard label="Abiertos" count={metrics.byStatus?.open ?? 0} status={TicketStatus.OPEN} />
+          <MetricsStatusCard label="En Progreso" count={metrics.byStatus?.in_progress ?? 0} status={TicketStatus.IN_PROGRESS} />
+          <MetricsStatusCard label="En Espera" count={metrics.byStatus?.waiting ?? 0} status={TicketStatus.WAITING} />
+          <MetricsStatusCard label="Resueltos" count={metrics.byStatus?.resolved ?? 0} status={TicketStatus.RESOLVED} />
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-          <MetricsHighlightCard
-            label="Tickets sin asignar"
-            value={m.unassigned}
-            variant={m.unassigned > 0 ? 'danger' : 'highlight'}
-          />
-          <MetricsHighlightCard
-            label="Tiempo promedio"
-            value={m.avgResolutionHours}
-            sublabel="hrs"
-            variant="highlight"
-          />
-          <MetricsHighlightCard
-            label="Resueltos"
-            value={m.resolvedCount}
-            variant="highlight"
-          />
+          <MetricsHighlightCard label="Tickets sin asignar" value={metrics.unassigned ?? 0} variant={metrics.unassigned > 0 ? 'danger' : 'highlight'} />
+          <MetricsHighlightCard label="Tiempo promedio" value={metrics.avgResolutionHours ?? 0} sublabel="hrs" variant="highlight" />
+          <MetricsHighlightCard label="Resueltos" value={metrics.resolvedCount ?? 0} variant="highlight" />
         </div>
       </div>
 
-      {topUnassigned.length > 0 && (
+      {topUnassigned.length > 0 ? (
         <div>
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-lg font-semibold">Tickets sin asignar — mayor urgencia</h2>
-          </div>
+          <h2 className="text-lg font-semibold mb-3">Tickets sin asignar — mayor urgencia</h2>
           <Card>
             <CardContent className="p-0 divide-y divide-border/50">
               {topUnassigned.map((ticket: any) => (
@@ -236,9 +217,7 @@ async function AdminDashboard({ token }: { token: string }) {
             </CardContent>
           </Card>
         </div>
-      )}
-
-      {topUnassigned.length === 0 && (
+      ) : (
         <div className="flex flex-col items-center justify-center p-12 text-center border rounded-lg border-dashed bg-card/50">
           <div className="bg-muted p-4 rounded-full mb-4">
             <CheckCircleIcon className="h-8 w-8 text-muted-foreground" />
@@ -253,12 +232,11 @@ async function AdminDashboard({ token }: { token: string }) {
   );
 }
 
-export default async function DashboardPage() {
-  const user = await getCurrentUser();
-  const token = await getToken();
+export default function DashboardPage() {
+  const { user, token } = useAuth();
 
   if (!user || !token) {
-    redirect('/login');
+    return null;
   }
 
   return (

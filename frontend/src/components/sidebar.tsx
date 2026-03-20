@@ -19,6 +19,8 @@ import {
   MenuIcon,
 } from 'lucide-react';
 import { useState } from 'react';
+import { useAuth } from '@/components/auth-provider';
+import { removeToken } from '@/lib/auth';
 
 interface SidebarProps {
   user: Pick<User, 'id' | 'name' | 'email' | 'role'>;
@@ -91,14 +93,14 @@ function getRoleLabel(role: UserRole): string {
 export function Sidebar({ user }: SidebarProps) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { logout } = useAuth();
 
   const filteredItems = NAV_ITEMS.filter((item) =>
     item.roles.includes(user.role as UserRole),
   );
 
-  const handleLogout = async () => {
-    await fetch('/api/auth/logout', { method: 'POST' });
-    window.location.href = '/login';
+  const handleLogout = () => {
+    logout();
   };
 
   const navContent = (

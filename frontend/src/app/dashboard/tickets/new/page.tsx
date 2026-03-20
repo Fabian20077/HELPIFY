@@ -1,35 +1,47 @@
-import { api } from '@/lib/api';
-import { Department, Category } from '@/lib/types';
-import { getToken } from '@/lib/auth';
+'use client';
+
+import { useState, useEffect } from 'react';
 import { TicketForm } from '@/components/tickets/ticket-form';
-import { redirect } from 'next/navigation';
+import type { Department, Category } from '@/lib/types';
+import { useAuth } from '@/components/auth-provider';
 
 export const dynamic = 'force-dynamic';
 
-async function getInitialData() {
-  const token = await getToken();
-  if (!token) redirect('/login');
+export default function NewTicketPage() {
+  const { token } = useAuth();
+  const [departments, setDepartments] = useState<Department[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  try {
-    // Both API endpoints fetched in parallel
-    const [deptRes, catRes] = await Promise.all([
-      api.getPaginated<Department[]>('/departments?limit=100', token).catch(() => null),
-      api.getPaginated<Category[]>('/categories?limit=500', token).catch(() => null),
-    ]);
+  useEffect(() => {
+    if (!token) return;
 
-    // Our backend returns the array directly inside the `data` property
-    return {
-      departments: deptRes?.data || [],
-      categories: catRes?.data || [],
-    };
-  } catch (error) {
-    console.error('Error fetching data for ticket form:', error);
-    return { departments: [], categories: [] };
+    Promise.all([
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/departments?limit=100`, {
+        headers: { Authorization: `Bearer ${token}` },
+      }).then(r => r.json()).then(d => d.data || []).catch(() => []),
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories?limit=500`, {
+        headers: { Authorization: `Bearer ${token}` },
+      }).then(r => r.json()).then(d => d.data || []).catch(() => []),
+    ]).then(([depts, cats]) => {
+      setDepartments(depts);
+      setCategories(cats);
+    }).finally(() => setLoading(false));
+  }, [token]);
+
+  if (loading) {
+    return (
+      <div className="flex-1 space-y-6 pt-4 pb-8">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold tracking-tight">Reportar Incidente</h1>
+          <p className="text-muted-foreground mt-1">
+            Completa este formulario para abrir un nuevo ticket en el sistema Helpify.
+          </p>
+        </div>
+        <div className="h-64 animate-pulse bg-muted rounded-xl" />
+      </div>
+    );
   }
-}
-
-export default async function NewTicketPage() {
-  const { departments, categories } = await getInitialData();
 
   return (
     <div className="flex-1 space-y-6 pt-4 pb-8">
