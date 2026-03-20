@@ -234,7 +234,7 @@ export function CategoriesList({ initialCategories, initialDepartments }: Catego
               <Label htmlFor="department">Departamento</Label>
               <Select
                 value={formData.departmentId}
-                onValueChange={(value) => setFormData(prev => ({ ...prev, departmentId: value }))}
+                onValueChange={(value) => setFormData(prev => ({ ...prev, departmentId: value ?? '' }))}
                 disabled={!!editingCategory}
               >
                 <SelectTrigger>

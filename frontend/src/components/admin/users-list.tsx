@@ -127,7 +127,7 @@ export function UsersList({ initialUsers }: UsersListProps) {
           <div className="flex gap-4">
             <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground">Rol:</span>
-              <Select value={roleFilter} onValueChange={setRoleFilter}>
+              <Select value={roleFilter} onValueChange={(v) => setRoleFilter(v ?? '')}>
                 <SelectTrigger className="w-[150px]">
                   <SelectValue />
                 </SelectTrigger>
@@ -142,7 +142,7 @@ export function UsersList({ initialUsers }: UsersListProps) {
 
             <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground">Estado:</span>
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v ?? '')}>
                 <SelectTrigger className="w-[150px]">
                   <SelectValue />
                 </SelectTrigger>
@@ -179,7 +179,7 @@ export function UsersList({ initialUsers }: UsersListProps) {
                     <td className="px-4 py-3">
                       <Select
                         value={user.role}
-                        onValueChange={(value) => handleRoleChange(user.id, value)}
+                        onValueChange={(value) => handleRoleChange(user.id, value ?? '')}
                         disabled={updatingId === user.id}
                       >
                         <SelectTrigger className="w-[130px]">

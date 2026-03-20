@@ -9,7 +9,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-interface Agent {
+export interface Agent {
   id: string;
   name: string;
   email: string;
@@ -58,23 +58,22 @@ export function AgentSelector({ ticketId, currentAssignedToId, currentAssignedTo
     fetchAgents();
   }, []);
 
-  const handleValueChange = async (newValue: string) => {
-    const newAgent = newValue === 'none' ? null : agents.find(a => a.id === newValue);
+  const handleValueChange = (newValue: string | null) => {
+    const value = newValue ?? 'none';
+    const newAgent = value === 'none' ? null : agents.find(a => a.id === value);
     
     if (newAgent?.id === currentAssignedToId) return;
     
-    setSelectedValue(newValue);
+    setSelectedValue(value);
     setIsAssigning(true);
     
-    try {
-      await onAssign(newAgent);
-    } catch (err: any) {
-      setSelectedValue(currentAssignedToId || 'none');
-      setError(err.message || 'Error al asignar');
-      setTimeout(() => setError(null), 3000);
-    } finally {
-      setIsAssigning(false);
-    }
+    onAssign(newAgent ?? null)
+      .catch((err: any) => {
+        setSelectedValue(currentAssignedToId || 'none');
+        setError(err.message || 'Error al asignar');
+        setTimeout(() => setError(null), 3000);
+      })
+      .finally(() => setIsAssigning(false));
   };
 
   if (isLoading) {
