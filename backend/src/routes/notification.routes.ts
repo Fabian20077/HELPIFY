@@ -9,5 +9,6 @@ router.use(requireAuth);
 
 router.get('/', notificationController.getMyNotifications);
 router.patch('/:id/read', notificationController.markAsRead);
+router.post('/read-all', notificationController.markAllRead);
 
 export default router;

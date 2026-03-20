@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { prisma } from '../lib/prisma';
 import { calculateUrgencyScore } from '../services/urgency-score';
 import { validateTransition, isTerminalState, isResolving } from '../services/ticket-state-machine';
+import { createStatusChangeNotification, createCommentNotification, createResolvedNotification } from '../services/notification.service';
 import { TicketStatus } from '../generated/prisma/client';
 
 export const createTicket = async (req: Request, res: Response, next: NextFunction) => {
@@ -157,6 +158,8 @@ export const updateTicketStatus = async (req: Request, res: Response, next: Next
     const ticket = await prisma.ticket.findUnique({ where: { id } });
     if (!ticket) return res.status(404).json({ status: 'error', message: 'Ticket no encontrado' });
 
+    const oldStatus = ticket.status;
+
     // Validar máquina de estados usando el servicio core
     validateTransition(ticket.status as TicketStatus, status as TicketStatus);
 
@@ -178,13 +181,21 @@ export const updateTicketStatus = async (req: Request, res: Response, next: Next
           ticketId: id,
           changedBy: userId,
           fieldName: 'status',
-          oldValue: ticket.status,
+          oldValue: oldStatus,
           newValue: status
         }
       });
 
       return updated;
     });
+
+    // Crear notificaciones
+    await createStatusChangeNotification(id, oldStatus, status, userId, ticket.title);
+    
+    // Si se resolvió, notificar al creador
+    if (status === 'resolved') {
+      await createResolvedNotification(id, ticket.title);
+    }
 
     return res.status(200).json({ status: 'success', data: updatedTicket });
   } catch (error) {
@@ -224,6 +235,9 @@ export const addComment = async (req: Request, res: Response, next: NextFunction
     const comment = await prisma.comment.create({
       data: commentData
     });
+
+    // Crear notificación (solo para comentarios públicos)
+    await createCommentNotification(id, userId, ticket.title, isInternal || false);
 
     return res.status(201).json({ status: 'success', data: comment });
   } catch (error) {
