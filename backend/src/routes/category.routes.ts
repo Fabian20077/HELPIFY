@@ -11,8 +11,9 @@ router.use(requireAuth);
 
 router.get('/', categoryController.getAllCategories);
 
-// Solo Admin o Manager pueden crear/borrar
-router.post('/', requireRole(['admin', 'agent']), validateRequest(createCategorySchema), categoryController.createCategory);
+// Solo Admin pueden crear/editar/borrar
+router.post('/', requireRole(['admin']), validateRequest(createCategorySchema), categoryController.createCategory);
+router.patch('/:id', requireRole(['admin']), categoryController.updateCategory);
 router.delete('/:id', requireRole(['admin']), categoryController.deleteCategory);
 
 export default router;

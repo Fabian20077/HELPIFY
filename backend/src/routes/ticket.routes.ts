@@ -4,7 +4,9 @@ import {
   getTickets,
   getTicketById,
   updateTicketStatus,
-  addComment
+  addComment,
+  assignTicket,
+  deleteTicket
 } from '../controllers/ticket.controller';
 import { validateRequest } from '../middlewares/validate-request';
 import { requireAuth, requireRole } from '../middlewares/auth.middleware';
@@ -24,8 +26,9 @@ router.get('/', getTickets as any);
 router.get('/:id', getTicketById as any);
 
 // Solo agentes, managers o admins pueden cambiar los estados libremente o asignar.
-// (Los customers solo podrían tener acceso a un endpoint específico para cancelar/resolver)
 router.patch('/:id/status', requireRole(['agent', 'admin', 'manager']), validateRequest(updateTicketStatusSchema), updateTicketStatus as any);
+router.patch('/:id/assign', requireRole(['agent', 'admin', 'manager']), assignTicket as any);
+router.delete('/:id', requireRole(['admin']), deleteTicket as any);
 
 // Comentarios
 router.post('/:id/comments', validateRequest(addCommentSchema), addComment as any);

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { prisma } from '@/lib/prisma';
-import { AppError } from '@/middlewares/error.middleware';
+import { prisma } from '../lib/prisma';
+import { AppError } from '../middlewares/error.middleware';
 
 /**
  * Obtener perfil del usuario autenticado
@@ -95,6 +95,54 @@ export const updateUser = async (req: Request, res: Response, next: NextFunction
     res.status(200).json({
       status: 'success',
       data: sanitizedUser
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Listar agentes y admins disponibles para asignación (agentes workload)
+ */
+export const getAgents = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const agents = await prisma.user.findMany({
+      where: {
+        role: { in: ['agent', 'admin'] },
+        isActive: true
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        department: {
+          select: { id: true, name: true }
+        },
+        _count: {
+          select: {
+            assignedTickets: {
+              where: {
+                status: { in: ['open', 'in_progress'] }
+              }
+            }
+          }
+        }
+      },
+      orderBy: { name: 'asc' }
+    });
+
+    const agentsWithWorkload = agents.map(agent => ({
+      id: agent.id,
+      name: agent.name,
+      email: agent.email,
+      department: agent.department,
+      workload: agent._count.assignedTickets
+    }));
+
+    res.status(200).json({
+      status: 'success',
+      results: agentsWithWorkload.length,
+      data: agentsWithWorkload
     });
   } catch (error) {
     next(error);

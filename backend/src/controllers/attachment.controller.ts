@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { prisma } from '@/lib/prisma';
-import { AppError } from '@/middlewares/error.middleware';
+import { prisma } from '../lib/prisma';
+import { AppError } from '../middlewares/error.middleware';
 import { validateMagicBytes, ALLOWED_MIMES } from '../utils/file-validator';
 import fs from 'fs';
 import path from 'path';

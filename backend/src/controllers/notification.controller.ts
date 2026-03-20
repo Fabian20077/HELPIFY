@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { prisma } from '../lib/prisma';
-import { AppError } from '@/middlewares/error.middleware';
+import { AppError } from '../middlewares/error.middleware';
 import { markAllAsRead } from '../services/notification.service';
 
 /**

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { prisma } from '@/lib/prisma';
-import { AppError } from '@/middlewares/error.middleware';
+import { prisma } from '../lib/prisma';
+import { AppError } from '../middlewares/error.middleware';
 
 /**
  * Listar categorías
@@ -72,6 +72,39 @@ export const deleteCategory = async (req: Request, res: Response, next: NextFunc
     res.status(204).json({
       status: 'success',
       data: null
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Actualizar categoría (Solo Admin)
+ */
+export const updateCategory = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const categoryId = req.params.id as string;
+    const { name, color } = req.body;
+
+    const category = await prisma.category.findUnique({ where: { id: categoryId } });
+    if (!category) {
+      return next(new AppError('Categoría no encontrada', 404));
+    }
+
+    const updated = await prisma.category.update({
+      where: { id: categoryId },
+      data: {
+        ...(name !== undefined && { name }),
+        ...(color !== undefined && { color }),
+      },
+      include: {
+        department: { select: { name: true } }
+      }
+    });
+
+    res.status(200).json({
+      status: 'success',
+      data: updated
     });
   } catch (error) {
     next(error);

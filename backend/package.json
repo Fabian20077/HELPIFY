@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
-    "start": "node -r tsconfig-paths/register dist/server.js",
+    "start": "node dist/server.js",
     "test": "jest --runInBand",
     "test:unit": "jest --testPathPatterns=__tests__/unit",
     "test:integration": "jest --testPathPatterns=__tests__/integration --runInBand",
@@ -43,7 +43,6 @@
     "mariadb": "^3.5.2",
     "multer": "^2.1.1",
     "mysql2": "^3.20.0",
-    "tsconfig-paths": "^4.2.0",
     "winston": "^3.19.0",
     "zod": "^4.3.6"
   },

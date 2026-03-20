@@ -12,6 +12,9 @@ router.use(requireAuth);
 // Ruta para el propio usuario
 router.get('/me', userController.getMe);
 
+// Lista de agentes y admins disponibles para asignación
+router.get('/agents', userController.getAgents);
+
 // Rutas administrativas
 router.get('/', requireRole(['admin']), userController.getAllUsers);
 router.patch('/:id', requireRole(['admin']), validateRequest(updateUserSchema), userController.updateUser);
