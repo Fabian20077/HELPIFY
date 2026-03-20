@@ -35,6 +35,20 @@ export function NotificationBell({ initialCount = 0 }: NotificationBellProps) {
   const [unreadCount, setUnreadCount] = useState(initialCount);
   const [isLoading, setIsLoading] = useState(false);
 
+  const fetchUnreadCount = async () => {
+    try {
+      const res = await fetch('/api/notifications', {
+        credentials: 'include'
+      });
+      const data = await res.json();
+      if (data.status === 'success') {
+        setUnreadCount(data.unreadCount);
+      }
+    } catch (error) {
+      console.error('Error fetching unread count:', error);
+    }
+  };
+
   const fetchNotifications = async () => {
     setIsLoading(true);
     try {
@@ -86,6 +100,11 @@ export function NotificationBell({ initialCount = 0 }: NotificationBellProps) {
       fetchNotifications();
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    const interval = setInterval(fetchUnreadCount, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   const formatTime = (dateString: string) => {
     const date = new Date(dateString);
