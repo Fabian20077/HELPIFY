@@ -135,7 +135,7 @@ export function CategoriesList({ initialCategories, initialDepartments }: Catego
           <CardTitle className="text-base">Filtrar por Departamento</CardTitle>
         </CardHeader>
         <CardContent>
-          <Select value={departmentFilter} onValueChange={setDepartmentFilter}>
+          <Select value={departmentFilter} onValueChange={(v) => setDepartmentFilter(v ?? '')}>
             <SelectTrigger className="w-[250px]">
               <SelectValue />
             </SelectTrigger>
