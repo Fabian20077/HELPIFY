@@ -3,17 +3,16 @@
 import { Suspense, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { useAuth, useApi } from '@/components/auth-provider';
-import type { Ticket, TicketListSearchParams } from '@/lib/types';
+import { useApi } from '@/components/auth-provider';
+import { ticketsFromApiListData, type Ticket, type TicketListSearchParams } from '@/lib/types';
 import { TicketFilters } from '@/components/tickets/ticket-filters';
 import { TicketCard } from '@/components/tickets/ticket-card';
 import { Button } from '@/components/ui/button';
-import { PlusIcon, FileTextIcon, InboxIcon } from 'lucide-react';
+import { PlusIcon, InboxIcon } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
 function TicketsContent() {
-  const { user } = useAuth();
   const api = useApi();
   const searchParams = useSearchParams();
   const [tickets, setTickets] = useState<Ticket[]>([]);
@@ -36,9 +35,9 @@ function TicketsContent() {
     });
 
     setLoading(true);
-    api.getPaginated<{ tickets: Ticket[] }>(`/tickets?${query.toString()}`)
+    api.getPaginated<Ticket[]>(`/tickets?${query.toString()}`)
       .then((res) => {
-        setTickets(res.data?.tickets ?? []);
+        setTickets(ticketsFromApiListData<Ticket>(res.data));
         setPagination(res.pagination);
       })
       .catch(() => setTickets([]))

@@ -164,6 +164,15 @@ export interface ApiResponse<T> {
   };
 }
 
+/** GET /tickets devuelve `data` como array; el frontend a veces esperaba `{ tickets: [] }`. */
+export function ticketsFromApiListData<T>(data: unknown): T[] {
+  if (Array.isArray(data)) return data as T[];
+  if (data && typeof data === 'object' && Array.isArray((data as { tickets?: T[] }).tickets)) {
+    return (data as { tickets: T[] }).tickets;
+  }
+  return [];
+}
+
 export interface AuthResponse {
   token: string;
   user: Pick<User, 'id' | 'name' | 'email' | 'role' | 'departmentId'>;

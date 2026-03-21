@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useAuth } from '@/components/auth-provider';
 import { api } from '@/lib/api';
-import type { Ticket, MetricsData, AdminMetrics } from '@/lib/types';
+import { ticketsFromApiListData, type AdminMetrics, type MetricsData, type Ticket } from '@/lib/types';
 
 function computeUrgencyScore(ticket: any): number {
   const history = ticket.history ?? [];
@@ -80,8 +80,8 @@ export function useTickets(query: string = '') {
     if (!token) return;
     setLoading(true);
     try {
-      const res = await api.getPaginated<{ tickets: Ticket[] }>(`/tickets?${query}`, token);
-      setTickets(res.data?.tickets ?? []);
+      const res = await api.getPaginated<Ticket[]>(`/tickets?${query}`, token);
+      setTickets(ticketsFromApiListData<Ticket>(res.data));
       setError(null);
     } catch (err: any) {
       setError(err.message);
