@@ -9,7 +9,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { getToken } from '@/lib/auth';
-import { API_BASE_URL } from '@/lib/api-config';
+import { API_BASE_URL } from '@/lib/api';
 
 export interface Agent {
   id: string;

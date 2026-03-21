@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { NotificationBell } from '@/components/notification-bell';
 import { getToken } from '@/lib/auth';
-import { API_BASE_URL } from '@/lib/api-config';
+import { API_BASE_URL } from '@/lib/api';
 
 export function DashboardHeader() {
   const [initialCount, setInitialCount] = useState(0);

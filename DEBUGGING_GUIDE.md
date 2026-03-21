@@ -74,8 +74,7 @@ HELPIFY/
 
 | Archivo | Línea | Descripción |
 |---------|-------|-------------|
-| `frontend/src/lib/api.ts` | 9 | `API_BASE_URL` usa `NEXT_PUBLIC_API_URL` |
-| `frontend/src/lib/api-config.ts` | - | Constantes de endpoints API |
+| `frontend/src/lib/api.ts` | - | `API_BASE_URL` exportado; `api.*` y fetch directos deben usar la misma base |
 | `frontend/src/components/tickets/ticket-form.tsx` | - | Formulario de creación de tickets (USA llamadas directas) |
 | `frontend/src/components/tickets/comment-form.tsx` | - | Formulario de comentarios |
 | `frontend/src/components/tickets/status-controls.tsx` | - | Controles de estado de tickets |

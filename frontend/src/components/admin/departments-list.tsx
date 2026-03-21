@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { PlusIcon, PencilIcon, RefreshCw } from 'lucide-react';
 import { getToken } from '@/lib/auth';
-import { API_BASE_URL } from '@/lib/api-config';
+import { API_BASE_URL } from '@/lib/api';
 
 interface Department {
   id: string;

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { TicketForm } from '@/components/tickets/ticket-form';
 import type { Department, Category } from '@/lib/types';
 import { useAuth } from '@/components/auth-provider';
+import { API_BASE_URL } from '@/lib/api';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,10 +18,10 @@ export default function NewTicketPage() {
     if (!token) return;
 
     Promise.all([
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/departments?limit=100`, {
+      fetch(`${API_BASE_URL}/departments?limit=100`, {
         headers: { Authorization: `Bearer ${token}` },
       }).then(r => r.json()).then(d => d.data || []).catch(() => []),
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories?limit=500`, {
+      fetch(`${API_BASE_URL}/categories?limit=500`, {
         headers: { Authorization: `Bearer ${token}` },
       }).then(r => r.json()).then(d => d.data || []).catch(() => []),
     ]).then(([depts, cats]) => {

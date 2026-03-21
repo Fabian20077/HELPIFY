@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/sheet';
 import { Badge } from '@/components/ui/badge';
 import { getToken } from '@/lib/auth';
-import { API_BASE_URL } from '@/lib/api-config';
+import { API_BASE_URL } from '@/lib/api';
 
 interface Notification {
   id: string;
