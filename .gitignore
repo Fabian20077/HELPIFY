@@ -33,3 +33,6 @@ npm-debug.log*
 # Cookie/test files
 cookies_*.txt
 tmp_*.txt
+
+.vercel
+.env*.local

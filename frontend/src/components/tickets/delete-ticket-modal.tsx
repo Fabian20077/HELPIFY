@@ -13,6 +13,8 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Trash2Icon, AlertTriangleIcon, Loader2 } from 'lucide-react';
+import { api } from '@/lib/api';
+import { getToken } from '@/lib/auth';
 
 interface DeleteTicketModalProps {
   ticketId: string;
@@ -27,14 +29,11 @@ export function DeleteTicketModal({ ticketId, ticketTitle }: DeleteTicketModalPr
   const handleDelete = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/tickets/${ticketId}`, {
-        method: 'DELETE',
-        credentials: 'include',
-      });
-
-      if (!res.ok) {
-        throw new Error('Error al eliminar el ticket');
+      const token = getToken();
+      if (!token) {
+        throw new Error('Sesión expirada');
       }
+      await api.delete(`/tickets/${ticketId}`, token);
 
       setOpen(false);
       router.push('/dashboard/tickets');

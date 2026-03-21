@@ -10,6 +10,8 @@ import { StatusControls } from './status-controls';
 import { DeleteTicketModal } from './delete-ticket-modal';
 import { formatDistanceToNow } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { api, ApiError } from '@/lib/api';
+import { getToken } from '@/lib/auth';
 
 interface TicketSidebarProps {
   ticket: Ticket;
@@ -24,17 +26,18 @@ export function TicketSidebar({ ticket, userRole, onTicketChange }: TicketSideba
   const [currentTicket, setCurrentTicket] = useState(ticket);
 
   const handleAssign = async (agent: Agent | null) => {
-    const res = await fetch(`/api/tickets/${ticket.id}/assign`, {
-      method: 'PATCH',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ assignedToId: agent?.id || null }),
-    });
+    const token = getToken();
+    if (!token) {
+      throw new Error('Sesión expirada. Inicia sesión de nuevo.');
+    }
 
-    const data = await res.json();
-
-    if (!res.ok) {
-      throw new Error(data.message || 'Error al asignar');
+    try {
+      await api.patch(`/tickets/${ticket.id}/assign`, { assignedToId: agent?.id ?? null }, token);
+    } catch (e) {
+      if (e instanceof ApiError) {
+        throw new Error(e.message);
+      }
+      throw e;
     }
 
     const updated = {

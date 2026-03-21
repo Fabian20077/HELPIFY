@@ -44,3 +44,6 @@ results.json
 test_output.txt
 ts_errors.txt
 server.log
+
+.vercel
+.env*.local
