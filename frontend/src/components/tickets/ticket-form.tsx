@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { TicketPriority, Department, Category } from '@/lib/types';
-import { createTicketAction } from '@/app/actions/ticket.actions';
+import { api, ApiError } from '@/lib/api';
 import { getToken } from '@/lib/auth';
 
 import { Button } from '@/components/ui/button';
@@ -59,13 +59,21 @@ export function TicketForm({ departments, categories }: TicketFormProps) {
         setError('Sesión expirada. Por favor, inicia sesión nuevamente.');
         return;
       }
-      const res = await createTicketAction(data, token);
+      
+      const payload = { ...data };
+      if (!payload.categoryId) delete payload.categoryId;
+      
+      const res = await api.post<{ id: string }>('/tickets', payload as Record<string, unknown>, token);
       
       startTransition(() => {
         router.push(`/dashboard/tickets/${res.id}`);
       });
     } catch (err: any) {
-      setError(err.message || 'Error al crear el ticket');
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError(err.message || 'Error al crear el ticket');
+      }
     }
   };
 

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { addCommentAction } from '@/app/actions/ticket.actions';
+import { api, ApiError } from '@/lib/api';
 import { getToken } from '@/lib/auth';
 
 import { Button } from '@/components/ui/button';
@@ -45,14 +45,19 @@ export function CommentForm({ ticketId, role }: { ticketId: string, role: string
         setError('Sesión expirada. Por favor, inicia sesión nuevamente.');
         return;
       }
-      await addCommentAction(ticketId, data as Record<string, any>, token);
+      
+      await api.post(`/tickets/${ticketId}/comments`, { body: data.body, isInternal: data.isInternal }, token);
       form.reset();
       
       startTransition(() => {
-        router.refresh(); // Refresh server component data
+        router.refresh();
       });
     } catch (err: any) {
-      setError(err.message || 'Error al enviar respuesta');
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError(err.message || 'Error al enviar respuesta');
+      }
     }
   };
 

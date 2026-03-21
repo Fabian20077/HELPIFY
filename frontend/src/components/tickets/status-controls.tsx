@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { updateTicketStatusAction } from '@/app/actions/ticket.actions';
+import { api } from '@/lib/api';
 import { getToken } from '@/lib/auth';
 import { Ticket, TicketStatus } from '@/lib/types';
 import { Button } from '@/components/ui/button';
@@ -50,7 +50,7 @@ export function StatusControls({ ticketId, currentStatus, userRole, onStatusChan
         console.error('No token available');
         return;
       }
-      const result = await updateTicketStatusAction(ticketId, newStatus, token);
+      const result = await api.patch<Ticket>(`/tickets/${ticketId}/status`, { status: newStatus }, token);
       onStatusChange(result);
     } catch (error) {
       console.error('Error transitioning status:', error);
