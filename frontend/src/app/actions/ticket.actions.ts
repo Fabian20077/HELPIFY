@@ -10,7 +10,17 @@ export async function createTicketAction(data: TicketFormValues, token: string) 
   const payload: Record<string, any> = { ...data };
   if (!payload.categoryId) delete payload.categoryId;
 
-  return api.post<{ id: string }>('/tickets', payload, token);
+  console.log('[createTicketAction] Payload:', JSON.stringify(payload));
+  console.log('[createTicketAction] Token length:', token.length);
+
+  try {
+    const result = await api.post<{ id: string }>('/tickets', payload, token);
+    console.log('[createTicketAction] Success:', result);
+    return result;
+  } catch (error: any) {
+    console.error('[createTicketAction] Error:', error.message, error.statusCode);
+    throw error;
+  }
 }
 
 export async function addCommentAction(ticketId: string, data: Record<string, any>, token: string) {
