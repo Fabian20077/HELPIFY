@@ -15,6 +15,8 @@ import {
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Loader2, RefreshCw } from 'lucide-react';
+import { API_BASE_URL } from '@/lib/api-config';
+import { getToken } from '@/lib/auth';
 
 interface User {
   id: string;
@@ -53,11 +55,17 @@ export function UsersList({ initialUsers }: UsersListProps) {
   const fetchUsers = async () => {
     setLoading(true);
     try {
+      const token = getToken();
       const params = new URLSearchParams();
       if (roleFilter !== 'all') params.set('role', roleFilter);
       if (statusFilter !== 'all') params.set('isActive', statusFilter === 'active' ? 'true' : 'false');
 
-      const res = await fetch(`/api/users?${params}`, { credentials: 'include' });
+      const res = await fetch(`${API_BASE_URL}/users?${params}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
       const data = await res.json();
       if (data.status === 'success') {
         setUsers(data.data);
@@ -76,10 +84,13 @@ export function UsersList({ initialUsers }: UsersListProps) {
   const updateUser = async (userId: string, updates: Partial<User>) => {
     setUpdatingId(userId);
     try {
-      const res = await fetch(`/api/users/${userId}`, {
+      const token = getToken();
+      const res = await fetch(`${API_BASE_URL}/users/${userId}`, {
         method: 'PATCH',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify(updates),
       });
       const data = await res.json();
