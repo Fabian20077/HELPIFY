@@ -7,6 +7,8 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
+import apiRouter from './routes';
+import { AppError } from './middlewares/error.middleware';
 
 dotenv.config();
 
@@ -45,9 +47,6 @@ app.get('/api/health', (_req, res) => {
     environment: process.env.NODE_ENV || 'development',
   });
 });
-
-import apiRouter from './routes';
-import { AppError } from './middlewares/error.middleware';
 
 // ── Rutas de la API ──────────────────────────────────────────────────────────
 app.use('/api', apiRouter);

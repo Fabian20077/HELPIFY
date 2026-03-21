@@ -15,9 +15,9 @@ async function main() {
     await prisma.$connect();
     logger.info('✅ Conectado a la base de datos MySQL');
 
-    app.listen(PORT, () => {
-      logger.info(`🚀 Helpify Backend corriendo en http://localhost:${PORT}`);
-      logger.info(`📋 Health check: http://localhost:${PORT}/api/health`);
+    app.listen(Number(PORT), '0.0.0.0', () => {
+      logger.info(`🚀 Helpify Backend corriendo en http://0.0.0.0:${PORT}`);
+      logger.info(`📋 Health check: http://0.0.0.0:${PORT}/api/health`);
       logger.info(`🌍 Entorno: ${process.env.NODE_ENV || 'development'}`);
     });
   } catch (error) {
