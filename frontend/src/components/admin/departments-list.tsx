@@ -7,6 +7,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { PlusIcon, PencilIcon, RefreshCw } from 'lucide-react';
+import { getToken } from '@/lib/auth';
+import { API_BASE_URL } from '@/lib/api-config';
 
 interface Department {
   id: string;
@@ -30,15 +32,25 @@ export function DepartmentsList({ initialDepartments }: DepartmentsListProps) {
   const [formData, setFormData] = useState({ name: '', description: '' });
   const [saving, setSaving] = useState(false);
 
+  const getAuthHeaders = (): Record<string, string> => {
+    const token = getToken();
+    const headers: Record<string, string> = {};
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    return headers;
+  };
+
   const fetchDepartments = async () => {
     setLoading(true);
+    const headers = getAuthHeaders();
     try {
-      const res = await fetch('/api/departments', { credentials: 'include' });
+      const res = await fetch(`${API_BASE_URL}/departments`, { headers });
       const data = await res.json();
       if (data.status === 'success') {
         const withCounts = await Promise.all(
           data.data.map(async (dept: any) => {
-            const usersRes = await fetch(`/api/departments/${dept.id}`, { credentials: 'include' });
+            const usersRes = await fetch(`${API_BASE_URL}/departments/${dept.id}`, { headers });
             const usersData = await usersRes.json();
             return {
               ...dept,
@@ -74,12 +86,12 @@ export function DepartmentsList({ initialDepartments }: DepartmentsListProps) {
     if (!formData.name.trim()) return;
     
     setSaving(true);
+    const headers = { ...getAuthHeaders(), 'Content-Type': 'application/json' };
     try {
       if (editingDepartment) {
-        const res = await fetch(`/api/departments/${editingDepartment.id}`, {
+        const res = await fetch(`${API_BASE_URL}/departments/${editingDepartment.id}`, {
           method: 'PATCH',
-          credentials: 'include',
-          headers: { 'Content-Type': 'application/json' },
+          headers,
           body: JSON.stringify(formData),
         });
         const data = await res.json();
@@ -87,10 +99,9 @@ export function DepartmentsList({ initialDepartments }: DepartmentsListProps) {
           setDepartments(prev => prev.map(d => d.id === editingDepartment.id ? { ...d, ...data.data } : d));
         }
       } else {
-        const res = await fetch('/api/departments', {
+        const res = await fetch(`${API_BASE_URL}/departments`, {
           method: 'POST',
-          credentials: 'include',
-          headers: { 'Content-Type': 'application/json' },
+          headers,
           body: JSON.stringify(formData),
         });
         const data = await res.json();

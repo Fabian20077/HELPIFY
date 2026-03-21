@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { NotificationBell } from '@/components/notification-bell';
+import { getToken } from '@/lib/auth';
+import { API_BASE_URL } from '@/lib/api-config';
 
 export function DashboardHeader() {
   const [initialCount, setInitialCount] = useState(0);
@@ -9,8 +11,11 @@ export function DashboardHeader() {
   useEffect(() => {
     async function fetchInitialCount() {
       try {
-        const res = await fetch('/api/notifications', {
-          credentials: 'include'
+        const token = getToken();
+        if (!token) return;
+        
+        const res = await fetch(`${API_BASE_URL}/notifications`, {
+          headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await res.json();
         if (data.status === 'success') {

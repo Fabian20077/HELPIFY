@@ -8,6 +8,8 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { PlusIcon, PencilIcon, RefreshCw } from 'lucide-react';
+import { getToken } from '@/lib/auth';
+import { API_BASE_URL } from '@/lib/api-config';
 
 interface Department {
   id: string;
@@ -37,12 +39,22 @@ export function CategoriesList({ initialCategories, initialDepartments }: Catego
   const [formData, setFormData] = useState({ name: '', color: '#6366f1', departmentId: '' });
   const [saving, setSaving] = useState(false);
 
+  const getAuthHeaders = (): Record<string, string> => {
+    const token = getToken();
+    const headers: Record<string, string> = {};
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    return headers;
+  };
+
   const fetchData = async () => {
     setLoading(true);
+    const headers = getAuthHeaders();
     try {
       const [catRes, deptRes] = await Promise.all([
-        fetch('/api/categories', { credentials: 'include' }),
-        fetch('/api/departments', { credentials: 'include' }),
+        fetch(`${API_BASE_URL}/categories`, { headers }),
+        fetch(`${API_BASE_URL}/departments`, { headers }),
       ]);
       const catData = await catRes.json();
       const deptData = await deptRes.json();
@@ -82,12 +94,12 @@ export function CategoriesList({ initialCategories, initialDepartments }: Catego
     if (!formData.name.trim() || !formData.departmentId) return;
     
     setSaving(true);
+    const headers = { ...getAuthHeaders(), 'Content-Type': 'application/json' };
     try {
       if (editingCategory) {
-        const res = await fetch(`/api/categories/${editingCategory.id}`, {
+        const res = await fetch(`${API_BASE_URL}/categories/${editingCategory.id}`, {
           method: 'PATCH',
-          credentials: 'include',
-          headers: { 'Content-Type': 'application/json' },
+          headers,
           body: JSON.stringify({ name: formData.name, color: formData.color }),
         });
         const data = await res.json();
@@ -95,10 +107,9 @@ export function CategoriesList({ initialCategories, initialDepartments }: Catego
           setCategories(prev => prev.map(c => c.id === editingCategory.id ? { ...c, ...data.data } : c));
         }
       } else {
-        const res = await fetch('/api/categories', {
+        const res = await fetch(`${API_BASE_URL}/categories`, {
           method: 'POST',
-          credentials: 'include',
-          headers: { 'Content-Type': 'application/json' },
+          headers,
           body: JSON.stringify(formData),
         });
         const data = await res.json();

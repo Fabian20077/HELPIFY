@@ -12,6 +12,8 @@ import {
   SheetDescription,
 } from '@/components/ui/sheet';
 import { Badge } from '@/components/ui/badge';
+import { getToken } from '@/lib/auth';
+import { API_BASE_URL } from '@/lib/api-config';
 
 interface Notification {
   id: string;
@@ -35,11 +37,20 @@ export function NotificationBell({ initialCount = 0 }: NotificationBellProps) {
   const [unreadCount, setUnreadCount] = useState(initialCount);
   const [isLoading, setIsLoading] = useState(false);
 
+  const getAuthHeaders = (): Record<string, string> => {
+    const token = getToken();
+    const headers: Record<string, string> = {};
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    return headers;
+  };
+
   const fetchUnreadCount = async () => {
+    const headers = getAuthHeaders();
+    if (Object.keys(headers).length === 0) return;
     try {
-      const res = await fetch('/api/notifications', {
-        credentials: 'include'
-      });
+      const res = await fetch(`${API_BASE_URL}/notifications`, { headers });
       const data = await res.json();
       if (data.status === 'success') {
         setUnreadCount(data.unreadCount);
@@ -51,10 +62,9 @@ export function NotificationBell({ initialCount = 0 }: NotificationBellProps) {
 
   const fetchNotifications = async () => {
     setIsLoading(true);
+    const headers = getAuthHeaders();
     try {
-      const res = await fetch('/api/notifications', {
-        credentials: 'include'
-      });
+      const res = await fetch(`${API_BASE_URL}/notifications`, { headers });
       const data = await res.json();
       if (data.status === 'success') {
         setNotifications(data.data);
@@ -68,11 +78,9 @@ export function NotificationBell({ initialCount = 0 }: NotificationBellProps) {
   };
 
   const markAllAsRead = async () => {
+    const headers = { ...getAuthHeaders(), 'Content-Type': 'application/json' };
     try {
-      await fetch('/api/notifications/read-all', {
-        method: 'POST',
-        credentials: 'include'
-      });
+      await fetch(`${API_BASE_URL}/notifications/read-all`, { method: 'POST', headers });
       setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
       setUnreadCount(0);
     } catch (error) {
@@ -81,11 +89,9 @@ export function NotificationBell({ initialCount = 0 }: NotificationBellProps) {
   };
 
   const markAsRead = async (id: string) => {
+    const headers = { ...getAuthHeaders(), 'Content-Type': 'application/json' };
     try {
-      await fetch(`/api/notifications/${id}/read`, {
-        method: 'PATCH',
-        credentials: 'include'
-      });
+      await fetch(`${API_BASE_URL}/notifications/${id}/read`, { method: 'PATCH', headers });
       setNotifications(prev => 
         prev.map(n => n.id === id ? { ...n, isRead: true } : n)
       );

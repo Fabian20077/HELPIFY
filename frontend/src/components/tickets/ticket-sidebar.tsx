@@ -14,15 +14,13 @@ import { es } from 'date-fns/locale';
 interface TicketSidebarProps {
   ticket: Ticket;
   userRole: string;
-  onTicketChange: (updatedTicket: Ticket) => void;
-}
-
-interface TicketSidebarProps {
-  ticket: Ticket;
-  userRole: string;
+  onTicketChange?: (updatedTicket: Ticket) => void;
 }
 
 export function TicketSidebar({ ticket, userRole, onTicketChange }: TicketSidebarProps) {
+  const handleTicketChange = onTicketChange || ((updated: Ticket) => {
+    console.log('Ticket updated:', updated);
+  });
   const [currentTicket, setCurrentTicket] = useState(ticket);
 
   const handleAssign = async (agent: Agent | null) => {
@@ -47,12 +45,12 @@ export function TicketSidebar({ ticket, userRole, onTicketChange }: TicketSideba
       assignedToId: agent?.id || null,
     };
     setCurrentTicket(updated);
-    onTicketChange(updated);
+    handleTicketChange(updated);
   };
 
   const handleStatusChange = (updatedTicket: Ticket) => {
     setCurrentTicket(updatedTicket);
-    onTicketChange(updatedTicket);
+    handleTicketChange(updatedTicket);
   };
 
   const canAssign = userRole === UserRole.AGENT || userRole === UserRole.ADMIN;

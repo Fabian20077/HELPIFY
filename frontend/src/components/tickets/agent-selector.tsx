@@ -8,6 +8,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { getToken } from '@/lib/auth';
+import { API_BASE_URL } from '@/lib/api-config';
 
 export interface Agent {
   id: string;
@@ -40,9 +42,12 @@ export function AgentSelector({ ticketId, currentAssignedToId, currentAssignedTo
   useEffect(() => {
     async function fetchAgents() {
       try {
-        const res = await fetch('/api/users/agents', {
-          credentials: 'include'
-        });
+        const token = getToken();
+        const headers: Record<string, string> = {};
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
+        const res = await fetch(`${API_BASE_URL}/users/agents`, { headers });
         const data = await res.json();
         if (data.status === 'success') {
           setAgents(data.data);
