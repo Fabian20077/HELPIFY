@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { TicketPriority, Department, Category } from '@/lib/types';
 import { createTicketAction } from '@/app/actions/ticket.actions';
+import { getToken } from '@/lib/auth';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -53,8 +54,12 @@ export function TicketForm({ departments, categories }: TicketFormProps) {
   const onSubmit = async (data: TicketFormValues) => {
     setError(null);
     try {
-      // Create ticket via secure Server Action to consume httpOnly token
-      const res = await createTicketAction(data);
+      const token = getToken();
+      if (!token) {
+        setError('Sesión expirada. Por favor, inicia sesión nuevamente.');
+        return;
+      }
+      const res = await createTicketAction(data, token);
       
       startTransition(() => {
         router.push(`/dashboard/tickets/${res.id}`);

@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from 'react';
 import { updateTicketStatusAction } from '@/app/actions/ticket.actions';
+import { getToken } from '@/lib/auth';
 import { Ticket, TicketStatus } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Loader2, CheckCircle2Icon, PlayCircleIcon, PauseCircleIcon, XCircleIcon, HistoryIcon } from 'lucide-react';
@@ -44,7 +45,12 @@ export function StatusControls({ ticketId, currentStatus, userRole, onStatusChan
   const handleTransition = async (newStatus: TicketStatus) => {
     setLoadingStatus(newStatus);
     try {
-      const result = await updateTicketStatusAction(ticketId, newStatus);
+      const token = getToken();
+      if (!token) {
+        console.error('No token available');
+        return;
+      }
+      const result = await updateTicketStatusAction(ticketId, newStatus, token);
       onStatusChange(result);
     } catch (error) {
       console.error('Error transitioning status:', error);

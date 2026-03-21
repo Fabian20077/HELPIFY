@@ -5,14 +5,14 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { api } from '@/lib/api';
+import { addCommentAction } from '@/app/actions/ticket.actions';
+import { getToken } from '@/lib/auth';
 
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Loader2, SendIcon, LockIcon } from 'lucide-react';
-import { addCommentAction } from '@/app/actions/ticket.actions';
 
 const commentSchema = z.object({
   body: z.string().min(2, 'El comentario está muy corto').max(2000, 'Demasiado texto'),
@@ -40,7 +40,12 @@ export function CommentForm({ ticketId, role }: { ticketId: string, role: string
   const onSubmit = async (data: CommentFormValues) => {
     setError(null);
     try {
-      await addCommentAction(ticketId, data as Record<string, any>);
+      const token = getToken();
+      if (!token) {
+        setError('Sesión expirada. Por favor, inicia sesión nuevamente.');
+        return;
+      }
+      await addCommentAction(ticketId, data as Record<string, any>, token);
       form.reset();
       
       startTransition(() => {
