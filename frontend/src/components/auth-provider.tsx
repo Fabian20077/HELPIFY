@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { getToken, removeToken } from '@/lib/auth';
-import { api } from '@/lib/api';
+import { api, API_BASE_URL } from '@/lib/api';
 import type { User } from '@/lib/types';
 
 interface AuthContextType {
@@ -43,8 +43,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const logout = useCallback(() => {
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-    fetch(`${baseUrl}/auth/logout`, { method: 'POST', credentials: 'include' }).catch(() => {});
+    fetch(`${API_BASE_URL}/auth/logout`, { method: 'POST', credentials: 'include' }).catch(() => {});
     removeToken();
     setTokenState(null);
     setUser(null);

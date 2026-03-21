@@ -1,0 +1,1269 @@
+[
+  {
+    "id": "871522ec-1e1e-4b5e-a88c-bb24d84a83d5",
+    "status": "FAILED",
+    "createdAt": "2026-03-21T15:02:47.537Z",
+    "meta": {
+      "buildOnly": false,
+      "configErrors": [
+        "Could not find root directory: /backend"
+      ],
+      "logsV2": true,
+      "reason": "deploy",
+      "runtime": "V2",
+      "serviceManifest": {
+        "build": {
+          "buildCommand": "npm install && npx prisma migrate deploy && npx prisma generate && npx tsc",
+          "buildEnvironment": null,
+          "builder": "RAILPACK",
+          "dockerfilePath": null,
+          "nixpacksConfigPath": null,
+          "nixpacksPlan": null,
+          "watchPatterns": []
+        },
+        "deploy": {
+          "cronSchedule": null,
+          "drainingSeconds": null,
+          "healthcheckPath": null,
+          "healthcheckTimeout": null,
+          "ipv6EgressEnabled": false,
+          "limitOverride": null,
+          "multiRegionConfig": {
+            "us-west2": {
+              "numReplicas": 1
+            }
+          },
+          "numReplicas": 1,
+          "overlapSeconds": null,
+          "preDeployCommand": null,
+          "region": null,
+          "registryCredentials": null,
+          "requiredMountPath": null,
+          "restartPolicyMaxRetries": 10,
+          "restartPolicyType": "ON_FAILURE",
+          "runtime": "V2",
+          "sleepApplication": false,
+          "startCommand": "npm start",
+          "useLegacyStacker": false
+        }
+      },
+      "volumeMounts": []
+    }
+  },
+  {
+    "id": "12a34928-41e0-4754-b232-6657dbed5ec5",
+    "status": "FAILED",
+    "createdAt": "2026-03-21T14:57:29.567Z",
+    "meta": {
+      "buildOnly": false,
+      "configErrors": [
+        "Error: build.builder: Invalid input"
+      ],
+      "logsV2": true,
+      "reason": "deploy",
+      "runtime": "V2",
+      "serviceManifest": {
+        "build": {
+          "buildCommand": "npm install && npx prisma migrate deploy && npx prisma generate && npx tsc",
+          "buildEnvironment": null,
+          "builder": "RAILPACK",
+          "dockerfilePath": null,
+          "nixpacksConfigPath": null,
+          "nixpacksPlan": null,
+          "watchPatterns": []
+        },
+        "deploy": {
+          "cronSchedule": null,
+          "drainingSeconds": null,
+          "healthcheckPath": null,
+          "healthcheckTimeout": null,
+          "ipv6EgressEnabled": false,
+          "limitOverride": null,
+          "multiRegionConfig": {
+            "us-west2": {
+              "numReplicas": 1
+            }
+          },
+          "numReplicas": 1,
+          "overlapSeconds": null,
+          "preDeployCommand": null,
+          "region": null,
+          "registryCredentials": null,
+          "requiredMountPath": null,
+          "restartPolicyMaxRetries": 10,
+          "restartPolicyType": "ON_FAILURE",
+          "runtime": "V2",
+          "sleepApplication": false,
+          "startCommand": "npm start",
+          "useLegacyStacker": false
+        }
+      },
+      "volumeMounts": []
+    }
+  },
+  {
+    "id": "7b869271-7793-41a5-b494-eb02ab1d291f",
+    "status": "FAILED",
+    "createdAt": "2026-03-21T14:22:15.229Z",
+    "meta": {
+      "buildOnly": false,
+      "configErrors": [
+        "Could not find root directory: /backend"
+      ],
+      "logsV2": true,
+      "reason": "deploy",
+      "runtime": "V2",
+      "serviceManifest": {
+        "build": {
+          "buildCommand": "npm install && npx prisma migrate deploy && npx prisma generate && npx tsc",
+          "buildEnvironment": null,
+          "builder": "RAILPACK",
+          "dockerfilePath": null,
+          "nixpacksConfigPath": null,
+          "nixpacksPlan": null,
+          "watchPatterns": []
+        },
+        "deploy": {
+          "cronSchedule": null,
+          "drainingSeconds": null,
+          "healthcheckPath": null,
+          "healthcheckTimeout": null,
+          "ipv6EgressEnabled": false,
+          "limitOverride": null,
+          "multiRegionConfig": {
+            "us-west2": {
+              "numReplicas": 1
+            }
+          },
+          "numReplicas": 1,
+          "overlapSeconds": null,
+          "preDeployCommand": null,
+          "region": null,
+          "registryCredentials": null,
+          "requiredMountPath": null,
+          "restartPolicyMaxRetries": 10,
+          "restartPolicyType": "ON_FAILURE",
+          "runtime": "V2",
+          "sleepApplication": false,
+          "startCommand": "npm start",
+          "useLegacyStacker": false
+        }
+      },
+      "volumeMounts": []
+    }
+  },
+  {
+    "id": "b1b93bdb-1ee8-4d37-8cbe-46b95974dc41",
+    "status": "FAILED",
+    "createdAt": "2026-03-21T14:19:34.531Z",
+    "meta": {
+      "buildOnly": false,
+      "configErrors": [
+        "Could not find root directory: /backend"
+      ],
+      "logsV2": true,
+      "reason": "deploy",
+      "runtime": "V2",
+      "serviceManifest": {
+        "build": {
+          "buildCommand": "npm install && npx prisma migrate deploy && npx prisma generate && npx tsc",
+          "buildEnvironment": null,
+          "builder": "RAILPACK",
+          "dockerfilePath": null,
+          "nixpacksConfigPath": null,
+          "nixpacksPlan": null,
+          "watchPatterns": []
+        },
+        "deploy": {
+          "cronSchedule": null,
+          "drainingSeconds": null,
+          "healthcheckPath": null,
+          "healthcheckTimeout": null,
+          "ipv6EgressEnabled": false,
+          "limitOverride": null,
+          "multiRegionConfig": {
+            "us-west2": {
+              "numReplicas": 1
+            }
+          },
+          "numReplicas": 1,
+          "overlapSeconds": null,
+          "preDeployCommand": null,
+          "region": null,
+          "registryCredentials": null,
+          "requiredMountPath": null,
+          "restartPolicyMaxRetries": 10,
+          "restartPolicyType": "ON_FAILURE",
+          "runtime": "V2",
+          "sleepApplication": false,
+          "startCommand": "npm start",
+          "useLegacyStacker": false
+        }
+      },
+      "volumeMounts": []
+    }
+  },
+  {
+    "id": "7257f2e6-767b-4821-8d52-05df6af9e00c",
+    "status": "FAILED",
+    "createdAt": "2026-03-21T14:18:08.426Z",
+    "meta": {
+      "buildOnly": false,
+      "configErrors": [
+        "Could not find root directory: /backend"
+      ],
+      "logsV2": true,
+      "reason": "deploy",
+      "runtime": "V2",
+      "serviceManifest": {
+        "build": {
+          "buildCommand": "npm install && npx prisma migrate deploy && npx prisma generate && npx tsc",
+          "buildEnvironment": null,
+          "builder": "RAILPACK",
+          "dockerfilePath": null,
+          "nixpacksConfigPath": null,
+          "nixpacksPlan": null,
+          "watchPatterns": []
+        },
+        "deploy": {
+          "cronSchedule": null,
+          "drainingSeconds": null,
+          "healthcheckPath": null,
+          "healthcheckTimeout": null,
+          "ipv6EgressEnabled": false,
+          "limitOverride": null,
+          "multiRegionConfig": {
+            "us-west2": {
+              "numReplicas": 1
+            }
+          },
+          "numReplicas": 1,
+          "overlapSeconds": null,
+          "preDeployCommand": null,
+          "region": null,
+          "registryCredentials": null,
+          "requiredMountPath": null,
+          "restartPolicyMaxRetries": 10,
+          "restartPolicyType": "ON_FAILURE",
+          "runtime": "V2",
+          "sleepApplication": false,
+          "startCommand": "npm start",
+          "useLegacyStacker": false
+        }
+      },
+      "volumeMounts": []
+    }
+  },
+  {
+    "id": "27780e22-ecbe-43dd-a513-341b05e96a43",
+    "status": "FAILED",
+    "createdAt": "2026-03-21T14:16:55.066Z",
+    "meta": {
+      "buildOnly": false,
+      "configErrors": [
+        "Could not find root directory: /backend"
+      ],
+      "logsV2": true,
+      "reason": "deploy",
+      "runtime": "V2",
+      "serviceManifest": {
+        "build": {
+          "buildCommand": "npm install && npx prisma migrate deploy && npx prisma generate && npx tsc",
+          "buildEnvironment": null,
+          "builder": "RAILPACK",
+          "dockerfilePath": null,
+          "nixpacksConfigPath": null,
+          "nixpacksPlan": null,
+          "watchPatterns": []
+        },
+        "deploy": {
+          "cronSchedule": null,
+          "drainingSeconds": null,
+          "healthcheckPath": null,
+          "healthcheckTimeout": null,
+          "ipv6EgressEnabled": false,
+          "limitOverride": null,
+          "multiRegionConfig": {
+            "us-west2": {
+              "numReplicas": 1
+            }
+          },
+          "numReplicas": 1,
+          "overlapSeconds": null,
+          "preDeployCommand": null,
+          "region": null,
+          "registryCredentials": null,
+          "requiredMountPath": null,
+          "restartPolicyMaxRetries": 10,
+          "restartPolicyType": "ON_FAILURE",
+          "runtime": "V2",
+          "sleepApplication": false,
+          "startCommand": "npm start",
+          "useLegacyStacker": false
+        }
+      },
+      "volumeMounts": []
+    }
+  },
+  {
+    "id": "edb08c5b-1834-4885-8cab-165b7e93e34e",
+    "status": "FAILED",
+    "createdAt": "2026-03-21T14:14:53.753Z",
+    "meta": {
+      "buildOnly": false,
+      "configErrors": [
+        "Could not find root directory: /backend"
+      ],
+      "logsV2": true,
+      "reason": "deploy",
+      "runtime": "V2",
+      "serviceManifest": {
+        "build": {
+          "buildCommand": "npm install && npx prisma migrate deploy && npx prisma generate && npx tsc",
+          "buildEnvironment": null,
+          "builder": "RAILPACK",
+          "dockerfilePath": null,
+          "nixpacksConfigPath": null,
+          "nixpacksPlan": null,
+          "watchPatterns": []
+        },
+        "deploy": {
+          "cronSchedule": null,
+          "drainingSeconds": null,
+          "healthcheckPath": null,
+          "healthcheckTimeout": null,
+          "ipv6EgressEnabled": false,
+          "limitOverride": null,
+          "multiRegionConfig": {
+            "us-west2": {
+              "numReplicas": 1
+            }
+          },
+          "numReplicas": 1,
+          "overlapSeconds": null,
+          "preDeployCommand": null,
+          "region": null,
+          "registryCredentials": null,
+          "requiredMountPath": null,
+          "restartPolicyMaxRetries": 10,
+          "restartPolicyType": "ON_FAILURE",
+          "runtime": "V2",
+          "sleepApplication": false,
+          "startCommand": "npm start",
+          "useLegacyStacker": false
+        }
+      },
+      "volumeMounts": []
+    }
+  },
+  {
+    "id": "ec7b3dd9-96b7-439b-87d9-2599902cafaa",
+    "status": "FAILED",
+    "createdAt": "2026-03-21T14:13:29.365Z",
+    "meta": {
+      "buildOnly": false,
+      "configErrors": [
+        "Could not find root directory: /backend"
+      ],
+      "logsV2": true,
+      "reason": "deploy",
+      "runtime": "V2",
+      "serviceManifest": {
+        "build": {
+          "buildCommand": "npm install && npx prisma migrate deploy && npx prisma generate && npx tsc",
+          "buildEnvironment": null,
+          "builder": "RAILPACK",
+          "dockerfilePath": null,
+          "nixpacksConfigPath": null,
+          "nixpacksPlan": null,
+          "watchPatterns": []
+        },
+        "deploy": {
+          "cronSchedule": null,
+          "drainingSeconds": null,
+          "healthcheckPath": null,
+          "healthcheckTimeout": null,
+          "ipv6EgressEnabled": false,
+          "limitOverride": null,
+          "multiRegionConfig": {
+            "us-west2": {
+              "numReplicas": 1
+            }
+          },
+          "numReplicas": 1,
+          "overlapSeconds": null,
+          "preDeployCommand": null,
+          "region": null,
+          "registryCredentials": null,
+          "requiredMountPath": null,
+          "restartPolicyMaxRetries": 10,
+          "restartPolicyType": "ON_FAILURE",
+          "runtime": "V2",
+          "sleepApplication": false,
+          "startCommand": "npm start",
+          "useLegacyStacker": false
+        }
+      },
+      "volumeMounts": []
+    }
+  },
+  {
+    "id": "0208c1e5-9603-4bee-9caf-9b24b940cd8a",
+    "status": "FAILED",
+    "createdAt": "2026-03-21T14:11:02.424Z",
+    "meta": {
+      "buildOnly": false,
+      "configErrors": [
+        "Could not find root directory: /backend"
+      ],
+      "logsV2": true,
+      "reason": "deploy",
+      "runtime": "V2",
+      "serviceManifest": {
+        "build": {
+          "buildCommand": "npm install && npx prisma migrate deploy && npx prisma generate && npx tsc",
+          "buildEnvironment": null,
+          "builder": "RAILPACK",
+          "dockerfilePath": null,
+          "nixpacksConfigPath": null,
+          "nixpacksPlan": null,
+          "watchPatterns": []
+        },
+        "deploy": {
+          "cronSchedule": null,
+          "drainingSeconds": null,
+          "healthcheckPath": null,
+          "healthcheckTimeout": null,
+          "ipv6EgressEnabled": false,
+          "limitOverride": null,
+          "multiRegionConfig": {
+            "us-west2": {
+              "numReplicas": 1
+            }
+          },
+          "numReplicas": 1,
+          "overlapSeconds": null,
+          "preDeployCommand": null,
+          "region": null,
+          "registryCredentials": null,
+          "requiredMountPath": null,
+          "restartPolicyMaxRetries": 10,
+          "restartPolicyType": "ON_FAILURE",
+          "runtime": "V2",
+          "sleepApplication": false,
+          "startCommand": "npm start",
+          "useLegacyStacker": false
+        }
+      },
+      "volumeMounts": []
+    }
+  },
+  {
+    "id": "81b18300-d6a0-4313-aa22-0802d1a1428c",
+    "status": "FAILED",
+    "createdAt": "2026-03-21T14:09:18.308Z",
+    "meta": {
+      "buildOnly": false,
+      "configErrors": [
+        "Could not find root directory: /backend"
+      ],
+      "logsV2": true,
+      "reason": "deploy",
+      "runtime": "V2",
+      "serviceManifest": {
+        "build": {
+          "buildCommand": "npm install && npx prisma migrate deploy && npx prisma generate && npx tsc",
+          "buildEnvironment": null,
+          "builder": "RAILPACK",
+          "dockerfilePath": null,
+          "nixpacksConfigPath": null,
+          "nixpacksPlan": null,
+          "watchPatterns": []
+        },
+        "deploy": {
+          "cronSchedule": null,
+          "drainingSeconds": null,
+          "healthcheckPath": null,
+          "healthcheckTimeout": null,
+          "ipv6EgressEnabled": false,
+          "limitOverride": null,
+          "multiRegionConfig": {
+            "us-west2": {
+              "numReplicas": 1
+            }
+          },
+          "numReplicas": 1,
+          "overlapSeconds": null,
+          "preDeployCommand": null,
+          "region": null,
+          "registryCredentials": null,
+          "requiredMountPath": null,
+          "restartPolicyMaxRetries": 10,
+          "restartPolicyType": "ON_FAILURE",
+          "runtime": "V2",
+          "sleepApplication": false,
+          "startCommand": "npm start",
+          "useLegacyStacker": false
+        }
+      },
+      "volumeMounts": []
+    }
+  },
+  {
+    "id": "123f09c3-1190-4026-a1cb-e8fd5447393c",
+    "status": "FAILED",
+    "createdAt": "2026-03-21T14:06:38.676Z",
+    "meta": {
+      "buildOnly": false,
+      "configErrors": [
+        "Could not find root directory: /backend"
+      ],
+      "logsV2": true,
+      "reason": "deploy",
+      "runtime": "V2",
+      "serviceManifest": {
+        "build": {
+          "buildCommand": "npm install && npx prisma migrate deploy && npx prisma generate && npx tsc",
+          "buildEnvironment": null,
+          "builder": "RAILPACK",
+          "dockerfilePath": null,
+          "nixpacksConfigPath": null,
+          "nixpacksPlan": null,
+          "watchPatterns": []
+        },
+        "deploy": {
+          "cronSchedule": null,
+          "drainingSeconds": null,
+          "healthcheckPath": null,
+          "healthcheckTimeout": null,
+          "ipv6EgressEnabled": false,
+          "limitOverride": null,
+          "multiRegionConfig": {
+            "us-west2": {
+              "numReplicas": 1
+            }
+          },
+          "numReplicas": 1,
+          "overlapSeconds": null,
+          "preDeployCommand": null,
+          "region": null,
+          "registryCredentials": null,
+          "requiredMountPath": null,
+          "restartPolicyMaxRetries": 10,
+          "restartPolicyType": "ON_FAILURE",
+          "runtime": "V2",
+          "sleepApplication": false,
+          "startCommand": "npm start",
+          "useLegacyStacker": false
+        }
+      },
+      "volumeMounts": []
+    }
+  },
+  {
+    "id": "5526f40b-167f-4b83-a25e-865188da9489",
+    "status": "SUCCESS",
+    "createdAt": "2026-03-21T14:03:49.187Z",
+    "meta": {
+      "branch": "main",
+      "buildOnly": false,
+      "commitAuthor": "Fabian20077",
+      "commitHash": "a9d79b9e66ccf8eb97c8d98654e280dd12677ad4",
+      "commitMessage": "refactor: switch auth from cookies to localStorage + direct Railway calls from browser",
+      "fileServiceManifest": {},
+      "ignoreWatchPatterns": true,
+      "imageDigest": "sha256:ee2e8d29381b333fcddfb7c1e1c3181920ed08d73ab7a5067db41dd3a41a5aab",
+      "logsV2": true,
+      "nixpacksProviders": [
+        "node"
+      ],
+      "patchId": "b672cb4f-236a-4c28-9406-fdfe0bd74f8c",
+      "plan": "trial",
+      "propertyFileMapping": {},
+      "queuedReason": "Waiting for build slot",
+      "railpackInfo": {
+        "detectedProviders": [
+          "node"
+        ],
+        "metadata": {
+          "nodePackageManager": "npm",
+          "nodeRuntime": "node",
+          "providers": "node"
+        },
+        "railpackVersion": "0.20.0",
+        "resolvedPackages": {
+          "node": {
+            "requestedVersion": "22",
+            "resolvedVersion": "22.22.1"
+          }
+        }
+      },
+      "reason": "deploy",
+      "repo": "Fabian20077/HELPIFY",
+      "rootDirectory": "/backend",
+      "runtime": "V2",
+      "serviceManifest": {
+        "build": {
+          "buildCommand": "npm install && npx prisma migrate deploy && npx prisma generate && npx tsc",
+          "buildEnvironment": null,
+          "builder": "RAILPACK",
+          "dockerfilePath": null,
+          "nixpacksConfigPath": null,
+          "nixpacksPlan": null,
+          "watchPatterns": []
+        },
+        "deploy": {
+          "cronSchedule": null,
+          "drainingSeconds": null,
+          "healthcheckPath": null,
+          "healthcheckTimeout": null,
+          "ipv6EgressEnabled": false,
+          "limitOverride": null,
+          "multiRegionConfig": {
+            "us-west2": {
+              "numReplicas": 1
+            }
+          },
+          "numReplicas": 1,
+          "overlapSeconds": null,
+          "preDeployCommand": null,
+          "region": null,
+          "registryCredentials": null,
+          "requiredMountPath": null,
+          "restartPolicyMaxRetries": 10,
+          "restartPolicyType": "ON_FAILURE",
+          "runtime": "V2",
+          "sleepApplication": false,
+          "startCommand": "npm start",
+          "useLegacyStacker": false
+        }
+      },
+      "volumeMounts": []
+    }
+  },
+  {
+    "id": "38cc5dde-e370-48f3-a8f8-faf0522a68d1",
+    "status": "REMOVED",
+    "createdAt": "2026-03-21T14:03:44.402Z",
+    "meta": {
+      "branch": "main",
+      "buildOnly": false,
+      "commitAuthor": "Fabian20077",
+      "commitHash": "a9d79b9e66ccf8eb97c8d98654e280dd12677ad4",
+      "commitMessage": "refactor: switch auth from cookies to localStorage + direct Railway calls from browser",
+      "fileServiceManifest": {},
+      "ignoreWatchPatterns": true,
+      "logsV2": true,
+      "nixpacksProviders": [
+        "node"
+      ],
+      "patchId": "57ab00a7-4b6c-4cf4-a08e-b2fa0d482b1f",
+      "plan": "trial",
+      "propertyFileMapping": {},
+      "queuedReason": "Waiting for build slot",
+      "railpackInfo": {
+        "detectedProviders": [
+          "node"
+        ],
+        "metadata": {
+          "nodePackageManager": "npm",
+          "nodeRuntime": "node",
+          "providers": "node"
+        },
+        "railpackVersion": "0.20.0",
+        "resolvedPackages": {
+          "node": {
+            "requestedVersion": "22",
+            "resolvedVersion": "22.22.1"
+          }
+        }
+      },
+      "reason": "deploy",
+      "repo": "Fabian20077/HELPIFY",
+      "rootDirectory": "/backend",
+      "runtime": "V2",
+      "serviceManifest": {
+        "build": {
+          "buildCommand": "npm install && npx prisma migrate deploy && npx prisma generate && npx tsc",
+          "buildEnvironment": null,
+          "builder": "RAILPACK",
+          "dockerfilePath": null,
+          "nixpacksConfigPath": null,
+          "nixpacksPlan": null,
+          "watchPatterns": []
+        },
+        "deploy": {
+          "cronSchedule": null,
+          "drainingSeconds": null,
+          "healthcheckPath": null,
+          "healthcheckTimeout": null,
+          "ipv6EgressEnabled": false,
+          "limitOverride": null,
+          "multiRegionConfig": {
+            "us-west2": {
+              "numReplicas": 1
+            }
+          },
+          "numReplicas": 1,
+          "overlapSeconds": null,
+          "preDeployCommand": null,
+          "region": null,
+          "registryCredentials": null,
+          "requiredMountPath": null,
+          "restartPolicyMaxRetries": 10,
+          "restartPolicyType": "ON_FAILURE",
+          "runtime": "V2",
+          "sleepApplication": false,
+          "startCommand": "npm start",
+          "useLegacyStacker": false
+        }
+      },
+      "volumeMounts": []
+    }
+  },
+  {
+    "id": "95d39d75-23aa-45a4-a170-d0871178d437",
+    "status": "REMOVED",
+    "createdAt": "2026-03-21T14:03:41.681Z",
+    "meta": {
+      "branch": "main",
+      "buildOnly": false,
+      "commitAuthor": "Fabian20077",
+      "commitHash": "a9d79b9e66ccf8eb97c8d98654e280dd12677ad4",
+      "commitMessage": "refactor: switch auth from cookies to localStorage + direct Railway calls from browser",
+      "fileServiceManifest": {},
+      "ignoreWatchPatterns": true,
+      "imageDigest": "sha256:b0a28e53acf33fded8824931302a9ab387bd755327606002f9b0cde4377a7554",
+      "logsV2": true,
+      "nixpacksProviders": [
+        "node"
+      ],
+      "patchId": "acc35e37-1656-4dd2-bc4b-66e457c82f0b",
+      "plan": "trial",
+      "propertyFileMapping": {},
+      "queuedReason": "Waiting for build slot",
+      "railpackInfo": {
+        "detectedProviders": [
+          "node"
+        ],
+        "metadata": {
+          "nodePackageManager": "npm",
+          "nodeRuntime": "node",
+          "providers": "node"
+        },
+        "railpackVersion": "0.20.0",
+        "resolvedPackages": {
+          "node": {
+            "requestedVersion": "22",
+            "resolvedVersion": "22.22.1"
+          }
+        }
+      },
+      "reason": "deploy",
+      "repo": "Fabian20077/HELPIFY",
+      "rootDirectory": "/backend",
+      "runtime": "V2",
+      "serviceManifest": {
+        "build": {
+          "buildCommand": "npm install && npx prisma migrate deploy && npx prisma generate && npx tsc",
+          "buildEnvironment": null,
+          "builder": "RAILPACK",
+          "dockerfilePath": null,
+          "nixpacksConfigPath": null,
+          "nixpacksPlan": null,
+          "watchPatterns": []
+        },
+        "deploy": {
+          "cronSchedule": null,
+          "drainingSeconds": null,
+          "healthcheckPath": null,
+          "healthcheckTimeout": null,
+          "ipv6EgressEnabled": false,
+          "limitOverride": null,
+          "multiRegionConfig": {
+            "us-west2": {
+              "numReplicas": 1
+            }
+          },
+          "numReplicas": 1,
+          "overlapSeconds": null,
+          "preDeployCommand": null,
+          "region": null,
+          "registryCredentials": null,
+          "requiredMountPath": null,
+          "restartPolicyMaxRetries": 10,
+          "restartPolicyType": "ON_FAILURE",
+          "runtime": "V2",
+          "sleepApplication": false,
+          "startCommand": "npm start",
+          "useLegacyStacker": false
+        }
+      },
+      "volumeMounts": []
+    }
+  },
+  {
+    "id": "175e52f0-5d84-471a-8891-56d1c1349b17",
+    "status": "REMOVED",
+    "createdAt": "2026-03-21T14:03:38.795Z",
+    "meta": {
+      "branch": "main",
+      "buildOnly": false,
+      "commitAuthor": "Fabian20077",
+      "commitHash": "a9d79b9e66ccf8eb97c8d98654e280dd12677ad4",
+      "commitMessage": "refactor: switch auth from cookies to localStorage + direct Railway calls from browser",
+      "fileServiceManifest": {},
+      "ignoreWatchPatterns": true,
+      "imageDigest": "sha256:735d25e4983666f4609083646e0a10d8668537836e4a3566e948623dd8a218d7",
+      "logsV2": true,
+      "nixpacksProviders": [
+        "node"
+      ],
+      "patchId": "89ebc079-c935-4d0b-a07b-e5c2826b3c79",
+      "plan": "trial",
+      "propertyFileMapping": {},
+      "queuedReason": "Waiting for build slot",
+      "railpackInfo": {
+        "detectedProviders": [
+          "node"
+        ],
+        "metadata": {
+          "nodePackageManager": "npm",
+          "nodeRuntime": "node",
+          "providers": "node"
+        },
+        "railpackVersion": "0.20.0",
+        "resolvedPackages": {
+          "node": {
+            "requestedVersion": "22",
+            "resolvedVersion": "22.22.1"
+          }
+        }
+      },
+      "reason": "deploy",
+      "repo": "Fabian20077/HELPIFY",
+      "rootDirectory": "/backend",
+      "runtime": "V2",
+      "serviceManifest": {
+        "build": {
+          "buildCommand": "npm install && npx prisma migrate deploy && npx prisma generate && npx tsc",
+          "buildEnvironment": null,
+          "builder": "RAILPACK",
+          "dockerfilePath": null,
+          "nixpacksConfigPath": null,
+          "nixpacksPlan": null,
+          "watchPatterns": []
+        },
+        "deploy": {
+          "cronSchedule": null,
+          "drainingSeconds": null,
+          "healthcheckPath": null,
+          "healthcheckTimeout": null,
+          "ipv6EgressEnabled": false,
+          "limitOverride": null,
+          "multiRegionConfig": {
+            "us-west2": {
+              "numReplicas": 1
+            }
+          },
+          "numReplicas": 1,
+          "overlapSeconds": null,
+          "preDeployCommand": null,
+          "region": null,
+          "registryCredentials": null,
+          "requiredMountPath": null,
+          "restartPolicyMaxRetries": 10,
+          "restartPolicyType": "ON_FAILURE",
+          "runtime": "V2",
+          "sleepApplication": false,
+          "startCommand": "npm start",
+          "useLegacyStacker": false
+        }
+      },
+      "volumeMounts": []
+    }
+  },
+  {
+    "id": "407a0d8d-50a9-4033-a696-3bfcd2377845",
+    "status": "REMOVED",
+    "createdAt": "2026-03-21T14:03:36.323Z",
+    "meta": {
+      "branch": "main",
+      "buildOnly": false,
+      "commitAuthor": "Fabian20077",
+      "commitHash": "a9d79b9e66ccf8eb97c8d98654e280dd12677ad4",
+      "commitMessage": "refactor: switch auth from cookies to localStorage + direct Railway calls from browser",
+      "fileServiceManifest": {},
+      "ignoreWatchPatterns": true,
+      "logsV2": true,
+      "nixpacksProviders": [
+        "node"
+      ],
+      "patchId": "f05fc1a6-d3ce-42d4-ac3a-f34947ffa8d1",
+      "plan": "trial",
+      "propertyFileMapping": {},
+      "queuedReason": "Waiting for build slot",
+      "railpackInfo": {
+        "detectedProviders": [
+          "node"
+        ],
+        "metadata": {
+          "nodePackageManager": "npm",
+          "nodeRuntime": "node",
+          "providers": "node"
+        },
+        "railpackVersion": "0.20.0",
+        "resolvedPackages": {
+          "node": {
+            "requestedVersion": "22",
+            "resolvedVersion": "22.22.1"
+          }
+        }
+      },
+      "reason": "deploy",
+      "repo": "Fabian20077/HELPIFY",
+      "rootDirectory": "/backend",
+      "runtime": "V2",
+      "serviceManifest": {
+        "build": {
+          "buildCommand": "npm install && npx prisma migrate deploy && npx prisma generate && npx tsc",
+          "buildEnvironment": null,
+          "builder": "RAILPACK",
+          "dockerfilePath": null,
+          "nixpacksConfigPath": null,
+          "nixpacksPlan": null,
+          "watchPatterns": []
+        },
+        "deploy": {
+          "cronSchedule": null,
+          "drainingSeconds": null,
+          "healthcheckPath": null,
+          "healthcheckTimeout": null,
+          "ipv6EgressEnabled": false,
+          "limitOverride": null,
+          "multiRegionConfig": {
+            "us-west2": {
+              "numReplicas": 1
+            }
+          },
+          "numReplicas": 1,
+          "overlapSeconds": null,
+          "preDeployCommand": null,
+          "region": null,
+          "registryCredentials": null,
+          "requiredMountPath": null,
+          "restartPolicyMaxRetries": 10,
+          "restartPolicyType": "ON_FAILURE",
+          "runtime": "V2",
+          "sleepApplication": false,
+          "startCommand": "npm start",
+          "useLegacyStacker": false
+        }
+      },
+      "volumeMounts": []
+    }
+  },
+  {
+    "id": "ad1c428d-4585-422f-89bb-b6ca2bbca874",
+    "status": "REMOVED",
+    "createdAt": "2026-03-21T14:03:27.653Z",
+    "meta": {
+      "branch": "main",
+      "buildOnly": false,
+      "commitAuthor": "Fabian20077",
+      "commitHash": "a9d79b9e66ccf8eb97c8d98654e280dd12677ad4",
+      "commitMessage": "refactor: switch auth from cookies to localStorage + direct Railway calls from browser",
+      "fileServiceManifest": {},
+      "ignoreWatchPatterns": true,
+      "imageDigest": "sha256:cebdc4790e534ee0b2924883379eed01c9f2caa12ea4b263deecd6ffbf66e663",
+      "logsV2": true,
+      "nixpacksProviders": [
+        "node"
+      ],
+      "patchId": "b4d908ab-ff13-4c4e-9daa-00c61c0ecb15",
+      "plan": "trial",
+      "propertyFileMapping": {},
+      "queuedReason": "Waiting for build slot",
+      "railpackInfo": {
+        "detectedProviders": [
+          "node"
+        ],
+        "metadata": {
+          "nodePackageManager": "npm",
+          "nodeRuntime": "node",
+          "providers": "node"
+        },
+        "railpackVersion": "0.20.0",
+        "resolvedPackages": {
+          "node": {
+            "requestedVersion": "22",
+            "resolvedVersion": "22.22.1"
+          }
+        }
+      },
+      "reason": "deploy",
+      "repo": "Fabian20077/HELPIFY",
+      "rootDirectory": "/backend",
+      "runtime": "V2",
+      "serviceManifest": {
+        "build": {
+          "buildCommand": "npm install && npx prisma migrate deploy && npx prisma generate && npx tsc",
+          "buildEnvironment": null,
+          "builder": "RAILPACK",
+          "dockerfilePath": null,
+          "nixpacksConfigPath": null,
+          "nixpacksPlan": null,
+          "watchPatterns": []
+        },
+        "deploy": {
+          "cronSchedule": null,
+          "drainingSeconds": null,
+          "healthcheckPath": null,
+          "healthcheckTimeout": null,
+          "ipv6EgressEnabled": false,
+          "limitOverride": null,
+          "multiRegionConfig": {
+            "us-west2": {
+              "numReplicas": 1
+            }
+          },
+          "numReplicas": 1,
+          "overlapSeconds": null,
+          "preDeployCommand": null,
+          "region": null,
+          "registryCredentials": null,
+          "requiredMountPath": null,
+          "restartPolicyMaxRetries": 10,
+          "restartPolicyType": "ON_FAILURE",
+          "runtime": "V2",
+          "sleepApplication": false,
+          "startCommand": "npm start",
+          "useLegacyStacker": false
+        }
+      },
+      "volumeMounts": []
+    }
+  },
+  {
+    "id": "07c0a39a-79cb-47df-9478-dece44903841",
+    "status": "REMOVED",
+    "createdAt": "2026-03-21T14:03:26.507Z",
+    "meta": {
+      "branch": "main",
+      "buildOnly": false,
+      "commitAuthor": "Fabian20077",
+      "commitHash": "a9d79b9e66ccf8eb97c8d98654e280dd12677ad4",
+      "commitMessage": "refactor: switch auth from cookies to localStorage + direct Railway calls from browser",
+      "fileServiceManifest": {},
+      "ignoreWatchPatterns": true,
+      "imageDigest": "sha256:a622bf893be93a30c939b00d94d25a6175a03dfa45c666e7d814cad253e251f2",
+      "logsV2": true,
+      "nixpacksProviders": [
+        "node"
+      ],
+      "patchId": "ee6b6342-8ec8-4d1b-af52-d64929759062",
+      "plan": "trial",
+      "propertyFileMapping": {},
+      "railpackInfo": {
+        "detectedProviders": [
+          "node"
+        ],
+        "metadata": {
+          "nodePackageManager": "npm",
+          "nodeRuntime": "node",
+          "providers": "node"
+        },
+        "railpackVersion": "0.20.0",
+        "resolvedPackages": {
+          "node": {
+            "requestedVersion": "22",
+            "resolvedVersion": "22.22.1"
+          }
+        }
+      },
+      "reason": "deploy",
+      "repo": "Fabian20077/HELPIFY",
+      "rootDirectory": "/backend",
+      "runtime": "V2",
+      "serviceManifest": {
+        "build": {
+          "buildCommand": "npm install && npx prisma migrate deploy && npx prisma generate && npx tsc",
+          "buildEnvironment": null,
+          "builder": "RAILPACK",
+          "dockerfilePath": null,
+          "nixpacksConfigPath": null,
+          "nixpacksPlan": null,
+          "watchPatterns": []
+        },
+        "deploy": {
+          "cronSchedule": null,
+          "drainingSeconds": null,
+          "healthcheckPath": null,
+          "healthcheckTimeout": null,
+          "ipv6EgressEnabled": false,
+          "limitOverride": null,
+          "multiRegionConfig": {
+            "us-west2": {
+              "numReplicas": 1
+            }
+          },
+          "numReplicas": 1,
+          "overlapSeconds": null,
+          "preDeployCommand": null,
+          "region": null,
+          "registryCredentials": null,
+          "requiredMountPath": null,
+          "restartPolicyMaxRetries": 10,
+          "restartPolicyType": "ON_FAILURE",
+          "runtime": "V2",
+          "sleepApplication": false,
+          "startCommand": "npm start",
+          "useLegacyStacker": false
+        }
+      },
+      "volumeMounts": []
+    }
+  },
+  {
+    "id": "98b64261-bfca-4d7c-bba6-1a088e79f34c",
+    "status": "REMOVED",
+    "createdAt": "2026-03-21T14:03:26.012Z",
+    "meta": {
+      "branch": "main",
+      "buildOnly": false,
+      "commitAuthor": "Fabian20077",
+      "commitHash": "a9d79b9e66ccf8eb97c8d98654e280dd12677ad4",
+      "commitMessage": "refactor: switch auth from cookies to localStorage + direct Railway calls from browser",
+      "fileServiceManifest": {},
+      "ignoreWatchPatterns": true,
+      "logsV2": true,
+      "nixpacksProviders": [
+        "node"
+      ],
+      "patchId": "bc3cc721-965a-44db-90e2-324619a80dc3",
+      "plan": "trial",
+      "propertyFileMapping": {},
+      "reason": "deploy",
+      "repo": "Fabian20077/HELPIFY",
+      "rootDirectory": "/backend",
+      "runtime": "V2",
+      "serviceManifest": {
+        "build": {
+          "buildCommand": "npm install && npx prisma migrate deploy && npx prisma generate && npx tsc",
+          "buildEnvironment": null,
+          "builder": "RAILPACK",
+          "dockerfilePath": null,
+          "nixpacksConfigPath": null,
+          "nixpacksPlan": null,
+          "watchPatterns": []
+        },
+        "deploy": {
+          "cronSchedule": null,
+          "drainingSeconds": null,
+          "healthcheckPath": null,
+          "healthcheckTimeout": null,
+          "ipv6EgressEnabled": false,
+          "limitOverride": null,
+          "multiRegionConfig": {
+            "us-west2": {
+              "numReplicas": 1
+            }
+          },
+          "numReplicas": 1,
+          "overlapSeconds": null,
+          "preDeployCommand": null,
+          "region": null,
+          "registryCredentials": null,
+          "requiredMountPath": null,
+          "restartPolicyMaxRetries": 10,
+          "restartPolicyType": "ON_FAILURE",
+          "runtime": "V2",
+          "sleepApplication": false,
+          "startCommand": "npm start",
+          "useLegacyStacker": false
+        }
+      },
+      "volumeMounts": []
+    }
+  },
+  {
+    "id": "b85f1f45-a627-416f-b5ce-0a09a89eaaec",
+    "status": "REMOVED",
+    "createdAt": "2026-03-21T14:03:17.610Z",
+    "meta": {
+      "branch": "main",
+      "buildOnly": false,
+      "commitAuthor": "Fabian20077",
+      "commitHash": "a9d79b9e66ccf8eb97c8d98654e280dd12677ad4",
+      "commitMessage": "refactor: switch auth from cookies to localStorage + direct Railway calls from browser",
+      "fileServiceManifest": {},
+      "ignoreWatchPatterns": true,
+      "imageDigest": "sha256:ca5531b4c69618c01bee1ff5e1b7460f92fa9e19a4d76b95320cec04ccb5ee10",
+      "logsV2": true,
+      "nixpacksProviders": [
+        "node"
+      ],
+      "patchId": "0d07468e-6c90-4409-bccf-7b5ab1f74e6c",
+      "plan": "trial",
+      "propertyFileMapping": {},
+      "railpackInfo": {
+        "detectedProviders": [
+          "node"
+        ],
+        "metadata": {
+          "nodePackageManager": "npm",
+          "nodeRuntime": "node",
+          "providers": "node"
+        },
+        "railpackVersion": "0.20.0",
+        "resolvedPackages": {
+          "node": {
+            "requestedVersion": "22",
+            "resolvedVersion": "22.22.1"
+          }
+        }
+      },
+      "reason": "deploy",
+      "repo": "Fabian20077/HELPIFY",
+      "rootDirectory": "/backend",
+      "runtime": "V2",
+      "serviceManifest": {
+        "build": {
+          "buildCommand": "npm install && npx prisma migrate deploy && npx prisma generate && npx tsc",
+          "buildEnvironment": null,
+          "builder": "RAILPACK",
+          "dockerfilePath": null,
+          "nixpacksConfigPath": null,
+          "nixpacksPlan": null,
+          "watchPatterns": []
+        },
+        "deploy": {
+          "cronSchedule": null,
+          "drainingSeconds": null,
+          "healthcheckPath": null,
+          "healthcheckTimeout": null,
+          "ipv6EgressEnabled": false,
+          "limitOverride": null,
+          "multiRegionConfig": {
+            "us-west2": {
+              "numReplicas": 1
+            }
+          },
+          "numReplicas": 1,
+          "overlapSeconds": null,
+          "preDeployCommand": null,
+          "region": null,
+          "registryCredentials": null,
+          "requiredMountPath": null,
+          "restartPolicyMaxRetries": 10,
+          "restartPolicyType": "ON_FAILURE",
+          "runtime": "V2",
+          "sleepApplication": false,
+          "startCommand": "npm start",
+          "useLegacyStacker": false
+        }
+      },
+      "volumeMounts": []
+    }
+  }
+]

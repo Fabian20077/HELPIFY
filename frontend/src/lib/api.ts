@@ -6,9 +6,6 @@
 
 import type { ApiResponse } from './types';
 
-export const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
-
 export class ApiError extends Error {
   constructor(
     message: string,
@@ -20,17 +17,52 @@ export class ApiError extends Error {
   }
 }
 
+/**
+ * Base del backend (debe incluir `/api`). Solo URLs absolutas https?://...
+ * Si usas "/api" en Vercel, el navegador llama a tu propio dominio y obtienes HTML 404.
+ */
+function normalizePublicApiBaseUrl(): string {
+  const raw = (process.env.NEXT_PUBLIC_API_URL || '').trim();
+  if (raw.startsWith('https://') || raw.startsWith('http://')) {
+    return raw.replace(/\/$/, '');
+  }
+  if (typeof window !== 'undefined' && raw.startsWith('/')) {
+    console.error(
+      '[Helpify] NEXT_PUBLIC_API_URL no puede ser una ruta relativa (ej. /api). ' +
+        'En Vercel → Environment Variables usa la URL completa, p. ej. https://tu-app.up.railway.app/api',
+    );
+  }
+  return 'http://localhost:3001/api';
+}
+
+export const API_BASE_URL = normalizePublicApiBaseUrl();
+
+function buildUrl(endpoint: string): string {
+  if (endpoint.startsWith('http')) return endpoint;
+  return `${API_BASE_URL}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
+}
+
+async function readApiResponse(response: Response): Promise<ApiResponse<unknown>> {
+  const ct = response.headers.get('content-type') || '';
+  if (!ct.includes('application/json')) {
+    const text = await response.text();
+    const looksLikeHtml = /^\s*</.test(text);
+    throw new ApiError(
+      looksLikeHtml
+        ? 'El servidor respondió con HTML (no JSON). Revisa NEXT_PUBLIC_API_URL en Vercel: debe ser la URL completa del backend en Railway, por ejemplo https://xxxx.up.railway.app/api'
+        : text.slice(0, 200) || `Error ${response.status}`,
+      response.status,
+      'error',
+    );
+  }
+  return response.json() as Promise<ApiResponse<unknown>>;
+}
+
 interface FetchOptions extends Omit<RequestInit, 'body'> {
   body?: Record<string, unknown> | FormData;
   token?: string;
 }
 
-/**
- * Type-safe fetch wrapper for the Helpify backend API.
- * 
- * - On the server (RSC), pass `token` explicitly from the cookie.
- * - On the client, the proxy API routes handle cookie forwarding.
- */
 export async function apiFetch<T>(
   endpoint: string,
   options: FetchOptions = {},
@@ -49,13 +81,12 @@ export async function apiFetch<T>(
 
   if (body instanceof FormData) {
     processedBody = body;
-    // Don't set Content-Type — browser sets it with boundary
   } else if (body) {
     headers['Content-Type'] = 'application/json';
     processedBody = JSON.stringify(body);
   }
 
-  const url = endpoint.startsWith('http') ? endpoint : `${API_BASE_URL}${endpoint}`;
+  const url = buildUrl(endpoint);
 
   const response = await fetch(url, {
     ...rest,
@@ -63,28 +94,23 @@ export async function apiFetch<T>(
     body: processedBody,
   });
 
-  // Handle 204 No Content
   if (response.status === 204) {
     return undefined as T;
   }
 
-  const data: ApiResponse<T> = await response.json();
+  const data = await readApiResponse(response);
 
   if (!response.ok) {
     throw new ApiError(
-      data.message || `Error ${response.status}`,
+      (data.message as string) || `Error ${response.status}`,
       response.status,
-      data.status || 'error',
+      (data.status as string) || 'error',
     );
   }
 
   return data.data as T;
 }
 
-/**
- * Same as apiFetch but returns the full ApiResponse envelope, 
- * preserving pagination and results metadata.
- */
 export async function apiFetchFull<T>(
   endpoint: string,
   options: FetchOptions = {},
@@ -108,7 +134,7 @@ export async function apiFetchFull<T>(
     processedBody = JSON.stringify(body);
   }
 
-  const url = endpoint.startsWith('http') ? endpoint : `${API_BASE_URL}${endpoint}`;
+  const url = buildUrl(endpoint);
 
   const response = await fetch(url, {
     ...rest,
@@ -120,25 +146,23 @@ export async function apiFetchFull<T>(
     return { status: 'success' } as ApiResponse<T>;
   }
 
-  const data: ApiResponse<T> = await response.json();
+  const data = await readApiResponse(response);
 
   if (!response.ok) {
     throw new ApiError(
-      data.message || `Error ${response.status}`,
+      (data.message as string) || `Error ${response.status}`,
       response.status,
-      data.status || 'error',
+      (data.status as string) || 'error',
     );
   }
 
-  return data;
+  return data as ApiResponse<T>;
 }
-
-// ── Convenience methods ──────────────────────────────────────────────────────
 
 export const api = {
   get: <T>(endpoint: string, token?: string) =>
     apiFetch<T>(endpoint, { method: 'GET', token }),
-    
+
   getPaginated: <T>(endpoint: string, token?: string) =>
     apiFetchFull<T>(endpoint, { method: 'GET', token }),
 

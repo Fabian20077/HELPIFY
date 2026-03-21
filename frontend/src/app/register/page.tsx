@@ -22,6 +22,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { TicketIcon, Loader2 } from 'lucide-react';
 import { setToken } from '@/lib/auth';
+import { API_BASE_URL } from '@/lib/api';
 
 const registerSchema = z.object({
   name: z.string().min(3, 'El nombre debe tener al menos 3 caracteres'),
@@ -50,8 +51,7 @@ export default function RegisterPage() {
     setError(null);
 
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-      const response = await fetch(`${baseUrl}/auth/register`, {
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

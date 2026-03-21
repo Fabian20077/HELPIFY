@@ -9,7 +9,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { getToken } from '@/lib/auth';
-import { API_BASE_URL } from '@/lib/api';
+import { api } from '@/lib/api';
 
 export interface Agent {
   id: string;
@@ -43,19 +43,14 @@ export function AgentSelector({ ticketId, currentAssignedToId, currentAssignedTo
     async function fetchAgents() {
       try {
         const token = getToken();
-        const headers: Record<string, string> = {};
-        if (token) {
-          headers['Authorization'] = `Bearer ${token}`;
+        if (!token) {
+          setError('Sesión no válida');
+          return;
         }
-        const res = await fetch(`${API_BASE_URL}/users/agents`, { headers });
-        const data = await res.json();
-        if (data.status === 'success') {
-          setAgents(data.data);
-        } else {
-          setError('Error al cargar agentes');
-        }
-      } catch (err) {
-        setError('Error de conexión');
+        const list = await api.get<Agent[]>('/users/agents', token);
+        setAgents(list);
+      } catch {
+        setError('Error al cargar agentes');
       } finally {
         setIsLoading(false);
       }
