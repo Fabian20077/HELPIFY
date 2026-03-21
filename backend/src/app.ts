@@ -38,6 +38,12 @@ app.use(
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
+// ── Request Logging ──────────────────────────────────────────────────────────
+app.use((req, _res, next) => {
+  logger.info(`📥 ${req.method} ${req.path}`, { body: req.body });
+  next();
+});
+
 // ── Health Check ─────────────────────────────────────────────────────────────
 // GET /api/health → { status: "ok" }
 app.get('/api/health', (_req, res) => {
