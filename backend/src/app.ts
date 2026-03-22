@@ -9,6 +9,7 @@ import helmet from 'helmet';
 import dotenv from 'dotenv';
 import apiRouter from './routes';
 import { AppError } from './middlewares/error.middleware';
+import logger from './lib/logger';
 
 dotenv.config();
 

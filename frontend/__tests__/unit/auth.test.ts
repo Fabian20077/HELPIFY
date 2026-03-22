@@ -1,20 +1,15 @@
-import { decodeTokenPayload, getCurrentUser } from '@/lib/auth';
+import {
+  decodeTokenPayload,
+  getToken,
+  setToken,
+  removeToken,
+  AUTH_TOKEN_KEY,
+} from '@/lib/auth';
 import { UserRole } from '@/lib/types';
-import { api } from '@/lib/api';
-
-jest.mock('@/lib/api', () => ({
-  api: { get: jest.fn() }
-}));
-
-// mock next/headers cookies
-jest.mock('next/headers', () => ({
-  cookies: jest.fn().mockResolvedValue({
-    get: jest.fn().mockReturnValue({ value: 'mock-token' })
-  })
-}));
 
 describe('Auth Utilities', () => {
   beforeEach(() => {
+    localStorage.clear();
     jest.clearAllMocks();
   });
 
@@ -33,20 +28,18 @@ describe('Auth Utilities', () => {
     });
   });
 
-  describe('getCurrentUser', () => {
-    it('fetches current user using token from cookies', async () => {
-      const mockUser = { id: 'user-1', name: 'John Doe', role: UserRole.CUSTOMER };
-      (api.get as jest.Mock).mockResolvedValueOnce(mockUser);
-
-      const user = await getCurrentUser();
-      expect(api.get).toHaveBeenCalledWith('/users/me', 'mock-token');
-      expect(user).toEqual(mockUser);
+  describe('localStorage token helpers', () => {
+    it('setToken stores JWT and getToken reads it', () => {
+      setToken('jwt-value');
+      expect(localStorage.getItem(AUTH_TOKEN_KEY)).toBe('jwt-value');
+      expect(getToken()).toBe('jwt-value');
     });
 
-    it('returns null if api fails', async () => {
-      (api.get as jest.Mock).mockRejectedValueOnce(new Error('Auth failed'));
-      const user = await getCurrentUser();
-      expect(user).toBeNull();
+    it('removeToken clears the stored JWT', () => {
+      setToken('jwt-value');
+      removeToken();
+      expect(localStorage.getItem(AUTH_TOKEN_KEY)).toBeNull();
+      expect(getToken()).toBeUndefined();
     });
   });
 });

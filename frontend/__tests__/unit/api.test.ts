@@ -1,6 +1,23 @@
-import { apiFetch, ApiError, api } from '@/lib/api';
+import { ApiError, api } from '@/lib/api';
 
 global.fetch = jest.fn();
+
+function jsonResponse(overrides: {
+  ok?: boolean;
+  status?: number;
+  json?: () => Promise<unknown>;
+} = {}) {
+  const contentType = 'application/json';
+  return {
+    ok: true,
+    status: 200,
+    headers: {
+      get: (name: string) => (name.toLowerCase() === 'content-type' ? contentType : null),
+    },
+    json: async () => ({ status: 'success', data: { id: 1 } }),
+    ...overrides,
+  };
+}
 
 describe('API Client (apiFetch)', () => {
   beforeEach(() => {
@@ -8,10 +25,11 @@ describe('API Client (apiFetch)', () => {
   });
 
   it('adds token to headers when provided', async () => {
-    (fetch as jest.Mock).mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({ status: 'success', data: { id: 1 } }),
-    });
+    (fetch as jest.Mock).mockResolvedValueOnce(
+      jsonResponse({
+        json: async () => ({ status: 'success', data: { id: 1 } }),
+      }),
+    );
 
     await api.get('/test', 'my-token');
 
@@ -21,16 +39,18 @@ describe('API Client (apiFetch)', () => {
         headers: expect.objectContaining({
           Authorization: 'Bearer my-token',
         }),
-      })
+      }),
     );
   });
 
   it('parses error response and throws ApiError', async () => {
-    (fetch as jest.Mock).mockResolvedValue({
-      ok: false,
-      status: 400,
-      json: async () => ({ status: 'error', message: 'Bad request' }),
-    });
+    (fetch as jest.Mock).mockResolvedValue(
+      jsonResponse({
+        ok: false,
+        status: 400,
+        json: async () => ({ status: 'error', message: 'Bad request' }),
+      }),
+    );
 
     await expect(api.get('/test')).rejects.toThrow(ApiError);
     await expect(api.get('/test')).rejects.toMatchObject({
