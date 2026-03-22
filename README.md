@@ -78,25 +78,65 @@ El servidor se levantará en `http://localhost:3001`. Accede a `http://localhost
 
 ---
 
-## 🧪 Pruebas y QA
+## Tests
 
-Este es un proyecto altamente centrado en **Quality Assurance**. La configuración incluye Jest 100% integrado a Typescript. 
+Cifras verificadas con Jest en el estado actual del repositorio (marzo 2026).
 
-### Ejecución de Pruebas:
+| Ámbito | Tests | Suites |
+|--------|------:|-------:|
+| Backend — unitarios | 69 | 3 |
+| Backend — integración | 93 | 13 |
+| Frontend | 10 | 3 |
+
+**Total backend (unitarios + integración):** 162 tests, 16 suites — solo si la suite completa pasa (requiere MySQL de test).
+
+### Cómo ejecutar los tests
+
+**Backend — solo unitarios** (no requieren Docker):
 
 ```bash
-# Correr TODO (usando runInBand para BD secuenciales)
-npm run test
-
-# Pruebas Unitarias de lógica crítica de negocio (Score, MIME, Transitions)
+cd backend
 npm run test:unit
+```
 
-# Reporte de cobertura de código (¿Qué tanto está siendo testeado nuestro backend?)
+**Backend — integración y suite completa** (requieren MySQL de test en el puerto **3307**, según `backend/.env.test`):
+
+Desde la raíz del repositorio (donde está `docker-compose.yml`):
+
+```bash
+docker compose up -d
+cd backend
+npm test
+```
+
+Opcional: `npm run test:integration` ejecuta solo las 13 suites de integración.
+
+**Frontend:**
+
+```bash
+cd frontend
+npm test
+```
+
+### Más opciones (backend)
+
+```bash
+# Cobertura
 npm run test:coverage
 
-# Pruebas activas
+# Modo watch
 npm run test:watch
 ```
+
+---
+
+## 🧪 Pruebas y QA
+
+Este es un proyecto altamente centrado en **Quality Assurance**. La configuración incluye Jest 100% integrado a Typescript.
+
+### Componentes de testing (resumen)
+
+Los números exactos están en la sección [Tests](#tests) de este README.
 
 ### Componentes de Testing Activos:
 
