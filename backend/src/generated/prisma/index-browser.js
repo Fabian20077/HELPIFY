@@ -197,6 +197,13 @@ exports.Prisma.TicketHistoryScalarFieldEnum = {
   changedAt: 'changedAt'
 };
 
+exports.Prisma.TicketObserverScalarFieldEnum = {
+  id: 'id',
+  ticketId: 'ticketId',
+  userId: 'userId',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.NotificationScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -274,6 +281,12 @@ exports.Prisma.TicketHistoryOrderByRelevanceFieldEnum = {
   newValue: 'newValue'
 };
 
+exports.Prisma.TicketObserverOrderByRelevanceFieldEnum = {
+  id: 'id',
+  ticketId: 'ticketId',
+  userId: 'userId'
+};
+
 exports.Prisma.NotificationOrderByRelevanceFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -316,6 +329,7 @@ exports.Prisma.ModelName = {
   Comment: 'Comment',
   Attachment: 'Attachment',
   TicketHistory: 'TicketHistory',
+  TicketObserver: 'TicketObserver',
   Notification: 'Notification'
 };
 

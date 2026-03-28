@@ -49,6 +49,11 @@ export type Attachment = $Result.DefaultSelection<Prisma.$AttachmentPayload>
  */
 export type TicketHistory = $Result.DefaultSelection<Prisma.$TicketHistoryPayload>
 /**
+ * Model TicketObserver
+ * 
+ */
+export type TicketObserver = $Result.DefaultSelection<Prisma.$TicketObserverPayload>
+/**
  * Model Notification
  * 
  */
@@ -305,6 +310,16 @@ export class PrismaClient<
     * ```
     */
   get ticketHistory(): Prisma.TicketHistoryDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.ticketObserver`: Exposes CRUD operations for the **TicketObserver** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more TicketObservers
+    * const ticketObservers = await prisma.ticketObserver.findMany()
+    * ```
+    */
+  get ticketObserver(): Prisma.TicketObserverDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.notification`: Exposes CRUD operations for the **Notification** model.
@@ -756,6 +771,7 @@ export namespace Prisma {
     Comment: 'Comment',
     Attachment: 'Attachment',
     TicketHistory: 'TicketHistory',
+    TicketObserver: 'TicketObserver',
     Notification: 'Notification'
   };
 
@@ -772,7 +788,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "department" | "user" | "category" | "ticket" | "comment" | "attachment" | "ticketHistory" | "notification"
+      modelProps: "department" | "user" | "category" | "ticket" | "comment" | "attachment" | "ticketHistory" | "ticketObserver" | "notification"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1238,6 +1254,72 @@ export namespace Prisma {
           }
         }
       }
+      TicketObserver: {
+        payload: Prisma.$TicketObserverPayload<ExtArgs>
+        fields: Prisma.TicketObserverFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.TicketObserverFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TicketObserverPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.TicketObserverFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TicketObserverPayload>
+          }
+          findFirst: {
+            args: Prisma.TicketObserverFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TicketObserverPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.TicketObserverFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TicketObserverPayload>
+          }
+          findMany: {
+            args: Prisma.TicketObserverFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TicketObserverPayload>[]
+          }
+          create: {
+            args: Prisma.TicketObserverCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TicketObserverPayload>
+          }
+          createMany: {
+            args: Prisma.TicketObserverCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.TicketObserverDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TicketObserverPayload>
+          }
+          update: {
+            args: Prisma.TicketObserverUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TicketObserverPayload>
+          }
+          deleteMany: {
+            args: Prisma.TicketObserverDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.TicketObserverUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.TicketObserverUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TicketObserverPayload>
+          }
+          aggregate: {
+            args: Prisma.TicketObserverAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTicketObserver>
+          }
+          groupBy: {
+            args: Prisma.TicketObserverGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TicketObserverGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.TicketObserverCountArgs<ExtArgs>
+            result: $Utils.Optional<TicketObserverCountAggregateOutputType> | number
+          }
+        }
+      }
       Notification: {
         payload: Prisma.$NotificationPayload<ExtArgs>
         fields: Prisma.NotificationFieldRefs
@@ -1419,6 +1501,7 @@ export namespace Prisma {
     comment?: CommentOmit
     attachment?: AttachmentOmit
     ticketHistory?: TicketHistoryOmit
+    ticketObserver?: TicketObserverOmit
     notification?: NotificationOmit
   }
 
@@ -1556,6 +1639,7 @@ export namespace Prisma {
     attachments: number
     ticketHistoryChanges: number
     notifications: number
+    observedTickets: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1566,6 +1650,7 @@ export namespace Prisma {
     attachments?: boolean | UserCountOutputTypeCountAttachmentsArgs
     ticketHistoryChanges?: boolean | UserCountOutputTypeCountTicketHistoryChangesArgs
     notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
+    observedTickets?: boolean | UserCountOutputTypeCountObservedTicketsArgs
   }
 
   // Custom InputTypes
@@ -1628,6 +1713,13 @@ export namespace Prisma {
     where?: NotificationWhereInput
   }
 
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountObservedTicketsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TicketObserverWhereInput
+  }
+
 
   /**
    * Count Type CategoryCountOutputType
@@ -1669,6 +1761,7 @@ export namespace Prisma {
     attachments: number
     history: number
     notifications: number
+    observers: number
   }
 
   export type TicketCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1676,6 +1769,7 @@ export namespace Prisma {
     attachments?: boolean | TicketCountOutputTypeCountAttachmentsArgs
     history?: boolean | TicketCountOutputTypeCountHistoryArgs
     notifications?: boolean | TicketCountOutputTypeCountNotificationsArgs
+    observers?: boolean | TicketCountOutputTypeCountObserversArgs
   }
 
   // Custom InputTypes
@@ -1715,6 +1809,13 @@ export namespace Prisma {
    */
   export type TicketCountOutputTypeCountNotificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: NotificationWhereInput
+  }
+
+  /**
+   * TicketCountOutputType without action
+   */
+  export type TicketCountOutputTypeCountObserversArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TicketObserverWhereInput
   }
 
 
@@ -2976,6 +3077,7 @@ export namespace Prisma {
     attachments?: boolean | User$attachmentsArgs<ExtArgs>
     ticketHistoryChanges?: boolean | User$ticketHistoryChangesArgs<ExtArgs>
     notifications?: boolean | User$notificationsArgs<ExtArgs>
+    observedTickets?: boolean | User$observedTicketsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -3003,6 +3105,7 @@ export namespace Prisma {
     attachments?: boolean | User$attachmentsArgs<ExtArgs>
     ticketHistoryChanges?: boolean | User$ticketHistoryChangesArgs<ExtArgs>
     notifications?: boolean | User$notificationsArgs<ExtArgs>
+    observedTickets?: boolean | User$observedTicketsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
 
@@ -3017,6 +3120,7 @@ export namespace Prisma {
       attachments: Prisma.$AttachmentPayload<ExtArgs>[]
       ticketHistoryChanges: Prisma.$TicketHistoryPayload<ExtArgs>[]
       notifications: Prisma.$NotificationPayload<ExtArgs>[]
+      observedTickets: Prisma.$TicketObserverPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -3376,6 +3480,7 @@ export namespace Prisma {
     attachments<T extends User$attachmentsArgs<ExtArgs> = {}>(args?: Subset<T, User$attachmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AttachmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     ticketHistoryChanges<T extends User$ticketHistoryChangesArgs<ExtArgs> = {}>(args?: Subset<T, User$ticketHistoryChangesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TicketHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     notifications<T extends User$notificationsArgs<ExtArgs> = {}>(args?: Subset<T, User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    observedTickets<T extends User$observedTicketsArgs<ExtArgs> = {}>(args?: Subset<T, User$observedTicketsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TicketObserverPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3946,6 +4051,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: NotificationScalarFieldEnum | NotificationScalarFieldEnum[]
+  }
+
+  /**
+   * User.observedTickets
+   */
+  export type User$observedTicketsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TicketObserver
+     */
+    select?: TicketObserverSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TicketObserver
+     */
+    omit?: TicketObserverOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TicketObserverInclude<ExtArgs> | null
+    where?: TicketObserverWhereInput
+    orderBy?: TicketObserverOrderByWithRelationInput | TicketObserverOrderByWithRelationInput[]
+    cursor?: TicketObserverWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TicketObserverScalarFieldEnum | TicketObserverScalarFieldEnum[]
   }
 
   /**
@@ -5178,6 +5307,7 @@ export namespace Prisma {
     attachments?: boolean | Ticket$attachmentsArgs<ExtArgs>
     history?: boolean | Ticket$historyArgs<ExtArgs>
     notifications?: boolean | Ticket$notificationsArgs<ExtArgs>
+    observers?: boolean | Ticket$observersArgs<ExtArgs>
     _count?: boolean | TicketCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["ticket"]>
 
@@ -5209,6 +5339,7 @@ export namespace Prisma {
     attachments?: boolean | Ticket$attachmentsArgs<ExtArgs>
     history?: boolean | Ticket$historyArgs<ExtArgs>
     notifications?: boolean | Ticket$notificationsArgs<ExtArgs>
+    observers?: boolean | Ticket$observersArgs<ExtArgs>
     _count?: boolean | TicketCountOutputTypeDefaultArgs<ExtArgs>
   }
 
@@ -5223,6 +5354,7 @@ export namespace Prisma {
       attachments: Prisma.$AttachmentPayload<ExtArgs>[]
       history: Prisma.$TicketHistoryPayload<ExtArgs>[]
       notifications: Prisma.$NotificationPayload<ExtArgs>[]
+      observers: Prisma.$TicketObserverPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -5586,6 +5718,7 @@ export namespace Prisma {
     attachments<T extends Ticket$attachmentsArgs<ExtArgs> = {}>(args?: Subset<T, Ticket$attachmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AttachmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     history<T extends Ticket$historyArgs<ExtArgs> = {}>(args?: Subset<T, Ticket$historyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TicketHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     notifications<T extends Ticket$notificationsArgs<ExtArgs> = {}>(args?: Subset<T, Ticket$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    observers<T extends Ticket$observersArgs<ExtArgs> = {}>(args?: Subset<T, Ticket$observersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TicketObserverPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6126,6 +6259,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: NotificationScalarFieldEnum | NotificationScalarFieldEnum[]
+  }
+
+  /**
+   * Ticket.observers
+   */
+  export type Ticket$observersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TicketObserver
+     */
+    select?: TicketObserverSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TicketObserver
+     */
+    omit?: TicketObserverOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TicketObserverInclude<ExtArgs> | null
+    where?: TicketObserverWhereInput
+    orderBy?: TicketObserverOrderByWithRelationInput | TicketObserverOrderByWithRelationInput[]
+    cursor?: TicketObserverWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TicketObserverScalarFieldEnum | TicketObserverScalarFieldEnum[]
   }
 
   /**
@@ -9073,6 +9230,933 @@ export namespace Prisma {
 
 
   /**
+   * Model TicketObserver
+   */
+
+  export type AggregateTicketObserver = {
+    _count: TicketObserverCountAggregateOutputType | null
+    _min: TicketObserverMinAggregateOutputType | null
+    _max: TicketObserverMaxAggregateOutputType | null
+  }
+
+  export type TicketObserverMinAggregateOutputType = {
+    id: string | null
+    ticketId: string | null
+    userId: string | null
+    createdAt: Date | null
+  }
+
+  export type TicketObserverMaxAggregateOutputType = {
+    id: string | null
+    ticketId: string | null
+    userId: string | null
+    createdAt: Date | null
+  }
+
+  export type TicketObserverCountAggregateOutputType = {
+    id: number
+    ticketId: number
+    userId: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type TicketObserverMinAggregateInputType = {
+    id?: true
+    ticketId?: true
+    userId?: true
+    createdAt?: true
+  }
+
+  export type TicketObserverMaxAggregateInputType = {
+    id?: true
+    ticketId?: true
+    userId?: true
+    createdAt?: true
+  }
+
+  export type TicketObserverCountAggregateInputType = {
+    id?: true
+    ticketId?: true
+    userId?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type TicketObserverAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TicketObserver to aggregate.
+     */
+    where?: TicketObserverWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TicketObservers to fetch.
+     */
+    orderBy?: TicketObserverOrderByWithRelationInput | TicketObserverOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: TicketObserverWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TicketObservers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TicketObservers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned TicketObservers
+    **/
+    _count?: true | TicketObserverCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TicketObserverMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TicketObserverMaxAggregateInputType
+  }
+
+  export type GetTicketObserverAggregateType<T extends TicketObserverAggregateArgs> = {
+        [P in keyof T & keyof AggregateTicketObserver]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTicketObserver[P]>
+      : GetScalarType<T[P], AggregateTicketObserver[P]>
+  }
+
+
+
+
+  export type TicketObserverGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TicketObserverWhereInput
+    orderBy?: TicketObserverOrderByWithAggregationInput | TicketObserverOrderByWithAggregationInput[]
+    by: TicketObserverScalarFieldEnum[] | TicketObserverScalarFieldEnum
+    having?: TicketObserverScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TicketObserverCountAggregateInputType | true
+    _min?: TicketObserverMinAggregateInputType
+    _max?: TicketObserverMaxAggregateInputType
+  }
+
+  export type TicketObserverGroupByOutputType = {
+    id: string
+    ticketId: string
+    userId: string
+    createdAt: Date
+    _count: TicketObserverCountAggregateOutputType | null
+    _min: TicketObserverMinAggregateOutputType | null
+    _max: TicketObserverMaxAggregateOutputType | null
+  }
+
+  type GetTicketObserverGroupByPayload<T extends TicketObserverGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TicketObserverGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TicketObserverGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TicketObserverGroupByOutputType[P]>
+            : GetScalarType<T[P], TicketObserverGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type TicketObserverSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    ticketId?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    ticket?: boolean | TicketDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["ticketObserver"]>
+
+
+
+  export type TicketObserverSelectScalar = {
+    id?: boolean
+    ticketId?: boolean
+    userId?: boolean
+    createdAt?: boolean
+  }
+
+  export type TicketObserverOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "ticketId" | "userId" | "createdAt", ExtArgs["result"]["ticketObserver"]>
+  export type TicketObserverInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    ticket?: boolean | TicketDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $TicketObserverPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "TicketObserver"
+    objects: {
+      ticket: Prisma.$TicketPayload<ExtArgs>
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      ticketId: string
+      userId: string
+      createdAt: Date
+    }, ExtArgs["result"]["ticketObserver"]>
+    composites: {}
+  }
+
+  type TicketObserverGetPayload<S extends boolean | null | undefined | TicketObserverDefaultArgs> = $Result.GetResult<Prisma.$TicketObserverPayload, S>
+
+  type TicketObserverCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<TicketObserverFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TicketObserverCountAggregateInputType | true
+    }
+
+  export interface TicketObserverDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['TicketObserver'], meta: { name: 'TicketObserver' } }
+    /**
+     * Find zero or one TicketObserver that matches the filter.
+     * @param {TicketObserverFindUniqueArgs} args - Arguments to find a TicketObserver
+     * @example
+     * // Get one TicketObserver
+     * const ticketObserver = await prisma.ticketObserver.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TicketObserverFindUniqueArgs>(args: SelectSubset<T, TicketObserverFindUniqueArgs<ExtArgs>>): Prisma__TicketObserverClient<$Result.GetResult<Prisma.$TicketObserverPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one TicketObserver that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TicketObserverFindUniqueOrThrowArgs} args - Arguments to find a TicketObserver
+     * @example
+     * // Get one TicketObserver
+     * const ticketObserver = await prisma.ticketObserver.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TicketObserverFindUniqueOrThrowArgs>(args: SelectSubset<T, TicketObserverFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TicketObserverClient<$Result.GetResult<Prisma.$TicketObserverPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TicketObserver that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TicketObserverFindFirstArgs} args - Arguments to find a TicketObserver
+     * @example
+     * // Get one TicketObserver
+     * const ticketObserver = await prisma.ticketObserver.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TicketObserverFindFirstArgs>(args?: SelectSubset<T, TicketObserverFindFirstArgs<ExtArgs>>): Prisma__TicketObserverClient<$Result.GetResult<Prisma.$TicketObserverPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TicketObserver that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TicketObserverFindFirstOrThrowArgs} args - Arguments to find a TicketObserver
+     * @example
+     * // Get one TicketObserver
+     * const ticketObserver = await prisma.ticketObserver.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TicketObserverFindFirstOrThrowArgs>(args?: SelectSubset<T, TicketObserverFindFirstOrThrowArgs<ExtArgs>>): Prisma__TicketObserverClient<$Result.GetResult<Prisma.$TicketObserverPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more TicketObservers that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TicketObserverFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all TicketObservers
+     * const ticketObservers = await prisma.ticketObserver.findMany()
+     * 
+     * // Get first 10 TicketObservers
+     * const ticketObservers = await prisma.ticketObserver.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const ticketObserverWithIdOnly = await prisma.ticketObserver.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends TicketObserverFindManyArgs>(args?: SelectSubset<T, TicketObserverFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TicketObserverPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a TicketObserver.
+     * @param {TicketObserverCreateArgs} args - Arguments to create a TicketObserver.
+     * @example
+     * // Create one TicketObserver
+     * const TicketObserver = await prisma.ticketObserver.create({
+     *   data: {
+     *     // ... data to create a TicketObserver
+     *   }
+     * })
+     * 
+     */
+    create<T extends TicketObserverCreateArgs>(args: SelectSubset<T, TicketObserverCreateArgs<ExtArgs>>): Prisma__TicketObserverClient<$Result.GetResult<Prisma.$TicketObserverPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many TicketObservers.
+     * @param {TicketObserverCreateManyArgs} args - Arguments to create many TicketObservers.
+     * @example
+     * // Create many TicketObservers
+     * const ticketObserver = await prisma.ticketObserver.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends TicketObserverCreateManyArgs>(args?: SelectSubset<T, TicketObserverCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a TicketObserver.
+     * @param {TicketObserverDeleteArgs} args - Arguments to delete one TicketObserver.
+     * @example
+     * // Delete one TicketObserver
+     * const TicketObserver = await prisma.ticketObserver.delete({
+     *   where: {
+     *     // ... filter to delete one TicketObserver
+     *   }
+     * })
+     * 
+     */
+    delete<T extends TicketObserverDeleteArgs>(args: SelectSubset<T, TicketObserverDeleteArgs<ExtArgs>>): Prisma__TicketObserverClient<$Result.GetResult<Prisma.$TicketObserverPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one TicketObserver.
+     * @param {TicketObserverUpdateArgs} args - Arguments to update one TicketObserver.
+     * @example
+     * // Update one TicketObserver
+     * const ticketObserver = await prisma.ticketObserver.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends TicketObserverUpdateArgs>(args: SelectSubset<T, TicketObserverUpdateArgs<ExtArgs>>): Prisma__TicketObserverClient<$Result.GetResult<Prisma.$TicketObserverPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more TicketObservers.
+     * @param {TicketObserverDeleteManyArgs} args - Arguments to filter TicketObservers to delete.
+     * @example
+     * // Delete a few TicketObservers
+     * const { count } = await prisma.ticketObserver.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends TicketObserverDeleteManyArgs>(args?: SelectSubset<T, TicketObserverDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TicketObservers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TicketObserverUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many TicketObservers
+     * const ticketObserver = await prisma.ticketObserver.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends TicketObserverUpdateManyArgs>(args: SelectSubset<T, TicketObserverUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one TicketObserver.
+     * @param {TicketObserverUpsertArgs} args - Arguments to update or create a TicketObserver.
+     * @example
+     * // Update or create a TicketObserver
+     * const ticketObserver = await prisma.ticketObserver.upsert({
+     *   create: {
+     *     // ... data to create a TicketObserver
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the TicketObserver we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TicketObserverUpsertArgs>(args: SelectSubset<T, TicketObserverUpsertArgs<ExtArgs>>): Prisma__TicketObserverClient<$Result.GetResult<Prisma.$TicketObserverPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of TicketObservers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TicketObserverCountArgs} args - Arguments to filter TicketObservers to count.
+     * @example
+     * // Count the number of TicketObservers
+     * const count = await prisma.ticketObserver.count({
+     *   where: {
+     *     // ... the filter for the TicketObservers we want to count
+     *   }
+     * })
+    **/
+    count<T extends TicketObserverCountArgs>(
+      args?: Subset<T, TicketObserverCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TicketObserverCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a TicketObserver.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TicketObserverAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TicketObserverAggregateArgs>(args: Subset<T, TicketObserverAggregateArgs>): Prisma.PrismaPromise<GetTicketObserverAggregateType<T>>
+
+    /**
+     * Group by TicketObserver.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TicketObserverGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TicketObserverGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TicketObserverGroupByArgs['orderBy'] }
+        : { orderBy?: TicketObserverGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TicketObserverGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTicketObserverGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the TicketObserver model
+   */
+  readonly fields: TicketObserverFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for TicketObserver.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__TicketObserverClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    ticket<T extends TicketDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TicketDefaultArgs<ExtArgs>>): Prisma__TicketClient<$Result.GetResult<Prisma.$TicketPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the TicketObserver model
+   */
+  interface TicketObserverFieldRefs {
+    readonly id: FieldRef<"TicketObserver", 'String'>
+    readonly ticketId: FieldRef<"TicketObserver", 'String'>
+    readonly userId: FieldRef<"TicketObserver", 'String'>
+    readonly createdAt: FieldRef<"TicketObserver", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * TicketObserver findUnique
+   */
+  export type TicketObserverFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TicketObserver
+     */
+    select?: TicketObserverSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TicketObserver
+     */
+    omit?: TicketObserverOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TicketObserverInclude<ExtArgs> | null
+    /**
+     * Filter, which TicketObserver to fetch.
+     */
+    where: TicketObserverWhereUniqueInput
+  }
+
+  /**
+   * TicketObserver findUniqueOrThrow
+   */
+  export type TicketObserverFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TicketObserver
+     */
+    select?: TicketObserverSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TicketObserver
+     */
+    omit?: TicketObserverOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TicketObserverInclude<ExtArgs> | null
+    /**
+     * Filter, which TicketObserver to fetch.
+     */
+    where: TicketObserverWhereUniqueInput
+  }
+
+  /**
+   * TicketObserver findFirst
+   */
+  export type TicketObserverFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TicketObserver
+     */
+    select?: TicketObserverSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TicketObserver
+     */
+    omit?: TicketObserverOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TicketObserverInclude<ExtArgs> | null
+    /**
+     * Filter, which TicketObserver to fetch.
+     */
+    where?: TicketObserverWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TicketObservers to fetch.
+     */
+    orderBy?: TicketObserverOrderByWithRelationInput | TicketObserverOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TicketObservers.
+     */
+    cursor?: TicketObserverWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TicketObservers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TicketObservers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TicketObservers.
+     */
+    distinct?: TicketObserverScalarFieldEnum | TicketObserverScalarFieldEnum[]
+  }
+
+  /**
+   * TicketObserver findFirstOrThrow
+   */
+  export type TicketObserverFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TicketObserver
+     */
+    select?: TicketObserverSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TicketObserver
+     */
+    omit?: TicketObserverOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TicketObserverInclude<ExtArgs> | null
+    /**
+     * Filter, which TicketObserver to fetch.
+     */
+    where?: TicketObserverWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TicketObservers to fetch.
+     */
+    orderBy?: TicketObserverOrderByWithRelationInput | TicketObserverOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TicketObservers.
+     */
+    cursor?: TicketObserverWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TicketObservers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TicketObservers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TicketObservers.
+     */
+    distinct?: TicketObserverScalarFieldEnum | TicketObserverScalarFieldEnum[]
+  }
+
+  /**
+   * TicketObserver findMany
+   */
+  export type TicketObserverFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TicketObserver
+     */
+    select?: TicketObserverSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TicketObserver
+     */
+    omit?: TicketObserverOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TicketObserverInclude<ExtArgs> | null
+    /**
+     * Filter, which TicketObservers to fetch.
+     */
+    where?: TicketObserverWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TicketObservers to fetch.
+     */
+    orderBy?: TicketObserverOrderByWithRelationInput | TicketObserverOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing TicketObservers.
+     */
+    cursor?: TicketObserverWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TicketObservers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TicketObservers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TicketObservers.
+     */
+    distinct?: TicketObserverScalarFieldEnum | TicketObserverScalarFieldEnum[]
+  }
+
+  /**
+   * TicketObserver create
+   */
+  export type TicketObserverCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TicketObserver
+     */
+    select?: TicketObserverSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TicketObserver
+     */
+    omit?: TicketObserverOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TicketObserverInclude<ExtArgs> | null
+    /**
+     * The data needed to create a TicketObserver.
+     */
+    data: XOR<TicketObserverCreateInput, TicketObserverUncheckedCreateInput>
+  }
+
+  /**
+   * TicketObserver createMany
+   */
+  export type TicketObserverCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many TicketObservers.
+     */
+    data: TicketObserverCreateManyInput | TicketObserverCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * TicketObserver update
+   */
+  export type TicketObserverUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TicketObserver
+     */
+    select?: TicketObserverSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TicketObserver
+     */
+    omit?: TicketObserverOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TicketObserverInclude<ExtArgs> | null
+    /**
+     * The data needed to update a TicketObserver.
+     */
+    data: XOR<TicketObserverUpdateInput, TicketObserverUncheckedUpdateInput>
+    /**
+     * Choose, which TicketObserver to update.
+     */
+    where: TicketObserverWhereUniqueInput
+  }
+
+  /**
+   * TicketObserver updateMany
+   */
+  export type TicketObserverUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update TicketObservers.
+     */
+    data: XOR<TicketObserverUpdateManyMutationInput, TicketObserverUncheckedUpdateManyInput>
+    /**
+     * Filter which TicketObservers to update
+     */
+    where?: TicketObserverWhereInput
+    /**
+     * Limit how many TicketObservers to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * TicketObserver upsert
+   */
+  export type TicketObserverUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TicketObserver
+     */
+    select?: TicketObserverSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TicketObserver
+     */
+    omit?: TicketObserverOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TicketObserverInclude<ExtArgs> | null
+    /**
+     * The filter to search for the TicketObserver to update in case it exists.
+     */
+    where: TicketObserverWhereUniqueInput
+    /**
+     * In case the TicketObserver found by the `where` argument doesn't exist, create a new TicketObserver with this data.
+     */
+    create: XOR<TicketObserverCreateInput, TicketObserverUncheckedCreateInput>
+    /**
+     * In case the TicketObserver was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<TicketObserverUpdateInput, TicketObserverUncheckedUpdateInput>
+  }
+
+  /**
+   * TicketObserver delete
+   */
+  export type TicketObserverDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TicketObserver
+     */
+    select?: TicketObserverSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TicketObserver
+     */
+    omit?: TicketObserverOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TicketObserverInclude<ExtArgs> | null
+    /**
+     * Filter which TicketObserver to delete.
+     */
+    where: TicketObserverWhereUniqueInput
+  }
+
+  /**
+   * TicketObserver deleteMany
+   */
+  export type TicketObserverDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TicketObservers to delete
+     */
+    where?: TicketObserverWhereInput
+    /**
+     * Limit how many TicketObservers to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * TicketObserver without action
+   */
+  export type TicketObserverDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TicketObserver
+     */
+    select?: TicketObserverSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TicketObserver
+     */
+    omit?: TicketObserverOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TicketObserverInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model Notification
    */
 
@@ -10144,6 +11228,16 @@ export namespace Prisma {
   export type TicketHistoryScalarFieldEnum = (typeof TicketHistoryScalarFieldEnum)[keyof typeof TicketHistoryScalarFieldEnum]
 
 
+  export const TicketObserverScalarFieldEnum: {
+    id: 'id',
+    ticketId: 'ticketId',
+    userId: 'userId',
+    createdAt: 'createdAt'
+  };
+
+  export type TicketObserverScalarFieldEnum = (typeof TicketObserverScalarFieldEnum)[keyof typeof TicketObserverScalarFieldEnum]
+
+
   export const NotificationScalarFieldEnum: {
     id: 'id',
     userId: 'userId',
@@ -10249,6 +11343,15 @@ export namespace Prisma {
   };
 
   export type TicketHistoryOrderByRelevanceFieldEnum = (typeof TicketHistoryOrderByRelevanceFieldEnum)[keyof typeof TicketHistoryOrderByRelevanceFieldEnum]
+
+
+  export const TicketObserverOrderByRelevanceFieldEnum: {
+    id: 'id',
+    ticketId: 'ticketId',
+    userId: 'userId'
+  };
+
+  export type TicketObserverOrderByRelevanceFieldEnum = (typeof TicketObserverOrderByRelevanceFieldEnum)[keyof typeof TicketObserverOrderByRelevanceFieldEnum]
 
 
   export const NotificationOrderByRelevanceFieldEnum: {
@@ -10423,6 +11526,7 @@ export namespace Prisma {
     attachments?: AttachmentListRelationFilter
     ticketHistoryChanges?: TicketHistoryListRelationFilter
     notifications?: NotificationListRelationFilter
+    observedTickets?: TicketObserverListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -10443,6 +11547,7 @@ export namespace Prisma {
     attachments?: AttachmentOrderByRelationAggregateInput
     ticketHistoryChanges?: TicketHistoryOrderByRelationAggregateInput
     notifications?: NotificationOrderByRelationAggregateInput
+    observedTickets?: TicketObserverOrderByRelationAggregateInput
     _relevance?: UserOrderByRelevanceInput
   }
 
@@ -10467,6 +11572,7 @@ export namespace Prisma {
     attachments?: AttachmentListRelationFilter
     ticketHistoryChanges?: TicketHistoryListRelationFilter
     notifications?: NotificationListRelationFilter
+    observedTickets?: TicketObserverListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -10588,6 +11694,7 @@ export namespace Prisma {
     attachments?: AttachmentListRelationFilter
     history?: TicketHistoryListRelationFilter
     notifications?: NotificationListRelationFilter
+    observers?: TicketObserverListRelationFilter
   }
 
   export type TicketOrderByWithRelationInput = {
@@ -10612,6 +11719,7 @@ export namespace Prisma {
     attachments?: AttachmentOrderByRelationAggregateInput
     history?: TicketHistoryOrderByRelationAggregateInput
     notifications?: NotificationOrderByRelationAggregateInput
+    observers?: TicketObserverOrderByRelationAggregateInput
     _relevance?: TicketOrderByRelevanceInput
   }
 
@@ -10640,6 +11748,7 @@ export namespace Prisma {
     attachments?: AttachmentListRelationFilter
     history?: TicketHistoryListRelationFilter
     notifications?: NotificationListRelationFilter
+    observers?: TicketObserverListRelationFilter
   }, "id">
 
   export type TicketOrderByWithAggregationInput = {
@@ -10894,6 +12003,61 @@ export namespace Prisma {
     changedAt?: DateTimeWithAggregatesFilter<"TicketHistory"> | Date | string
   }
 
+  export type TicketObserverWhereInput = {
+    AND?: TicketObserverWhereInput | TicketObserverWhereInput[]
+    OR?: TicketObserverWhereInput[]
+    NOT?: TicketObserverWhereInput | TicketObserverWhereInput[]
+    id?: StringFilter<"TicketObserver"> | string
+    ticketId?: StringFilter<"TicketObserver"> | string
+    userId?: StringFilter<"TicketObserver"> | string
+    createdAt?: DateTimeFilter<"TicketObserver"> | Date | string
+    ticket?: XOR<TicketScalarRelationFilter, TicketWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type TicketObserverOrderByWithRelationInput = {
+    id?: SortOrder
+    ticketId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    ticket?: TicketOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
+    _relevance?: TicketObserverOrderByRelevanceInput
+  }
+
+  export type TicketObserverWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    ticketId_userId?: TicketObserverTicketIdUserIdCompoundUniqueInput
+    AND?: TicketObserverWhereInput | TicketObserverWhereInput[]
+    OR?: TicketObserverWhereInput[]
+    NOT?: TicketObserverWhereInput | TicketObserverWhereInput[]
+    ticketId?: StringFilter<"TicketObserver"> | string
+    userId?: StringFilter<"TicketObserver"> | string
+    createdAt?: DateTimeFilter<"TicketObserver"> | Date | string
+    ticket?: XOR<TicketScalarRelationFilter, TicketWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "ticketId_userId">
+
+  export type TicketObserverOrderByWithAggregationInput = {
+    id?: SortOrder
+    ticketId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    _count?: TicketObserverCountOrderByAggregateInput
+    _max?: TicketObserverMaxOrderByAggregateInput
+    _min?: TicketObserverMinOrderByAggregateInput
+  }
+
+  export type TicketObserverScalarWhereWithAggregatesInput = {
+    AND?: TicketObserverScalarWhereWithAggregatesInput | TicketObserverScalarWhereWithAggregatesInput[]
+    OR?: TicketObserverScalarWhereWithAggregatesInput[]
+    NOT?: TicketObserverScalarWhereWithAggregatesInput | TicketObserverScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"TicketObserver"> | string
+    ticketId?: StringWithAggregatesFilter<"TicketObserver"> | string
+    userId?: StringWithAggregatesFilter<"TicketObserver"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"TicketObserver"> | Date | string
+  }
+
   export type NotificationWhereInput = {
     AND?: NotificationWhereInput | NotificationWhereInput[]
     OR?: NotificationWhereInput[]
@@ -11054,6 +12218,7 @@ export namespace Prisma {
     attachments?: AttachmentCreateNestedManyWithoutUploaderInput
     ticketHistoryChanges?: TicketHistoryCreateNestedManyWithoutChangerInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
+    observedTickets?: TicketObserverCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -11073,6 +12238,7 @@ export namespace Prisma {
     attachments?: AttachmentUncheckedCreateNestedManyWithoutUploaderInput
     ticketHistoryChanges?: TicketHistoryUncheckedCreateNestedManyWithoutChangerInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    observedTickets?: TicketObserverUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -11092,6 +12258,7 @@ export namespace Prisma {
     attachments?: AttachmentUpdateManyWithoutUploaderNestedInput
     ticketHistoryChanges?: TicketHistoryUpdateManyWithoutChangerNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
+    observedTickets?: TicketObserverUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -11111,6 +12278,7 @@ export namespace Prisma {
     attachments?: AttachmentUncheckedUpdateManyWithoutUploaderNestedInput
     ticketHistoryChanges?: TicketHistoryUncheckedUpdateManyWithoutChangerNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    observedTickets?: TicketObserverUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -11232,6 +12400,7 @@ export namespace Prisma {
     attachments?: AttachmentCreateNestedManyWithoutTicketInput
     history?: TicketHistoryCreateNestedManyWithoutTicketInput
     notifications?: NotificationCreateNestedManyWithoutTicketInput
+    observers?: TicketObserverCreateNestedManyWithoutTicketInput
   }
 
   export type TicketUncheckedCreateInput = {
@@ -11252,6 +12421,7 @@ export namespace Prisma {
     attachments?: AttachmentUncheckedCreateNestedManyWithoutTicketInput
     history?: TicketHistoryUncheckedCreateNestedManyWithoutTicketInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutTicketInput
+    observers?: TicketObserverUncheckedCreateNestedManyWithoutTicketInput
   }
 
   export type TicketUpdateInput = {
@@ -11272,6 +12442,7 @@ export namespace Prisma {
     attachments?: AttachmentUpdateManyWithoutTicketNestedInput
     history?: TicketHistoryUpdateManyWithoutTicketNestedInput
     notifications?: NotificationUpdateManyWithoutTicketNestedInput
+    observers?: TicketObserverUpdateManyWithoutTicketNestedInput
   }
 
   export type TicketUncheckedUpdateInput = {
@@ -11292,6 +12463,7 @@ export namespace Prisma {
     attachments?: AttachmentUncheckedUpdateManyWithoutTicketNestedInput
     history?: TicketHistoryUncheckedUpdateManyWithoutTicketNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutTicketNestedInput
+    observers?: TicketObserverUncheckedUpdateManyWithoutTicketNestedInput
   }
 
   export type TicketCreateManyInput = {
@@ -11547,6 +12719,53 @@ export namespace Prisma {
     oldValue?: NullableStringFieldUpdateOperationsInput | string | null
     newValue?: NullableStringFieldUpdateOperationsInput | string | null
     changedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TicketObserverCreateInput = {
+    id?: string
+    createdAt?: Date | string
+    ticket: TicketCreateNestedOneWithoutObserversInput
+    user: UserCreateNestedOneWithoutObservedTicketsInput
+  }
+
+  export type TicketObserverUncheckedCreateInput = {
+    id?: string
+    ticketId: string
+    userId: string
+    createdAt?: Date | string
+  }
+
+  export type TicketObserverUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ticket?: TicketUpdateOneRequiredWithoutObserversNestedInput
+    user?: UserUpdateOneRequiredWithoutObservedTicketsNestedInput
+  }
+
+  export type TicketObserverUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ticketId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TicketObserverCreateManyInput = {
+    id?: string
+    ticketId: string
+    userId: string
+    createdAt?: Date | string
+  }
+
+  export type TicketObserverUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TicketObserverUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ticketId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type NotificationCreateInput = {
@@ -11828,6 +13047,12 @@ export namespace Prisma {
     none?: NotificationWhereInput
   }
 
+  export type TicketObserverListRelationFilter = {
+    every?: TicketObserverWhereInput
+    some?: TicketObserverWhereInput
+    none?: TicketObserverWhereInput
+  }
+
   export type DepartmentOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -11845,6 +13070,10 @@ export namespace Prisma {
   }
 
   export type NotificationOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type TicketObserverOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -12220,6 +13449,38 @@ export namespace Prisma {
     changedAt?: SortOrder
   }
 
+  export type TicketObserverOrderByRelevanceInput = {
+    fields: TicketObserverOrderByRelevanceFieldEnum | TicketObserverOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type TicketObserverTicketIdUserIdCompoundUniqueInput = {
+    ticketId: string
+    userId: string
+  }
+
+  export type TicketObserverCountOrderByAggregateInput = {
+    id?: SortOrder
+    ticketId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type TicketObserverMaxOrderByAggregateInput = {
+    id?: SortOrder
+    ticketId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type TicketObserverMinOrderByAggregateInput = {
+    id?: SortOrder
+    ticketId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+  }
+
   export type EnumNotificationTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.NotificationType | EnumNotificationTypeFieldRefInput<$PrismaModel>
     in?: $Enums.NotificationType[]
@@ -12482,6 +13743,13 @@ export namespace Prisma {
     connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
   }
 
+  export type TicketObserverCreateNestedManyWithoutUserInput = {
+    create?: XOR<TicketObserverCreateWithoutUserInput, TicketObserverUncheckedCreateWithoutUserInput> | TicketObserverCreateWithoutUserInput[] | TicketObserverUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TicketObserverCreateOrConnectWithoutUserInput | TicketObserverCreateOrConnectWithoutUserInput[]
+    createMany?: TicketObserverCreateManyUserInputEnvelope
+    connect?: TicketObserverWhereUniqueInput | TicketObserverWhereUniqueInput[]
+  }
+
   export type DepartmentUncheckedCreateNestedManyWithoutManagerInput = {
     create?: XOR<DepartmentCreateWithoutManagerInput, DepartmentUncheckedCreateWithoutManagerInput> | DepartmentCreateWithoutManagerInput[] | DepartmentUncheckedCreateWithoutManagerInput[]
     connectOrCreate?: DepartmentCreateOrConnectWithoutManagerInput | DepartmentCreateOrConnectWithoutManagerInput[]
@@ -12529,6 +13797,13 @@ export namespace Prisma {
     connectOrCreate?: NotificationCreateOrConnectWithoutUserInput | NotificationCreateOrConnectWithoutUserInput[]
     createMany?: NotificationCreateManyUserInputEnvelope
     connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+  }
+
+  export type TicketObserverUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<TicketObserverCreateWithoutUserInput, TicketObserverUncheckedCreateWithoutUserInput> | TicketObserverCreateWithoutUserInput[] | TicketObserverUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TicketObserverCreateOrConnectWithoutUserInput | TicketObserverCreateOrConnectWithoutUserInput[]
+    createMany?: TicketObserverCreateManyUserInputEnvelope
+    connect?: TicketObserverWhereUniqueInput | TicketObserverWhereUniqueInput[]
   }
 
   export type EnumUserRoleFieldUpdateOperationsInput = {
@@ -12647,6 +13922,20 @@ export namespace Prisma {
     deleteMany?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
   }
 
+  export type TicketObserverUpdateManyWithoutUserNestedInput = {
+    create?: XOR<TicketObserverCreateWithoutUserInput, TicketObserverUncheckedCreateWithoutUserInput> | TicketObserverCreateWithoutUserInput[] | TicketObserverUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TicketObserverCreateOrConnectWithoutUserInput | TicketObserverCreateOrConnectWithoutUserInput[]
+    upsert?: TicketObserverUpsertWithWhereUniqueWithoutUserInput | TicketObserverUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: TicketObserverCreateManyUserInputEnvelope
+    set?: TicketObserverWhereUniqueInput | TicketObserverWhereUniqueInput[]
+    disconnect?: TicketObserverWhereUniqueInput | TicketObserverWhereUniqueInput[]
+    delete?: TicketObserverWhereUniqueInput | TicketObserverWhereUniqueInput[]
+    connect?: TicketObserverWhereUniqueInput | TicketObserverWhereUniqueInput[]
+    update?: TicketObserverUpdateWithWhereUniqueWithoutUserInput | TicketObserverUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: TicketObserverUpdateManyWithWhereWithoutUserInput | TicketObserverUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: TicketObserverScalarWhereInput | TicketObserverScalarWhereInput[]
+  }
+
   export type DepartmentUncheckedUpdateManyWithoutManagerNestedInput = {
     create?: XOR<DepartmentCreateWithoutManagerInput, DepartmentUncheckedCreateWithoutManagerInput> | DepartmentCreateWithoutManagerInput[] | DepartmentUncheckedCreateWithoutManagerInput[]
     connectOrCreate?: DepartmentCreateOrConnectWithoutManagerInput | DepartmentCreateOrConnectWithoutManagerInput[]
@@ -12743,6 +14032,20 @@ export namespace Prisma {
     update?: NotificationUpdateWithWhereUniqueWithoutUserInput | NotificationUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: NotificationUpdateManyWithWhereWithoutUserInput | NotificationUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
+  }
+
+  export type TicketObserverUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<TicketObserverCreateWithoutUserInput, TicketObserverUncheckedCreateWithoutUserInput> | TicketObserverCreateWithoutUserInput[] | TicketObserverUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TicketObserverCreateOrConnectWithoutUserInput | TicketObserverCreateOrConnectWithoutUserInput[]
+    upsert?: TicketObserverUpsertWithWhereUniqueWithoutUserInput | TicketObserverUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: TicketObserverCreateManyUserInputEnvelope
+    set?: TicketObserverWhereUniqueInput | TicketObserverWhereUniqueInput[]
+    disconnect?: TicketObserverWhereUniqueInput | TicketObserverWhereUniqueInput[]
+    delete?: TicketObserverWhereUniqueInput | TicketObserverWhereUniqueInput[]
+    connect?: TicketObserverWhereUniqueInput | TicketObserverWhereUniqueInput[]
+    update?: TicketObserverUpdateWithWhereUniqueWithoutUserInput | TicketObserverUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: TicketObserverUpdateManyWithWhereWithoutUserInput | TicketObserverUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: TicketObserverScalarWhereInput | TicketObserverScalarWhereInput[]
   }
 
   export type DepartmentCreateNestedOneWithoutCategoriesInput = {
@@ -12853,6 +14156,13 @@ export namespace Prisma {
     connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
   }
 
+  export type TicketObserverCreateNestedManyWithoutTicketInput = {
+    create?: XOR<TicketObserverCreateWithoutTicketInput, TicketObserverUncheckedCreateWithoutTicketInput> | TicketObserverCreateWithoutTicketInput[] | TicketObserverUncheckedCreateWithoutTicketInput[]
+    connectOrCreate?: TicketObserverCreateOrConnectWithoutTicketInput | TicketObserverCreateOrConnectWithoutTicketInput[]
+    createMany?: TicketObserverCreateManyTicketInputEnvelope
+    connect?: TicketObserverWhereUniqueInput | TicketObserverWhereUniqueInput[]
+  }
+
   export type CommentUncheckedCreateNestedManyWithoutTicketInput = {
     create?: XOR<CommentCreateWithoutTicketInput, CommentUncheckedCreateWithoutTicketInput> | CommentCreateWithoutTicketInput[] | CommentUncheckedCreateWithoutTicketInput[]
     connectOrCreate?: CommentCreateOrConnectWithoutTicketInput | CommentCreateOrConnectWithoutTicketInput[]
@@ -12879,6 +14189,13 @@ export namespace Prisma {
     connectOrCreate?: NotificationCreateOrConnectWithoutTicketInput | NotificationCreateOrConnectWithoutTicketInput[]
     createMany?: NotificationCreateManyTicketInputEnvelope
     connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+  }
+
+  export type TicketObserverUncheckedCreateNestedManyWithoutTicketInput = {
+    create?: XOR<TicketObserverCreateWithoutTicketInput, TicketObserverUncheckedCreateWithoutTicketInput> | TicketObserverCreateWithoutTicketInput[] | TicketObserverUncheckedCreateWithoutTicketInput[]
+    connectOrCreate?: TicketObserverCreateOrConnectWithoutTicketInput | TicketObserverCreateOrConnectWithoutTicketInput[]
+    createMany?: TicketObserverCreateManyTicketInputEnvelope
+    connect?: TicketObserverWhereUniqueInput | TicketObserverWhereUniqueInput[]
   }
 
   export type EnumTicketStatusFieldUpdateOperationsInput = {
@@ -12987,6 +14304,20 @@ export namespace Prisma {
     deleteMany?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
   }
 
+  export type TicketObserverUpdateManyWithoutTicketNestedInput = {
+    create?: XOR<TicketObserverCreateWithoutTicketInput, TicketObserverUncheckedCreateWithoutTicketInput> | TicketObserverCreateWithoutTicketInput[] | TicketObserverUncheckedCreateWithoutTicketInput[]
+    connectOrCreate?: TicketObserverCreateOrConnectWithoutTicketInput | TicketObserverCreateOrConnectWithoutTicketInput[]
+    upsert?: TicketObserverUpsertWithWhereUniqueWithoutTicketInput | TicketObserverUpsertWithWhereUniqueWithoutTicketInput[]
+    createMany?: TicketObserverCreateManyTicketInputEnvelope
+    set?: TicketObserverWhereUniqueInput | TicketObserverWhereUniqueInput[]
+    disconnect?: TicketObserverWhereUniqueInput | TicketObserverWhereUniqueInput[]
+    delete?: TicketObserverWhereUniqueInput | TicketObserverWhereUniqueInput[]
+    connect?: TicketObserverWhereUniqueInput | TicketObserverWhereUniqueInput[]
+    update?: TicketObserverUpdateWithWhereUniqueWithoutTicketInput | TicketObserverUpdateWithWhereUniqueWithoutTicketInput[]
+    updateMany?: TicketObserverUpdateManyWithWhereWithoutTicketInput | TicketObserverUpdateManyWithWhereWithoutTicketInput[]
+    deleteMany?: TicketObserverScalarWhereInput | TicketObserverScalarWhereInput[]
+  }
+
   export type CommentUncheckedUpdateManyWithoutTicketNestedInput = {
     create?: XOR<CommentCreateWithoutTicketInput, CommentUncheckedCreateWithoutTicketInput> | CommentCreateWithoutTicketInput[] | CommentUncheckedCreateWithoutTicketInput[]
     connectOrCreate?: CommentCreateOrConnectWithoutTicketInput | CommentCreateOrConnectWithoutTicketInput[]
@@ -13041,6 +14372,20 @@ export namespace Prisma {
     update?: NotificationUpdateWithWhereUniqueWithoutTicketInput | NotificationUpdateWithWhereUniqueWithoutTicketInput[]
     updateMany?: NotificationUpdateManyWithWhereWithoutTicketInput | NotificationUpdateManyWithWhereWithoutTicketInput[]
     deleteMany?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
+  }
+
+  export type TicketObserverUncheckedUpdateManyWithoutTicketNestedInput = {
+    create?: XOR<TicketObserverCreateWithoutTicketInput, TicketObserverUncheckedCreateWithoutTicketInput> | TicketObserverCreateWithoutTicketInput[] | TicketObserverUncheckedCreateWithoutTicketInput[]
+    connectOrCreate?: TicketObserverCreateOrConnectWithoutTicketInput | TicketObserverCreateOrConnectWithoutTicketInput[]
+    upsert?: TicketObserverUpsertWithWhereUniqueWithoutTicketInput | TicketObserverUpsertWithWhereUniqueWithoutTicketInput[]
+    createMany?: TicketObserverCreateManyTicketInputEnvelope
+    set?: TicketObserverWhereUniqueInput | TicketObserverWhereUniqueInput[]
+    disconnect?: TicketObserverWhereUniqueInput | TicketObserverWhereUniqueInput[]
+    delete?: TicketObserverWhereUniqueInput | TicketObserverWhereUniqueInput[]
+    connect?: TicketObserverWhereUniqueInput | TicketObserverWhereUniqueInput[]
+    update?: TicketObserverUpdateWithWhereUniqueWithoutTicketInput | TicketObserverUpdateWithWhereUniqueWithoutTicketInput[]
+    updateMany?: TicketObserverUpdateManyWithWhereWithoutTicketInput | TicketObserverUpdateManyWithWhereWithoutTicketInput[]
+    deleteMany?: TicketObserverScalarWhereInput | TicketObserverScalarWhereInput[]
   }
 
   export type TicketCreateNestedOneWithoutCommentsInput = {
@@ -13133,6 +14478,34 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutTicketHistoryChangesInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutTicketHistoryChangesInput, UserUpdateWithoutTicketHistoryChangesInput>, UserUncheckedUpdateWithoutTicketHistoryChangesInput>
+  }
+
+  export type TicketCreateNestedOneWithoutObserversInput = {
+    create?: XOR<TicketCreateWithoutObserversInput, TicketUncheckedCreateWithoutObserversInput>
+    connectOrCreate?: TicketCreateOrConnectWithoutObserversInput
+    connect?: TicketWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutObservedTicketsInput = {
+    create?: XOR<UserCreateWithoutObservedTicketsInput, UserUncheckedCreateWithoutObservedTicketsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutObservedTicketsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type TicketUpdateOneRequiredWithoutObserversNestedInput = {
+    create?: XOR<TicketCreateWithoutObserversInput, TicketUncheckedCreateWithoutObserversInput>
+    connectOrCreate?: TicketCreateOrConnectWithoutObserversInput
+    upsert?: TicketUpsertWithoutObserversInput
+    connect?: TicketWhereUniqueInput
+    update?: XOR<XOR<TicketUpdateToOneWithWhereWithoutObserversInput, TicketUpdateWithoutObserversInput>, TicketUncheckedUpdateWithoutObserversInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutObservedTicketsNestedInput = {
+    create?: XOR<UserCreateWithoutObservedTicketsInput, UserUncheckedCreateWithoutObservedTicketsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutObservedTicketsInput
+    upsert?: UserUpsertWithoutObservedTicketsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutObservedTicketsInput, UserUpdateWithoutObservedTicketsInput>, UserUncheckedUpdateWithoutObservedTicketsInput>
   }
 
   export type UserCreateNestedOneWithoutNotificationsInput = {
@@ -13429,6 +14802,7 @@ export namespace Prisma {
     attachments?: AttachmentCreateNestedManyWithoutUploaderInput
     ticketHistoryChanges?: TicketHistoryCreateNestedManyWithoutChangerInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
+    observedTickets?: TicketObserverCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutManagedDepartmentsInput = {
@@ -13447,6 +14821,7 @@ export namespace Prisma {
     attachments?: AttachmentUncheckedCreateNestedManyWithoutUploaderInput
     ticketHistoryChanges?: TicketHistoryUncheckedCreateNestedManyWithoutChangerInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    observedTickets?: TicketObserverUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutManagedDepartmentsInput = {
@@ -13470,6 +14845,7 @@ export namespace Prisma {
     attachments?: AttachmentCreateNestedManyWithoutUploaderInput
     ticketHistoryChanges?: TicketHistoryCreateNestedManyWithoutChangerInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
+    observedTickets?: TicketObserverCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutDepartmentInput = {
@@ -13488,6 +14864,7 @@ export namespace Prisma {
     attachments?: AttachmentUncheckedCreateNestedManyWithoutUploaderInput
     ticketHistoryChanges?: TicketHistoryUncheckedCreateNestedManyWithoutChangerInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    observedTickets?: TicketObserverUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutDepartmentInput = {
@@ -13517,6 +14894,7 @@ export namespace Prisma {
     attachments?: AttachmentCreateNestedManyWithoutTicketInput
     history?: TicketHistoryCreateNestedManyWithoutTicketInput
     notifications?: NotificationCreateNestedManyWithoutTicketInput
+    observers?: TicketObserverCreateNestedManyWithoutTicketInput
   }
 
   export type TicketUncheckedCreateWithoutDepartmentInput = {
@@ -13536,6 +14914,7 @@ export namespace Prisma {
     attachments?: AttachmentUncheckedCreateNestedManyWithoutTicketInput
     history?: TicketHistoryUncheckedCreateNestedManyWithoutTicketInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutTicketInput
+    observers?: TicketObserverUncheckedCreateNestedManyWithoutTicketInput
   }
 
   export type TicketCreateOrConnectWithoutDepartmentInput = {
@@ -13603,6 +14982,7 @@ export namespace Prisma {
     attachments?: AttachmentUpdateManyWithoutUploaderNestedInput
     ticketHistoryChanges?: TicketHistoryUpdateManyWithoutChangerNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
+    observedTickets?: TicketObserverUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutManagedDepartmentsInput = {
@@ -13621,6 +15001,7 @@ export namespace Prisma {
     attachments?: AttachmentUncheckedUpdateManyWithoutUploaderNestedInput
     ticketHistoryChanges?: TicketHistoryUncheckedUpdateManyWithoutChangerNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    observedTickets?: TicketObserverUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithWhereUniqueWithoutDepartmentInput = {
@@ -13793,6 +15174,7 @@ export namespace Prisma {
     attachments?: AttachmentCreateNestedManyWithoutTicketInput
     history?: TicketHistoryCreateNestedManyWithoutTicketInput
     notifications?: NotificationCreateNestedManyWithoutTicketInput
+    observers?: TicketObserverCreateNestedManyWithoutTicketInput
   }
 
   export type TicketUncheckedCreateWithoutCreatedByInput = {
@@ -13812,6 +15194,7 @@ export namespace Prisma {
     attachments?: AttachmentUncheckedCreateNestedManyWithoutTicketInput
     history?: TicketHistoryUncheckedCreateNestedManyWithoutTicketInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutTicketInput
+    observers?: TicketObserverUncheckedCreateNestedManyWithoutTicketInput
   }
 
   export type TicketCreateOrConnectWithoutCreatedByInput = {
@@ -13841,6 +15224,7 @@ export namespace Prisma {
     attachments?: AttachmentCreateNestedManyWithoutTicketInput
     history?: TicketHistoryCreateNestedManyWithoutTicketInput
     notifications?: NotificationCreateNestedManyWithoutTicketInput
+    observers?: TicketObserverCreateNestedManyWithoutTicketInput
   }
 
   export type TicketUncheckedCreateWithoutAssignedToInput = {
@@ -13860,6 +15244,7 @@ export namespace Prisma {
     attachments?: AttachmentUncheckedCreateNestedManyWithoutTicketInput
     history?: TicketHistoryUncheckedCreateNestedManyWithoutTicketInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutTicketInput
+    observers?: TicketObserverUncheckedCreateNestedManyWithoutTicketInput
   }
 
   export type TicketCreateOrConnectWithoutAssignedToInput = {
@@ -13983,6 +15368,28 @@ export namespace Prisma {
 
   export type NotificationCreateManyUserInputEnvelope = {
     data: NotificationCreateManyUserInput | NotificationCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type TicketObserverCreateWithoutUserInput = {
+    id?: string
+    createdAt?: Date | string
+    ticket: TicketCreateNestedOneWithoutObserversInput
+  }
+
+  export type TicketObserverUncheckedCreateWithoutUserInput = {
+    id?: string
+    ticketId: string
+    createdAt?: Date | string
+  }
+
+  export type TicketObserverCreateOrConnectWithoutUserInput = {
+    where: TicketObserverWhereUniqueInput
+    create: XOR<TicketObserverCreateWithoutUserInput, TicketObserverUncheckedCreateWithoutUserInput>
+  }
+
+  export type TicketObserverCreateManyUserInputEnvelope = {
+    data: TicketObserverCreateManyUserInput | TicketObserverCreateManyUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -14196,6 +15603,32 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Notification"> | Date | string
   }
 
+  export type TicketObserverUpsertWithWhereUniqueWithoutUserInput = {
+    where: TicketObserverWhereUniqueInput
+    update: XOR<TicketObserverUpdateWithoutUserInput, TicketObserverUncheckedUpdateWithoutUserInput>
+    create: XOR<TicketObserverCreateWithoutUserInput, TicketObserverUncheckedCreateWithoutUserInput>
+  }
+
+  export type TicketObserverUpdateWithWhereUniqueWithoutUserInput = {
+    where: TicketObserverWhereUniqueInput
+    data: XOR<TicketObserverUpdateWithoutUserInput, TicketObserverUncheckedUpdateWithoutUserInput>
+  }
+
+  export type TicketObserverUpdateManyWithWhereWithoutUserInput = {
+    where: TicketObserverScalarWhereInput
+    data: XOR<TicketObserverUpdateManyMutationInput, TicketObserverUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type TicketObserverScalarWhereInput = {
+    AND?: TicketObserverScalarWhereInput | TicketObserverScalarWhereInput[]
+    OR?: TicketObserverScalarWhereInput[]
+    NOT?: TicketObserverScalarWhereInput | TicketObserverScalarWhereInput[]
+    id?: StringFilter<"TicketObserver"> | string
+    ticketId?: StringFilter<"TicketObserver"> | string
+    userId?: StringFilter<"TicketObserver"> | string
+    createdAt?: DateTimeFilter<"TicketObserver"> | Date | string
+  }
+
   export type DepartmentCreateWithoutCategoriesInput = {
     id?: string
     name: string
@@ -14240,6 +15673,7 @@ export namespace Prisma {
     attachments?: AttachmentCreateNestedManyWithoutTicketInput
     history?: TicketHistoryCreateNestedManyWithoutTicketInput
     notifications?: NotificationCreateNestedManyWithoutTicketInput
+    observers?: TicketObserverCreateNestedManyWithoutTicketInput
   }
 
   export type TicketUncheckedCreateWithoutCategoryInput = {
@@ -14259,6 +15693,7 @@ export namespace Prisma {
     attachments?: AttachmentUncheckedCreateNestedManyWithoutTicketInput
     history?: TicketHistoryUncheckedCreateNestedManyWithoutTicketInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutTicketInput
+    observers?: TicketObserverUncheckedCreateNestedManyWithoutTicketInput
   }
 
   export type TicketCreateOrConnectWithoutCategoryInput = {
@@ -14336,6 +15771,7 @@ export namespace Prisma {
     attachments?: AttachmentCreateNestedManyWithoutUploaderInput
     ticketHistoryChanges?: TicketHistoryCreateNestedManyWithoutChangerInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
+    observedTickets?: TicketObserverCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCreatedTicketsInput = {
@@ -14354,6 +15790,7 @@ export namespace Prisma {
     attachments?: AttachmentUncheckedCreateNestedManyWithoutUploaderInput
     ticketHistoryChanges?: TicketHistoryUncheckedCreateNestedManyWithoutChangerInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    observedTickets?: TicketObserverUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCreatedTicketsInput = {
@@ -14377,6 +15814,7 @@ export namespace Prisma {
     attachments?: AttachmentCreateNestedManyWithoutUploaderInput
     ticketHistoryChanges?: TicketHistoryCreateNestedManyWithoutChangerInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
+    observedTickets?: TicketObserverCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAssignedTicketsInput = {
@@ -14395,6 +15833,7 @@ export namespace Prisma {
     attachments?: AttachmentUncheckedCreateNestedManyWithoutUploaderInput
     ticketHistoryChanges?: TicketHistoryUncheckedCreateNestedManyWithoutChangerInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    observedTickets?: TicketObserverUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAssignedTicketsInput = {
@@ -14566,6 +16005,28 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type TicketObserverCreateWithoutTicketInput = {
+    id?: string
+    createdAt?: Date | string
+    user: UserCreateNestedOneWithoutObservedTicketsInput
+  }
+
+  export type TicketObserverUncheckedCreateWithoutTicketInput = {
+    id?: string
+    userId: string
+    createdAt?: Date | string
+  }
+
+  export type TicketObserverCreateOrConnectWithoutTicketInput = {
+    where: TicketObserverWhereUniqueInput
+    create: XOR<TicketObserverCreateWithoutTicketInput, TicketObserverUncheckedCreateWithoutTicketInput>
+  }
+
+  export type TicketObserverCreateManyTicketInputEnvelope = {
+    data: TicketObserverCreateManyTicketInput | TicketObserverCreateManyTicketInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithoutCreatedTicketsInput = {
     update: XOR<UserUpdateWithoutCreatedTicketsInput, UserUncheckedUpdateWithoutCreatedTicketsInput>
     create: XOR<UserCreateWithoutCreatedTicketsInput, UserUncheckedCreateWithoutCreatedTicketsInput>
@@ -14593,6 +16054,7 @@ export namespace Prisma {
     attachments?: AttachmentUpdateManyWithoutUploaderNestedInput
     ticketHistoryChanges?: TicketHistoryUpdateManyWithoutChangerNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
+    observedTickets?: TicketObserverUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedTicketsInput = {
@@ -14611,6 +16073,7 @@ export namespace Prisma {
     attachments?: AttachmentUncheckedUpdateManyWithoutUploaderNestedInput
     ticketHistoryChanges?: TicketHistoryUncheckedUpdateManyWithoutChangerNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    observedTickets?: TicketObserverUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutAssignedTicketsInput = {
@@ -14640,6 +16103,7 @@ export namespace Prisma {
     attachments?: AttachmentUpdateManyWithoutUploaderNestedInput
     ticketHistoryChanges?: TicketHistoryUpdateManyWithoutChangerNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
+    observedTickets?: TicketObserverUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAssignedTicketsInput = {
@@ -14658,6 +16122,7 @@ export namespace Prisma {
     attachments?: AttachmentUncheckedUpdateManyWithoutUploaderNestedInput
     ticketHistoryChanges?: TicketHistoryUncheckedUpdateManyWithoutChangerNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    observedTickets?: TicketObserverUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type DepartmentUpsertWithoutTicketsInput = {
@@ -14786,6 +16251,22 @@ export namespace Prisma {
     data: XOR<NotificationUpdateManyMutationInput, NotificationUncheckedUpdateManyWithoutTicketInput>
   }
 
+  export type TicketObserverUpsertWithWhereUniqueWithoutTicketInput = {
+    where: TicketObserverWhereUniqueInput
+    update: XOR<TicketObserverUpdateWithoutTicketInput, TicketObserverUncheckedUpdateWithoutTicketInput>
+    create: XOR<TicketObserverCreateWithoutTicketInput, TicketObserverUncheckedCreateWithoutTicketInput>
+  }
+
+  export type TicketObserverUpdateWithWhereUniqueWithoutTicketInput = {
+    where: TicketObserverWhereUniqueInput
+    data: XOR<TicketObserverUpdateWithoutTicketInput, TicketObserverUncheckedUpdateWithoutTicketInput>
+  }
+
+  export type TicketObserverUpdateManyWithWhereWithoutTicketInput = {
+    where: TicketObserverScalarWhereInput
+    data: XOR<TicketObserverUpdateManyMutationInput, TicketObserverUncheckedUpdateManyWithoutTicketInput>
+  }
+
   export type TicketCreateWithoutCommentsInput = {
     id?: string
     title: string
@@ -14803,6 +16284,7 @@ export namespace Prisma {
     attachments?: AttachmentCreateNestedManyWithoutTicketInput
     history?: TicketHistoryCreateNestedManyWithoutTicketInput
     notifications?: NotificationCreateNestedManyWithoutTicketInput
+    observers?: TicketObserverCreateNestedManyWithoutTicketInput
   }
 
   export type TicketUncheckedCreateWithoutCommentsInput = {
@@ -14822,6 +16304,7 @@ export namespace Prisma {
     attachments?: AttachmentUncheckedCreateNestedManyWithoutTicketInput
     history?: TicketHistoryUncheckedCreateNestedManyWithoutTicketInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutTicketInput
+    observers?: TicketObserverUncheckedCreateNestedManyWithoutTicketInput
   }
 
   export type TicketCreateOrConnectWithoutCommentsInput = {
@@ -14845,6 +16328,7 @@ export namespace Prisma {
     attachments?: AttachmentCreateNestedManyWithoutUploaderInput
     ticketHistoryChanges?: TicketHistoryCreateNestedManyWithoutChangerInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
+    observedTickets?: TicketObserverCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCommentsInput = {
@@ -14863,6 +16347,7 @@ export namespace Prisma {
     attachments?: AttachmentUncheckedCreateNestedManyWithoutUploaderInput
     ticketHistoryChanges?: TicketHistoryUncheckedCreateNestedManyWithoutChangerInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    observedTickets?: TicketObserverUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCommentsInput = {
@@ -14898,6 +16383,7 @@ export namespace Prisma {
     attachments?: AttachmentUpdateManyWithoutTicketNestedInput
     history?: TicketHistoryUpdateManyWithoutTicketNestedInput
     notifications?: NotificationUpdateManyWithoutTicketNestedInput
+    observers?: TicketObserverUpdateManyWithoutTicketNestedInput
   }
 
   export type TicketUncheckedUpdateWithoutCommentsInput = {
@@ -14917,6 +16403,7 @@ export namespace Prisma {
     attachments?: AttachmentUncheckedUpdateManyWithoutTicketNestedInput
     history?: TicketHistoryUncheckedUpdateManyWithoutTicketNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutTicketNestedInput
+    observers?: TicketObserverUncheckedUpdateManyWithoutTicketNestedInput
   }
 
   export type UserUpsertWithoutCommentsInput = {
@@ -14946,6 +16433,7 @@ export namespace Prisma {
     attachments?: AttachmentUpdateManyWithoutUploaderNestedInput
     ticketHistoryChanges?: TicketHistoryUpdateManyWithoutChangerNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
+    observedTickets?: TicketObserverUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCommentsInput = {
@@ -14964,6 +16452,7 @@ export namespace Prisma {
     attachments?: AttachmentUncheckedUpdateManyWithoutUploaderNestedInput
     ticketHistoryChanges?: TicketHistoryUncheckedUpdateManyWithoutChangerNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    observedTickets?: TicketObserverUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type TicketCreateWithoutAttachmentsInput = {
@@ -14983,6 +16472,7 @@ export namespace Prisma {
     comments?: CommentCreateNestedManyWithoutTicketInput
     history?: TicketHistoryCreateNestedManyWithoutTicketInput
     notifications?: NotificationCreateNestedManyWithoutTicketInput
+    observers?: TicketObserverCreateNestedManyWithoutTicketInput
   }
 
   export type TicketUncheckedCreateWithoutAttachmentsInput = {
@@ -15002,6 +16492,7 @@ export namespace Prisma {
     comments?: CommentUncheckedCreateNestedManyWithoutTicketInput
     history?: TicketHistoryUncheckedCreateNestedManyWithoutTicketInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutTicketInput
+    observers?: TicketObserverUncheckedCreateNestedManyWithoutTicketInput
   }
 
   export type TicketCreateOrConnectWithoutAttachmentsInput = {
@@ -15025,6 +16516,7 @@ export namespace Prisma {
     comments?: CommentCreateNestedManyWithoutAuthorInput
     ticketHistoryChanges?: TicketHistoryCreateNestedManyWithoutChangerInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
+    observedTickets?: TicketObserverCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAttachmentsInput = {
@@ -15043,6 +16535,7 @@ export namespace Prisma {
     comments?: CommentUncheckedCreateNestedManyWithoutAuthorInput
     ticketHistoryChanges?: TicketHistoryUncheckedCreateNestedManyWithoutChangerInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    observedTickets?: TicketObserverUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAttachmentsInput = {
@@ -15078,6 +16571,7 @@ export namespace Prisma {
     comments?: CommentUpdateManyWithoutTicketNestedInput
     history?: TicketHistoryUpdateManyWithoutTicketNestedInput
     notifications?: NotificationUpdateManyWithoutTicketNestedInput
+    observers?: TicketObserverUpdateManyWithoutTicketNestedInput
   }
 
   export type TicketUncheckedUpdateWithoutAttachmentsInput = {
@@ -15097,6 +16591,7 @@ export namespace Prisma {
     comments?: CommentUncheckedUpdateManyWithoutTicketNestedInput
     history?: TicketHistoryUncheckedUpdateManyWithoutTicketNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutTicketNestedInput
+    observers?: TicketObserverUncheckedUpdateManyWithoutTicketNestedInput
   }
 
   export type UserUpsertWithoutAttachmentsInput = {
@@ -15126,6 +16621,7 @@ export namespace Prisma {
     comments?: CommentUpdateManyWithoutAuthorNestedInput
     ticketHistoryChanges?: TicketHistoryUpdateManyWithoutChangerNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
+    observedTickets?: TicketObserverUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAttachmentsInput = {
@@ -15144,6 +16640,7 @@ export namespace Prisma {
     comments?: CommentUncheckedUpdateManyWithoutAuthorNestedInput
     ticketHistoryChanges?: TicketHistoryUncheckedUpdateManyWithoutChangerNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    observedTickets?: TicketObserverUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type TicketCreateWithoutHistoryInput = {
@@ -15163,6 +16660,7 @@ export namespace Prisma {
     comments?: CommentCreateNestedManyWithoutTicketInput
     attachments?: AttachmentCreateNestedManyWithoutTicketInput
     notifications?: NotificationCreateNestedManyWithoutTicketInput
+    observers?: TicketObserverCreateNestedManyWithoutTicketInput
   }
 
   export type TicketUncheckedCreateWithoutHistoryInput = {
@@ -15182,6 +16680,7 @@ export namespace Prisma {
     comments?: CommentUncheckedCreateNestedManyWithoutTicketInput
     attachments?: AttachmentUncheckedCreateNestedManyWithoutTicketInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutTicketInput
+    observers?: TicketObserverUncheckedCreateNestedManyWithoutTicketInput
   }
 
   export type TicketCreateOrConnectWithoutHistoryInput = {
@@ -15205,6 +16704,7 @@ export namespace Prisma {
     comments?: CommentCreateNestedManyWithoutAuthorInput
     attachments?: AttachmentCreateNestedManyWithoutUploaderInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
+    observedTickets?: TicketObserverCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutTicketHistoryChangesInput = {
@@ -15223,6 +16723,7 @@ export namespace Prisma {
     comments?: CommentUncheckedCreateNestedManyWithoutAuthorInput
     attachments?: AttachmentUncheckedCreateNestedManyWithoutUploaderInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    observedTickets?: TicketObserverUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutTicketHistoryChangesInput = {
@@ -15258,6 +16759,7 @@ export namespace Prisma {
     comments?: CommentUpdateManyWithoutTicketNestedInput
     attachments?: AttachmentUpdateManyWithoutTicketNestedInput
     notifications?: NotificationUpdateManyWithoutTicketNestedInput
+    observers?: TicketObserverUpdateManyWithoutTicketNestedInput
   }
 
   export type TicketUncheckedUpdateWithoutHistoryInput = {
@@ -15277,6 +16779,7 @@ export namespace Prisma {
     comments?: CommentUncheckedUpdateManyWithoutTicketNestedInput
     attachments?: AttachmentUncheckedUpdateManyWithoutTicketNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutTicketNestedInput
+    observers?: TicketObserverUncheckedUpdateManyWithoutTicketNestedInput
   }
 
   export type UserUpsertWithoutTicketHistoryChangesInput = {
@@ -15306,6 +16809,7 @@ export namespace Prisma {
     comments?: CommentUpdateManyWithoutAuthorNestedInput
     attachments?: AttachmentUpdateManyWithoutUploaderNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
+    observedTickets?: TicketObserverUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTicketHistoryChangesInput = {
@@ -15323,6 +16827,195 @@ export namespace Prisma {
     assignedTickets?: TicketUncheckedUpdateManyWithoutAssignedToNestedInput
     comments?: CommentUncheckedUpdateManyWithoutAuthorNestedInput
     attachments?: AttachmentUncheckedUpdateManyWithoutUploaderNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    observedTickets?: TicketObserverUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type TicketCreateWithoutObserversInput = {
+    id?: string
+    title: string
+    description: string
+    status?: $Enums.TicketStatus
+    priority?: $Enums.TicketPriority
+    dueDate?: Date | string | null
+    resolvedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdBy: UserCreateNestedOneWithoutCreatedTicketsInput
+    assignedTo?: UserCreateNestedOneWithoutAssignedTicketsInput
+    department?: DepartmentCreateNestedOneWithoutTicketsInput
+    category?: CategoryCreateNestedOneWithoutTicketsInput
+    comments?: CommentCreateNestedManyWithoutTicketInput
+    attachments?: AttachmentCreateNestedManyWithoutTicketInput
+    history?: TicketHistoryCreateNestedManyWithoutTicketInput
+    notifications?: NotificationCreateNestedManyWithoutTicketInput
+  }
+
+  export type TicketUncheckedCreateWithoutObserversInput = {
+    id?: string
+    title: string
+    description: string
+    status?: $Enums.TicketStatus
+    priority?: $Enums.TicketPriority
+    createdById: string
+    assignedToId?: string | null
+    departmentId?: string | null
+    categoryId?: string | null
+    dueDate?: Date | string | null
+    resolvedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    comments?: CommentUncheckedCreateNestedManyWithoutTicketInput
+    attachments?: AttachmentUncheckedCreateNestedManyWithoutTicketInput
+    history?: TicketHistoryUncheckedCreateNestedManyWithoutTicketInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutTicketInput
+  }
+
+  export type TicketCreateOrConnectWithoutObserversInput = {
+    where: TicketWhereUniqueInput
+    create: XOR<TicketCreateWithoutObserversInput, TicketUncheckedCreateWithoutObserversInput>
+  }
+
+  export type UserCreateWithoutObservedTicketsInput = {
+    id?: string
+    name: string
+    email: string
+    passwordHash: string
+    role?: $Enums.UserRole
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    department?: DepartmentCreateNestedOneWithoutUsersInput
+    managedDepartments?: DepartmentCreateNestedManyWithoutManagerInput
+    createdTickets?: TicketCreateNestedManyWithoutCreatedByInput
+    assignedTickets?: TicketCreateNestedManyWithoutAssignedToInput
+    comments?: CommentCreateNestedManyWithoutAuthorInput
+    attachments?: AttachmentCreateNestedManyWithoutUploaderInput
+    ticketHistoryChanges?: TicketHistoryCreateNestedManyWithoutChangerInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutObservedTicketsInput = {
+    id?: string
+    name: string
+    email: string
+    passwordHash: string
+    role?: $Enums.UserRole
+    isActive?: boolean
+    departmentId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    managedDepartments?: DepartmentUncheckedCreateNestedManyWithoutManagerInput
+    createdTickets?: TicketUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedTickets?: TicketUncheckedCreateNestedManyWithoutAssignedToInput
+    comments?: CommentUncheckedCreateNestedManyWithoutAuthorInput
+    attachments?: AttachmentUncheckedCreateNestedManyWithoutUploaderInput
+    ticketHistoryChanges?: TicketHistoryUncheckedCreateNestedManyWithoutChangerInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutObservedTicketsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutObservedTicketsInput, UserUncheckedCreateWithoutObservedTicketsInput>
+  }
+
+  export type TicketUpsertWithoutObserversInput = {
+    update: XOR<TicketUpdateWithoutObserversInput, TicketUncheckedUpdateWithoutObserversInput>
+    create: XOR<TicketCreateWithoutObserversInput, TicketUncheckedCreateWithoutObserversInput>
+    where?: TicketWhereInput
+  }
+
+  export type TicketUpdateToOneWithWhereWithoutObserversInput = {
+    where?: TicketWhereInput
+    data: XOR<TicketUpdateWithoutObserversInput, TicketUncheckedUpdateWithoutObserversInput>
+  }
+
+  export type TicketUpdateWithoutObserversInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    status?: EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus
+    priority?: EnumTicketPriorityFieldUpdateOperationsInput | $Enums.TicketPriority
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdBy?: UserUpdateOneRequiredWithoutCreatedTicketsNestedInput
+    assignedTo?: UserUpdateOneWithoutAssignedTicketsNestedInput
+    department?: DepartmentUpdateOneWithoutTicketsNestedInput
+    category?: CategoryUpdateOneWithoutTicketsNestedInput
+    comments?: CommentUpdateManyWithoutTicketNestedInput
+    attachments?: AttachmentUpdateManyWithoutTicketNestedInput
+    history?: TicketHistoryUpdateManyWithoutTicketNestedInput
+    notifications?: NotificationUpdateManyWithoutTicketNestedInput
+  }
+
+  export type TicketUncheckedUpdateWithoutObserversInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    status?: EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus
+    priority?: EnumTicketPriorityFieldUpdateOperationsInput | $Enums.TicketPriority
+    createdById?: StringFieldUpdateOperationsInput | string
+    assignedToId?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    categoryId?: NullableStringFieldUpdateOperationsInput | string | null
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    comments?: CommentUncheckedUpdateManyWithoutTicketNestedInput
+    attachments?: AttachmentUncheckedUpdateManyWithoutTicketNestedInput
+    history?: TicketHistoryUncheckedUpdateManyWithoutTicketNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutTicketNestedInput
+  }
+
+  export type UserUpsertWithoutObservedTicketsInput = {
+    update: XOR<UserUpdateWithoutObservedTicketsInput, UserUncheckedUpdateWithoutObservedTicketsInput>
+    create: XOR<UserCreateWithoutObservedTicketsInput, UserUncheckedCreateWithoutObservedTicketsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutObservedTicketsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutObservedTicketsInput, UserUncheckedUpdateWithoutObservedTicketsInput>
+  }
+
+  export type UserUpdateWithoutObservedTicketsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    department?: DepartmentUpdateOneWithoutUsersNestedInput
+    managedDepartments?: DepartmentUpdateManyWithoutManagerNestedInput
+    createdTickets?: TicketUpdateManyWithoutCreatedByNestedInput
+    assignedTickets?: TicketUpdateManyWithoutAssignedToNestedInput
+    comments?: CommentUpdateManyWithoutAuthorNestedInput
+    attachments?: AttachmentUpdateManyWithoutUploaderNestedInput
+    ticketHistoryChanges?: TicketHistoryUpdateManyWithoutChangerNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutObservedTicketsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    managedDepartments?: DepartmentUncheckedUpdateManyWithoutManagerNestedInput
+    createdTickets?: TicketUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedTickets?: TicketUncheckedUpdateManyWithoutAssignedToNestedInput
+    comments?: CommentUncheckedUpdateManyWithoutAuthorNestedInput
+    attachments?: AttachmentUncheckedUpdateManyWithoutUploaderNestedInput
+    ticketHistoryChanges?: TicketHistoryUncheckedUpdateManyWithoutChangerNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -15342,6 +17035,7 @@ export namespace Prisma {
     comments?: CommentCreateNestedManyWithoutAuthorInput
     attachments?: AttachmentCreateNestedManyWithoutUploaderInput
     ticketHistoryChanges?: TicketHistoryCreateNestedManyWithoutChangerInput
+    observedTickets?: TicketObserverCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -15360,6 +17054,7 @@ export namespace Prisma {
     comments?: CommentUncheckedCreateNestedManyWithoutAuthorInput
     attachments?: AttachmentUncheckedCreateNestedManyWithoutUploaderInput
     ticketHistoryChanges?: TicketHistoryUncheckedCreateNestedManyWithoutChangerInput
+    observedTickets?: TicketObserverUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -15384,6 +17079,7 @@ export namespace Prisma {
     comments?: CommentCreateNestedManyWithoutTicketInput
     attachments?: AttachmentCreateNestedManyWithoutTicketInput
     history?: TicketHistoryCreateNestedManyWithoutTicketInput
+    observers?: TicketObserverCreateNestedManyWithoutTicketInput
   }
 
   export type TicketUncheckedCreateWithoutNotificationsInput = {
@@ -15403,6 +17099,7 @@ export namespace Prisma {
     comments?: CommentUncheckedCreateNestedManyWithoutTicketInput
     attachments?: AttachmentUncheckedCreateNestedManyWithoutTicketInput
     history?: TicketHistoryUncheckedCreateNestedManyWithoutTicketInput
+    observers?: TicketObserverUncheckedCreateNestedManyWithoutTicketInput
   }
 
   export type TicketCreateOrConnectWithoutNotificationsInput = {
@@ -15437,6 +17134,7 @@ export namespace Prisma {
     comments?: CommentUpdateManyWithoutAuthorNestedInput
     attachments?: AttachmentUpdateManyWithoutUploaderNestedInput
     ticketHistoryChanges?: TicketHistoryUpdateManyWithoutChangerNestedInput
+    observedTickets?: TicketObserverUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -15455,6 +17153,7 @@ export namespace Prisma {
     comments?: CommentUncheckedUpdateManyWithoutAuthorNestedInput
     attachments?: AttachmentUncheckedUpdateManyWithoutUploaderNestedInput
     ticketHistoryChanges?: TicketHistoryUncheckedUpdateManyWithoutChangerNestedInput
+    observedTickets?: TicketObserverUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type TicketUpsertWithoutNotificationsInput = {
@@ -15485,6 +17184,7 @@ export namespace Prisma {
     comments?: CommentUpdateManyWithoutTicketNestedInput
     attachments?: AttachmentUpdateManyWithoutTicketNestedInput
     history?: TicketHistoryUpdateManyWithoutTicketNestedInput
+    observers?: TicketObserverUpdateManyWithoutTicketNestedInput
   }
 
   export type TicketUncheckedUpdateWithoutNotificationsInput = {
@@ -15504,6 +17204,7 @@ export namespace Prisma {
     comments?: CommentUncheckedUpdateManyWithoutTicketNestedInput
     attachments?: AttachmentUncheckedUpdateManyWithoutTicketNestedInput
     history?: TicketHistoryUncheckedUpdateManyWithoutTicketNestedInput
+    observers?: TicketObserverUncheckedUpdateManyWithoutTicketNestedInput
   }
 
   export type UserCreateManyDepartmentInput = {
@@ -15556,6 +17257,7 @@ export namespace Prisma {
     attachments?: AttachmentUpdateManyWithoutUploaderNestedInput
     ticketHistoryChanges?: TicketHistoryUpdateManyWithoutChangerNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
+    observedTickets?: TicketObserverUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDepartmentInput = {
@@ -15574,6 +17276,7 @@ export namespace Prisma {
     attachments?: AttachmentUncheckedUpdateManyWithoutUploaderNestedInput
     ticketHistoryChanges?: TicketHistoryUncheckedUpdateManyWithoutChangerNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    observedTickets?: TicketObserverUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutDepartmentInput = {
@@ -15604,6 +17307,7 @@ export namespace Prisma {
     attachments?: AttachmentUpdateManyWithoutTicketNestedInput
     history?: TicketHistoryUpdateManyWithoutTicketNestedInput
     notifications?: NotificationUpdateManyWithoutTicketNestedInput
+    observers?: TicketObserverUpdateManyWithoutTicketNestedInput
   }
 
   export type TicketUncheckedUpdateWithoutDepartmentInput = {
@@ -15623,6 +17327,7 @@ export namespace Prisma {
     attachments?: AttachmentUncheckedUpdateManyWithoutTicketNestedInput
     history?: TicketHistoryUncheckedUpdateManyWithoutTicketNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutTicketNestedInput
+    observers?: TicketObserverUncheckedUpdateManyWithoutTicketNestedInput
   }
 
   export type TicketUncheckedUpdateManyWithoutDepartmentInput = {
@@ -15741,6 +17446,12 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type TicketObserverCreateManyUserInput = {
+    id?: string
+    ticketId: string
+    createdAt?: Date | string
+  }
+
   export type DepartmentUpdateWithoutManagerInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
@@ -15788,6 +17499,7 @@ export namespace Prisma {
     attachments?: AttachmentUpdateManyWithoutTicketNestedInput
     history?: TicketHistoryUpdateManyWithoutTicketNestedInput
     notifications?: NotificationUpdateManyWithoutTicketNestedInput
+    observers?: TicketObserverUpdateManyWithoutTicketNestedInput
   }
 
   export type TicketUncheckedUpdateWithoutCreatedByInput = {
@@ -15807,6 +17519,7 @@ export namespace Prisma {
     attachments?: AttachmentUncheckedUpdateManyWithoutTicketNestedInput
     history?: TicketHistoryUncheckedUpdateManyWithoutTicketNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutTicketNestedInput
+    observers?: TicketObserverUncheckedUpdateManyWithoutTicketNestedInput
   }
 
   export type TicketUncheckedUpdateManyWithoutCreatedByInput = {
@@ -15841,6 +17554,7 @@ export namespace Prisma {
     attachments?: AttachmentUpdateManyWithoutTicketNestedInput
     history?: TicketHistoryUpdateManyWithoutTicketNestedInput
     notifications?: NotificationUpdateManyWithoutTicketNestedInput
+    observers?: TicketObserverUpdateManyWithoutTicketNestedInput
   }
 
   export type TicketUncheckedUpdateWithoutAssignedToInput = {
@@ -15860,6 +17574,7 @@ export namespace Prisma {
     attachments?: AttachmentUncheckedUpdateManyWithoutTicketNestedInput
     history?: TicketHistoryUncheckedUpdateManyWithoutTicketNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutTicketNestedInput
+    observers?: TicketObserverUncheckedUpdateManyWithoutTicketNestedInput
   }
 
   export type TicketUncheckedUpdateManyWithoutAssignedToInput = {
@@ -15988,6 +17703,24 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type TicketObserverUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ticket?: TicketUpdateOneRequiredWithoutObserversNestedInput
+  }
+
+  export type TicketObserverUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ticketId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TicketObserverUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ticketId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type TicketCreateManyCategoryInput = {
     id?: string
     title: string
@@ -16020,6 +17753,7 @@ export namespace Prisma {
     attachments?: AttachmentUpdateManyWithoutTicketNestedInput
     history?: TicketHistoryUpdateManyWithoutTicketNestedInput
     notifications?: NotificationUpdateManyWithoutTicketNestedInput
+    observers?: TicketObserverUpdateManyWithoutTicketNestedInput
   }
 
   export type TicketUncheckedUpdateWithoutCategoryInput = {
@@ -16039,6 +17773,7 @@ export namespace Prisma {
     attachments?: AttachmentUncheckedUpdateManyWithoutTicketNestedInput
     history?: TicketHistoryUncheckedUpdateManyWithoutTicketNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutTicketNestedInput
+    observers?: TicketObserverUncheckedUpdateManyWithoutTicketNestedInput
   }
 
   export type TicketUncheckedUpdateManyWithoutCategoryInput = {
@@ -16090,6 +17825,12 @@ export namespace Prisma {
     type: $Enums.NotificationType
     message: string
     isRead?: boolean
+    createdAt?: Date | string
+  }
+
+  export type TicketObserverCreateManyTicketInput = {
+    id?: string
+    userId: string
     createdAt?: Date | string
   }
 
@@ -16201,6 +17942,24 @@ export namespace Prisma {
     type?: EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
     message?: StringFieldUpdateOperationsInput | string
     isRead?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TicketObserverUpdateWithoutTicketInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutObservedTicketsNestedInput
+  }
+
+  export type TicketObserverUncheckedUpdateWithoutTicketInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TicketObserverUncheckedUpdateManyWithoutTicketInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 

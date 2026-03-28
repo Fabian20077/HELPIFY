@@ -5,8 +5,9 @@
 // ============================================================================
 
 generator client {
-  provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
+  provider   = "prisma-client-js"
+  output     = "../src/generated/prisma"
+  engineType = "library"
 }
 
 datasource db {
@@ -51,14 +52,15 @@ model User {
   updatedAt    DateTime @updatedAt @map("updated_at")
 
   // Relaciones
-  department           Department?     @relation("UserDepartment", fields: [departmentId], references: [id], onDelete: SetNull)
-  managedDepartments   Department[]    @relation("DepartmentManager")
-  createdTickets       Ticket[]        @relation("TicketCreator")
-  assignedTickets      Ticket[]        @relation("TicketAssignee")
+  department           Department?      @relation("UserDepartment", fields: [departmentId], references: [id], onDelete: SetNull)
+  managedDepartments   Department[]     @relation("DepartmentManager")
+  createdTickets       Ticket[]         @relation("TicketCreator")
+  assignedTickets      Ticket[]         @relation("TicketAssignee")
   comments             Comment[]
   attachments          Attachment[]
-  ticketHistoryChanges TicketHistory[] @relation("HistoryChangedBy")
+  ticketHistoryChanges TicketHistory[]  @relation("HistoryChangedBy")
   notifications        Notification[]
+  observedTickets      TicketObserver[]
 
   @@index([role])
   @@map("users")
@@ -111,14 +113,15 @@ model Ticket {
   updatedAt    DateTime       @updatedAt @map("updated_at")
 
   // Relaciones
-  createdBy     User            @relation("TicketCreator", fields: [createdById], references: [id])
-  assignedTo    User?           @relation("TicketAssignee", fields: [assignedToId], references: [id], onDelete: SetNull)
-  department    Department?     @relation(fields: [departmentId], references: [id], onDelete: SetNull)
-  category      Category?       @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  createdBy     User             @relation("TicketCreator", fields: [createdById], references: [id])
+  assignedTo    User?            @relation("TicketAssignee", fields: [assignedToId], references: [id], onDelete: SetNull)
+  department    Department?      @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  category      Category?        @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   comments      Comment[]
   attachments   Attachment[]
   history       TicketHistory[]
   notifications Notification[]
+  observers     TicketObserver[]
 
   @@index([status])
   @@index([priority])
@@ -208,6 +211,26 @@ model TicketHistory {
 
   @@index([ticketId])
   @@map("ticket_history")
+}
+
+// ============================================================================
+// TICKET_OBSERVERS — Usuarios que observan un ticket
+// Un observador puede ver y comentar en el ticket sin ser el creador ni asignado.
+// ============================================================================
+model TicketObserver {
+  id        String   @id @default(uuid())
+  ticketId  String   @map("ticket_id")
+  userId    String   @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relaciones
+  ticket Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([ticketId, userId])
+  @@index([ticketId])
+  @@index([userId])
+  @@map("ticket_observers")
 }
 
 // ============================================================================
