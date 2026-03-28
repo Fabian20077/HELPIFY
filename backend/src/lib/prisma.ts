@@ -1,12 +1,8 @@
 import 'dotenv/config';
 import { PrismaClient } from '../generated/prisma/client';
-
 import { PrismaMariaDb } from '@prisma/adapter-mariadb';
 
-// Extract database URL from the environment
 const connectionString = process.env.DATABASE_URL || 'mysql://root:root@localhost:3306/helpify';
-
-// Create the Prisma driver adapter passing the connection string directly
 const adapter = new PrismaMariaDb(connectionString);
 
 const globalForPrisma = globalThis as unknown as {

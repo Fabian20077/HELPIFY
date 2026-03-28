@@ -110,6 +110,14 @@ export interface TicketHistory {
   changer?: Pick<User, 'name'>;
 }
 
+export interface TicketObserver {
+  id: string;
+  ticketId: string;
+  userId: string;
+  user?: Pick<User, 'id' | 'name' | 'email'>;
+  createdAt: string;
+}
+
 export interface Ticket {
   id: string;
   title: string;
@@ -132,6 +140,7 @@ export interface Ticket {
   comments?: Comment[];
   attachments?: Attachment[];
   history?: TicketHistory[];
+  observers?: TicketObserver[];
   _count?: {
     comments: number;
     attachments: number;

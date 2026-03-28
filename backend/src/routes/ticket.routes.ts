@@ -6,7 +6,9 @@ import {
   updateTicketStatus,
   addComment,
   assignTicket,
-  deleteTicket
+  deleteTicket,
+  addObserver,
+  removeObserver
 } from '../controllers/ticket.controller';
 import { validateRequest } from '../middlewares/validate-request';
 import { requireAuth, requireRole } from '../middlewares/auth.middleware';
@@ -29,6 +31,10 @@ router.get('/:id', getTicketById as any);
 router.patch('/:id/status', requireRole(['agent', 'admin', 'manager']), validateRequest(updateTicketStatusSchema), updateTicketStatus as any);
 router.patch('/:id/assign', requireRole(['agent', 'admin', 'manager']), assignTicket as any);
 router.delete('/:id', requireRole(['admin']), deleteTicket as any);
+
+// Observadores
+router.post('/:id/observers', requireRole(['agent', 'admin', 'manager']), addObserver as any);
+router.delete('/:id/observers/:userId', requireRole(['agent', 'admin', 'manager']), removeObserver as any);
 
 // Comentarios
 router.post('/:id/comments', validateRequest(addCommentSchema), addComment as any);

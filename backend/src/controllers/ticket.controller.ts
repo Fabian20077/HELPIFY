@@ -6,6 +6,26 @@ import { createStatusChangeNotification, createCommentNotification, createResolv
 import { TicketStatus } from '../generated/prisma/client';
 import logger from '../lib/logger';
 
+const ticketInclude = {
+  createdBy: { select: { name: true, email: true } },
+  assignedTo: { select: { name: true, email: true } },
+  department: { select: { name: true } },
+  category: { select: { name: true } },
+  comments: {
+    include: { author: { select: { name: true, role: true } } },
+    orderBy: { createdAt: 'asc' as const }
+  },
+  attachments: true,
+  history: { orderBy: { changedAt: 'desc' as const } }
+};
+
+async function getTicketWithRelations(ticketId: string) {
+  return prisma.ticket.findUnique({
+    where: { id: ticketId },
+    include: ticketInclude
+  });
+}
+
 export const createTicket = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { title, description, departmentId, categoryId, priority } = req.body;
@@ -129,7 +149,10 @@ export const getTicketById = async (req: Request, res: Response, next: NextFunct
           orderBy: { createdAt: 'asc' }
         },
         attachments: true,
-        history: { orderBy: { changedAt: 'desc' } }
+        history: { orderBy: { changedAt: 'desc' } },
+        observers: {
+          include: { user: { select: { id: true, name: true, email: true } } }
+        }
       },
     });
 
@@ -137,7 +160,14 @@ export const getTicketById = async (req: Request, res: Response, next: NextFunct
 
     const userRole = (req as any).user.role;
     const userId = (req as any).user.id;
-    if (userRole === 'customer' && ticket.createdById !== userId) {
+    
+    const observerIds = ticket.observers.map(o => o.userId);
+    const canViewAsCustomer = 
+      ticket.createdById === userId || 
+      ticket.assignedToId === userId || 
+      observerIds.includes(userId);
+    
+    if (userRole === 'customer' && !canViewAsCustomer) {
       return res.status(403).json({ status: 'error', message: 'No tienes permisos para ver este ticket' });
     }
     if (userRole === 'customer') {
@@ -198,7 +228,8 @@ export const updateTicketStatus = async (req: Request, res: Response, next: Next
       await createResolvedNotification(id, ticket.title);
     }
 
-    return res.status(200).json({ status: 'success', data: updatedTicket });
+    const ticketWithRelations = await getTicketWithRelations(id);
+    return res.status(200).json({ status: 'success', data: ticketWithRelations });
   } catch (error) {
     if (error instanceof Error && error.message.includes('Transición de estado inválida')) {
       return res.status(400).json({ status: 'error', message: error.message });
@@ -315,7 +346,8 @@ export const assignTicket = async (req: Request, res: Response, next: NextFuncti
       await createAssignmentNotification(id, assignedToId, ticket.title);
     }
 
-    return res.status(200).json({ status: 'success', data: updatedTicket });
+    const ticketWithRelations = await getTicketWithRelations(id);
+    return res.status(200).json({ status: 'success', data: ticketWithRelations });
   } catch (error) {
     next(error);
   }
@@ -347,6 +379,113 @@ export const deleteTicket = async (req: Request, res: Response, next: NextFuncti
     });
 
     return res.status(204).send();
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Agregar observador a un ticket
+ */
+export const addObserver = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const ticketId = req.params.id as string;
+    const { userId: observerUserId } = req.body;
+    const currentUserId = (req as any).user.id;
+
+    const ticket = await prisma.ticket.findUnique({ where: { id: ticketId } });
+    if (!ticket) {
+      return res.status(404).json({ status: 'error', message: 'Ticket no encontrado' });
+    }
+
+    const observerUser = await prisma.user.findUnique({ where: { id: observerUserId } });
+    if (!observerUser) {
+      return res.status(400).json({ status: 'error', message: 'Usuario no encontrado' });
+    }
+
+    const existingObserver = await prisma.ticketObserver.findUnique({
+      where: {
+        ticketId_userId: {
+          ticketId,
+          userId: observerUserId
+        }
+      }
+    });
+
+    if (existingObserver) {
+      return res.status(400).json({ status: 'error', message: 'El usuario ya es observador de este ticket' });
+    }
+
+    const observer = await prisma.ticketObserver.create({
+      data: {
+        ticketId,
+        userId: observerUserId
+      },
+      include: {
+        user: { select: { id: true, name: true, email: true } }
+      }
+    });
+
+    await prisma.ticketHistory.create({
+      data: {
+        ticketId,
+        changedBy: currentUserId,
+        fieldName: 'observer_added',
+        oldValue: null,
+        newValue: observerUser.name
+      }
+    });
+
+    return res.status(201).json({ status: 'success', data: observer });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Eliminar observador de un ticket
+ */
+export const removeObserver = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const ticketId = req.params.id as string;
+    const observerUserId = req.params.userId as string;
+    const currentUserId = (req as any).user.id;
+
+    const ticket = await prisma.ticket.findUnique({ where: { id: ticketId } });
+    if (!ticket) {
+      return res.status(404).json({ status: 'error', message: 'Ticket no encontrado' });
+    }
+
+    const observer = await prisma.ticketObserver.findUnique({
+      where: {
+        ticketId_userId: {
+          ticketId,
+          userId: observerUserId
+        }
+      }
+    });
+
+    if (!observer) {
+      return res.status(404).json({ status: 'error', message: 'El usuario no es observador de este ticket' });
+    }
+
+    const observerUser = await prisma.user.findUnique({ where: { id: observerUserId } });
+
+    await prisma.ticketObserver.delete({
+      where: { id: observer.id }
+    });
+
+    await prisma.ticketHistory.create({
+      data: {
+        ticketId,
+        changedBy: currentUserId,
+        fieldName: 'observer_removed',
+        oldValue: observerUser?.name || observerUserId,
+        newValue: null
+      }
+    });
+
+    return res.status(200).json({ status: 'success', message: 'Observador eliminado' });
   } catch (error) {
     next(error);
   }

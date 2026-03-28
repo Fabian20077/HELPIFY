@@ -49,7 +49,7 @@ export const getAllUsers = async (req: Request, res: Response, next: NextFunctio
     const users = await prisma.user.findMany({
       where,
       include: {
-        department: { select: { name: true } }
+        department: { select: { id: true, name: true } }
       },
       orderBy: { createdAt: 'desc' }
     });
@@ -74,11 +74,18 @@ export const updateUser = async (req: Request, res: Response, next: NextFunction
     const userId = req.params.id as string;
     const updateData = req.body as any;
 
+    console.log('=== UPDATE USER DEBUG ===');
+    console.log('userId:', userId);
+    console.log('updateData:', JSON.stringify(updateData));
+
     const user = await prisma.user.findUnique({ where: { id: userId } });
 
     if (!user) {
       return next(new AppError('Usuario no encontrado', 404));
     }
+
+    console.log('Current user departmentId:', user.departmentId);
+    console.log('New departmentId from request:', updateData.departmentId);
 
     const updatedUser = await prisma.user.update({
       where: { id: userId },
@@ -87,14 +94,23 @@ export const updateUser = async (req: Request, res: Response, next: NextFunction
         role: updateData.role,
         isActive: updateData.isActive,
         departmentId: updateData.departmentId,
+      },
+      include: {
+        department: {
+          select: { id: true, name: true }
+        }
       }
     });
+    console.log('Updated user with department:', updatedUser);
 
-    const { passwordHash, ...sanitizedUser } = updatedUser;
+    const { passwordHash, department, ...userWithoutPassword } = updatedUser;
 
     res.status(200).json({
       status: 'success',
-      data: sanitizedUser
+      data: {
+        ...userWithoutPassword,
+        department
+      }
     });
   } catch (error) {
     next(error);
@@ -144,6 +160,39 @@ export const getAgents = async (req: Request, res: Response, next: NextFunction)
       results: agentsWithWorkload.length,
       data: agentsWithWorkload
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Buscar usuarios por nombre o email
+ */
+export const searchUsers = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const query = req.query.q as string || '';
+    
+    if (query.length < 2) {
+      return res.status(200).json({ status: 'success', data: [] });
+    }
+
+    const users = await prisma.user.findMany({
+      where: {
+        OR: [
+          { name: { contains: query } },
+          { email: { contains: query } }
+        ],
+        isActive: true
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true
+      },
+      take: 10
+    });
+
+    res.status(200).json({ status: 'success', data: users });
   } catch (error) {
     next(error);
   }
