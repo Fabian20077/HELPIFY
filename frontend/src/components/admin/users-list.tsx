@@ -18,6 +18,11 @@ import { Loader2, RefreshCw } from 'lucide-react';
 import { API_BASE_URL } from '@/lib/api';
 import { getToken } from '@/lib/auth';
 
+interface Department {
+  id: string;
+  name: string;
+}
+
 interface User {
   id: string;
   name: string;
@@ -25,6 +30,7 @@ interface User {
   role: string;
   isActive: boolean;
   department: { id: string; name: string } | null;
+  departmentId: string | null;
   createdAt: string;
 }
 
@@ -47,9 +53,11 @@ const roleLabels: Record<string, string> = {
 export function UsersList({ initialUsers }: UsersListProps) {
   const router = useRouter();
   const [users, setUsers] = useState<User[]>(initialUsers);
+  const [departments, setDepartments] = useState<Department[]>([]);
   const [roleFilter, setRoleFilter] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [loading, setLoading] = useState(false);
+  const [loadingDepts, setLoadingDepts] = useState(true);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
 
   const fetchUsers = async () => {
@@ -77,8 +85,30 @@ export function UsersList({ initialUsers }: UsersListProps) {
     }
   };
 
+  const fetchDepartments = async () => {
+    setLoadingDepts(true);
+    try {
+      const token = getToken();
+      const res = await fetch(`${API_BASE_URL}/departments`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = await res.json();
+      if (data.status === 'success') {
+        setDepartments(data.data);
+      }
+    } catch (error) {
+      console.error('Error fetching departments:', error);
+    } finally {
+      setLoadingDepts(false);
+    }
+  };
+
   useEffect(() => {
     fetchUsers();
+    fetchDepartments();
   }, [roleFilter, statusFilter]);
 
   const updateUser = async (userId: string, updates: Partial<User>) => {
@@ -94,7 +124,9 @@ export function UsersList({ initialUsers }: UsersListProps) {
         body: JSON.stringify(updates),
       });
       const data = await res.json();
+      console.log('Update user response:', data);
       if (data.status === 'success') {
+        console.log('Updated user data:', data.data);
         setUsers(prev => prev.map(u => u.id === userId ? { ...u, ...data.data } : u));
       }
     } catch (error) {
@@ -106,6 +138,17 @@ export function UsersList({ initialUsers }: UsersListProps) {
 
   const handleRoleChange = (userId: string, newRole: string) => {
     updateUser(userId, { role: newRole });
+  };
+
+  const handleDepartmentChange = (userId: string, value: string) => {
+    console.log('handleDepartmentChange called:', userId, value);
+    const newDeptId = value === 'unassigned' ? null : value;
+    const dept = departments.find(d => d.id === newDeptId) || null;
+    console.log('Sending update:', { departmentId: newDeptId, department: dept });
+    updateUser(userId, { 
+      departmentId: newDeptId,
+      department: dept ? { id: dept.id, name: dept.name } : null
+    });
   };
 
   const handleToggleActive = (userId: string, currentStatus: boolean) => {
@@ -203,8 +246,28 @@ export function UsersList({ initialUsers }: UsersListProps) {
                         </SelectContent>
                       </Select>
                     </td>
-                    <td className="px-4 py-3 text-sm text-muted-foreground">
-                      {user.department?.name || '-'}
+                    <td className="px-4 py-3">
+                      <Select
+                        value={user.department?.id || 'unassigned'}
+                        onValueChange={(value) => handleDepartmentChange(user.id, value || 'unassigned')}
+                        disabled={updatingId === user.id || loadingDepts}
+                      >
+                        <SelectTrigger className="w-[180px] bg-slate-900 border-slate-800 text-slate-300">
+                          <SelectValue>
+                            {loadingDepts 
+                              ? "Cargando..." 
+                              : user.department?.name || "Sin asignar"}
+                          </SelectValue>
+                        </SelectTrigger>
+                        <SelectContent className="bg-slate-900 border-slate-800 text-slate-200">
+                          <SelectItem value="unassigned" className="text-slate-500 italic">Sin asignar</SelectItem>
+                          {departments.map(dept => (
+                            <SelectItem key={dept.id} value={dept.id}>
+                              {dept.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">

@@ -16,6 +16,9 @@ export const metadata: Metadata = {
   title: "Helpify — Soporte Técnico Inteligente",
   description:
     "Sistema inteligente de gestión de tickets de soporte técnico con priorización automática y seguimiento visual.",
+  icons: {
+    icon: [{ url: "/favicon.ico", sizes: "32x32", type: "image/x-icon" }],
+  },
 };
 
 export default function RootLayout({

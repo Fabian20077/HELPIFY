@@ -48,20 +48,7 @@ export function DepartmentsList({ initialDepartments }: DepartmentsListProps) {
       const res = await fetch(`${API_BASE_URL}/departments`, { headers });
       const data = await res.json();
       if (data.status === 'success') {
-        const withCounts = await Promise.all(
-          data.data.map(async (dept: any) => {
-            const usersRes = await fetch(`${API_BASE_URL}/departments/${dept.id}`, { headers });
-            const usersData = await usersRes.json();
-            return {
-              ...dept,
-              _count: {
-                users: usersData.data?.users?.length || 0,
-                tickets: 0,
-              },
-            };
-          })
-        );
-        setDepartments(withCounts);
+        setDepartments(data.data);
       }
     } catch (error) {
       console.error('Error fetching departments:', error);

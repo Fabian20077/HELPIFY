@@ -50,8 +50,8 @@ export function StatusControls({ ticketId, currentStatus, userRole, onStatusChan
         console.error('No token available');
         return;
       }
-      const result = await api.patch<Ticket>(`/tickets/${ticketId}/status`, { status: newStatus }, token);
-      onStatusChange(result);
+      const response = await api.patch<{ status: string; data: Ticket }>(`/tickets/${ticketId}/status`, { status: newStatus }, token);
+      onStatusChange(response.data);
     } catch (error) {
       console.error('Error transitioning status:', error);
     } finally {

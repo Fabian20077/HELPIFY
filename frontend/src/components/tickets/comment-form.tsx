@@ -24,7 +24,13 @@ export interface CommentFormValues {
   isInternal: boolean;
 }
 
-export function CommentForm({ ticketId, role }: { ticketId: string, role: string }) {
+interface CommentFormProps {
+  ticketId: string;
+  role: string;
+  onCommentAdded?: () => void;
+}
+
+export function CommentForm({ ticketId, role, onCommentAdded }: CommentFormProps) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -49,9 +55,11 @@ export function CommentForm({ ticketId, role }: { ticketId: string, role: string
       await api.post(`/tickets/${ticketId}/comments`, { body: data.body, isInternal: data.isInternal }, token);
       form.reset();
       
-      startTransition(() => {
+      if (onCommentAdded) {
+        onCommentAdded();
+      } else {
         router.refresh();
-      });
+      }
     } catch (err: any) {
       if (err instanceof ApiError) {
         setError(err.message);

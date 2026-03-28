@@ -1,12 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { Ticket } from '@/lib/types';
 import { TicketHeader } from './ticket-header';
 import { TicketSidebar } from './ticket-sidebar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { TicketTimeline } from './ticket-timeline';
 import { CommentForm } from './comment-form';
+import { api } from '@/lib/api';
+import { getToken } from '@/lib/auth';
 
 interface TicketDetailProps {
   initialTicket: Ticket;
@@ -15,6 +17,19 @@ interface TicketDetailProps {
 
 export function TicketDetail({ initialTicket, userRole }: TicketDetailProps) {
   const [ticket, setTicket] = useState(initialTicket);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const handleCommentAdded = async () => {
+    const token = getToken();
+    if (!token) return;
+    
+    try {
+      const updatedTicket = await api.get<Ticket>(`/tickets/${ticket.id}`, token);
+      setTicket(updatedTicket);
+    } catch (error) {
+      console.error('Error refreshing ticket:', error);
+    }
+  };
 
   return (
     <div className="flex flex-col gap-6 pt-4 pb-8 h-full max-w-6xl mx-auto w-full">
@@ -35,12 +50,13 @@ export function TicketDetail({ initialTicket, userRole }: TicketDetailProps) {
 
           <div className="flex-1 mt-4">
             <TicketTimeline
+              key={refreshKey}
               history={ticket.history || []}
               comments={ticket.comments || []}
               currentRole={userRole as 'customer' | 'agent' | 'admin'}
             />
 
-            <CommentForm ticketId={ticket.id} role={userRole} />
+            <CommentForm ticketId={ticket.id} role={userRole} onCommentAdded={handleCommentAdded} />
           </div>
         </div>
 
