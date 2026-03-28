@@ -15,7 +15,7 @@ router.get('/me', userController.getMe);
 // Lista de agentes y admins disponibles para asignación
 router.get('/agents', userController.getAgents);
 
-// Búsqueda de usuarios
+// Búsqueda de usuarios para observadores
 router.get('/search', userController.searchUsers);
 
 // Rutas administrativas
