@@ -1,0 +1,207 @@
+generator client {
+  provider   = "prisma-client-js"
+  output     = "../src/generated/prisma"
+  engineType = "library"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model Department {
+  id          String     @id @default(uuid())
+  name        String     @unique @db.VarChar(100)
+  description String?    @db.Text
+  managerId   String?    @map("manager_id")
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime   @updatedAt @map("updated_at")
+  categories  Category[]
+  manager     User?      @relation("DepartmentManager", fields: [managerId], references: [id])
+  tickets     Ticket[]
+  users       User[]     @relation("UserDepartment")
+
+  @@index([managerId], map: "departments_manager_id_fkey")
+  @@map("departments")
+}
+
+model User {
+  id                   String           @id @default(uuid())
+  name                 String           @db.VarChar(150)
+  email                String           @unique @db.VarChar(255)
+  passwordHash         String           @map("password_hash") @db.VarChar(255)
+  role                 UserRole         @default(customer)
+  isActive             Boolean          @default(true) @map("is_active")
+  departmentId         String?          @map("department_id")
+  deletedAt            DateTime?        @map("deleted_at")
+  createdAt            DateTime         @default(now()) @map("created_at")
+  updatedAt            DateTime         @updatedAt @map("updated_at")
+  attachments          Attachment[]
+  comments             Comment[]
+  managedDepartments   Department[]     @relation("DepartmentManager")
+  notifications        Notification[]
+  ticketHistoryChanges TicketHistory[]  @relation("HistoryChangedBy")
+  observedTickets      TicketObserver[]
+  assignedTickets      Ticket[]         @relation("TicketAssignee")
+  createdTickets       Ticket[]         @relation("TicketCreator")
+  department           Department?      @relation("UserDepartment", fields: [departmentId], references: [id])
+
+  @@index([role])
+  @@index([departmentId], map: "users_department_id_fkey")
+  @@map("users")
+}
+
+model Category {
+  id           String     @id @default(uuid())
+  name         String     @db.VarChar(100)
+  color        String     @default("#6366f1") @db.VarChar(7)
+  departmentId String     @map("department_id")
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @updatedAt @map("updated_at")
+  department   Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  tickets      Ticket[]
+
+  @@index([departmentId], map: "categories_department_id_fkey")
+  @@map("categories")
+}
+
+model Ticket {
+  id            String           @id @default(uuid())
+  title         String           @db.VarChar(255)
+  description   String           @db.Text
+  status        TicketStatus     @default(open)
+  priority      TicketPriority   @default(medium)
+  createdById   String           @map("created_by")
+  assignedToId  String?          @map("assigned_to")
+  departmentId  String?          @map("department_id")
+  categoryId    String?          @map("category_id")
+  dueDate       DateTime?        @map("due_date")
+  resolvedAt    DateTime?        @map("resolved_at")
+  createdAt     DateTime         @default(now()) @map("created_at")
+  updatedAt     DateTime         @updatedAt @map("updated_at")
+  attachments   Attachment[]
+  comments      Comment[]
+  notifications Notification[]
+  history       TicketHistory[]
+  observers     TicketObserver[]
+  assignedTo    User?            @relation("TicketAssignee", fields: [assignedToId], references: [id])
+  category      Category?        @relation(fields: [categoryId], references: [id])
+  createdBy     User             @relation("TicketCreator", fields: [createdById], references: [id])
+  department    Department?      @relation(fields: [departmentId], references: [id])
+
+  @@index([status])
+  @@index([priority])
+  @@index([createdById])
+  @@index([assignedToId])
+  @@index([createdAt])
+  @@index([categoryId], map: "tickets_category_id_fkey")
+  @@index([departmentId], map: "tickets_department_id_fkey")
+  @@map("tickets")
+}
+
+model Comment {
+  id         String    @id @default(uuid())
+  ticketId   String    @map("ticket_id")
+  authorId   String    @map("author_id")
+  body       String    @db.Text
+  isInternal Boolean   @default(false) @map("is_internal")
+  editedAt   DateTime? @map("edited_at")
+  createdAt  DateTime  @default(now()) @map("created_at")
+  author     User      @relation(fields: [authorId], references: [id])
+  ticket     Ticket    @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+  @@index([ticketId])
+  @@index([authorId], map: "comments_author_id_fkey")
+  @@map("comments")
+}
+
+model Attachment {
+  id         String   @id @default(uuid())
+  ticketId   String   @map("ticket_id")
+  uploadedBy String   @map("uploaded_by")
+  filename   String   @db.VarChar(255)
+  mimeType   String   @map("mime_type") @db.VarChar(100)
+  sizeBytes  Int      @map("size_bytes")
+  storageKey String   @map("storage_key") @db.VarChar(500)
+  createdAt  DateTime @default(now()) @map("created_at")
+  ticket     Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  uploader   User     @relation(fields: [uploadedBy], references: [id])
+
+  @@index([ticketId])
+  @@index([uploadedBy], map: "attachments_uploaded_by_fkey")
+  @@map("attachments")
+}
+
+model TicketHistory {
+  id        String   @id @default(uuid())
+  ticketId  String   @map("ticket_id")
+  changedBy String   @map("changed_by")
+  fieldName String   @map("field_name") @db.VarChar(50)
+  oldValue  String?  @map("old_value") @db.VarChar(255)
+  newValue  String?  @map("new_value") @db.VarChar(255)
+  changedAt DateTime @default(now()) @map("changed_at")
+  changer   User     @relation("HistoryChangedBy", fields: [changedBy], references: [id])
+  ticket    Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+  @@index([ticketId])
+  @@index([changedBy], map: "ticket_history_changed_by_fkey")
+  @@map("ticket_history")
+}
+
+model TicketObserver {
+  id        String   @id @default(uuid())
+  ticketId  String   @map("ticket_id")
+  userId    String   @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  ticket    Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([ticketId, userId])
+  @@index([ticketId])
+  @@index([userId])
+  @@map("ticket_observers")
+}
+
+model Notification {
+  id        String           @id @default(uuid())
+  userId    String           @map("user_id")
+  ticketId  String           @map("ticket_id")
+  type      NotificationType
+  message   String           @db.VarChar(500)
+  isRead    Boolean          @default(false) @map("is_read")
+  createdAt DateTime         @default(now()) @map("created_at")
+  ticket    Ticket           @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isRead])
+  @@index([ticketId], map: "notifications_ticket_id_fkey")
+  @@map("notifications")
+}
+
+enum UserRole {
+  customer
+  agent
+  admin
+  pending
+}
+
+enum TicketStatus {
+  open
+  in_progress
+  waiting
+  resolved
+  closed
+}
+
+enum TicketPriority {
+  low
+  medium
+  high
+  critical
+}
+
+enum NotificationType {
+  ticket_assigned
+  status_changed
+  commented
+  resolved
+}

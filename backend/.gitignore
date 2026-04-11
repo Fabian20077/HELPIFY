@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.env
+.env.test
+.env.production
+coverage/
+
+uploads/*
+!uploads/.gitkeep
+
+# Application logs
+logs/
+*.log

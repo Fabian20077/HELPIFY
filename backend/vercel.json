@@ -1,0 +1,9 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "framework": null,
+  "regions": ["iad1"],
+  "env": {
+    "DOTENV_CONFIG_QUIET": "true"
+  }
+}

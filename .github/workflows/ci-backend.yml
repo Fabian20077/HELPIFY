@@ -1,0 +1,75 @@
+name: CI - Backend Tests
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'backend/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'backend/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: rootpassword
+          MYSQL_DATABASE: helpdesk_test
+          MYSQL_USER: helpdesk
+          MYSQL_PASSWORD: helpdesk123
+        ports:
+          - 3307:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ./backend
+        run: npm ci
+
+      - name: Create .env.test
+        working-directory: ./backend
+        run: |
+          echo 'DATABASE_URL="mysql://helpdesk:helpdesk123@localhost:3307/helpdesk_test"' > .env.test
+          echo 'JWT_SECRET="test-secret-32-chars-long-minimal-ok"' >> .env.test
+          echo 'JWT_REFRESH_SECRET="test-refresh-secret-32-chars-long-ok"' >> .env.test
+          echo 'NODE_ENV="test"' >> .env.test
+          echo 'PORT=3002' >> .env.test
+          echo 'FRONTEND_URL="http://localhost:3000"' >> .env.test
+          echo 'MAX_FILE_SIZE_MB=10' >> .env.test
+
+      - name: Generate Prisma Client
+        working-directory: ./backend
+        run: npx prisma generate
+
+      - name: Run lint
+        working-directory: ./backend
+        run: npx tsc --noEmit
+
+      - name: Run tests
+        working-directory: ./backend
+        run: npm test
+
+      - name: Upload coverage
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report
+          path: backend/coverage/
